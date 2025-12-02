@@ -2,6 +2,7 @@ import pyxel
 import webbrowser
 
 
+        
 class Game: #classe qui cree le jeu et qui possede la boucle de jeu
     def __init__(self,width,height,nom_jeu):
         self.width = width
@@ -9,9 +10,11 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.nom = nom_jeu
         self.hitbox = True
         
+        self.menu_actuel = "None" #None, GameOver, Start, Pause
+        
 
         pyxel.init(self.width, self.height)
-        self.menu_principal = Menu()
+        
         
         self.player = Player("JOUEUR1")
         self.liste_mob = []
@@ -20,30 +23,32 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
 
     def update(self):
-        if  self.menu_principal.is_showed:
-            if pyxel.btn(pyxel.KEY_RETURN) or pyxel.btn(pyxel.KEY_KP_ENTER):
-                self.menu_principal.is_showed = False
-
         
-        if self.player.is_alive(): # boucle du jeu qui verifie si le joueur est mort
-            #ici si le player est vivant
-            #mettre la suite du jeu ici
-            self.player.move()
+        
+        if self.menu_actuel == "None":
             
-        else:#si le joueur est mort
-            print(self.player.nom, "est mort")
-            
-        #test de la mort des Mobs
-        for mobs in self.liste_mob:
-            if mobs.is_alive() == True:
-                self.liste_mob.remove(mobs)
+            if self.player.is_alive(): # boucle du jeu qui verifie si le joueur est mort
+                #ici si le player est vivant
+                #mettre la suite du jeu ici
+                self.player.move()
                 
-        # update des balles de l'arc:
-            #...
-            
-        self.player.arme_active.update_attaque()
+                
+            else:#si le joueur est mort
+                print(self.player.nom, "est mort")
+                
+            #test de la mort des Mobs
+            for mobs in self.liste_mob:
+                if mobs.is_alive() == True:
+                    self.liste_mob.remove(mobs)
+                    
+            # update des balles de l'arc:
+                #...
+                
+            self.player.arme_active.update_attaque()
          
-       
+        if self.menu_actuel == "GameOver":
+              webbrowser.open_new("https://www.youtube.com/watch?v=xvFZjo5PgG0")
+              pyxel.quit()
         
             
             
@@ -53,19 +58,31 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
 
     def draw(self):
         pyxel.cls(0)
-        if self.menu_principal.is_showed:
-
-            self.menu_principal.draw()
+        
+        self.menu()    
             
-            
-
-        else:
+        if self.menu_actuel =="None":
             if self.hitbox:
                 self.player.draw_hitbox()
-
+    
             self.player.draw()
             
+    def menu(self):
+        if self.menu_actuel == "GameOver":
+            print('This is the end...')
+        
+        elif self.menu_actuel == "Pause":
+            print('pause activée')
             
+        elif self.menu_actuel == "Start":
+            print('Menu de départ')
+            
+        elif self.menu_actuel =="None":
+            print('rien à faire')
+    
+    def changer_menu(self, menu_remplacement):
+        self.menu_actuel = str(menu_remplacement)
+        
 
 
 class Armes:
@@ -237,6 +254,7 @@ class Player: #classe qui cree le joueur
             pyxel.rect(1, 1, length*(self.vie/self.vie_max), height, col)
         else:
             print('The END')#MENU de FIN
+            Game.changer_menu("GameOver")
         
          
             
@@ -278,27 +296,9 @@ class Mob:
         
 
 
-class Menu:
-    def __init__(self):
-        self.liste_textes = [] #forme = [x,y,"texte"] : {"x":x, "y":y, "texte":"texte"}
-        self.is_showed = True
-        self.ajouter_textes(0,0,"Bienvenue")
 
-
-
-    def ajouter_textes(self,x:int=0,y:int=0, texte : str=""):
-        temp = {
-            "x":x,
-            "y":y,
-            "texte":texte
-        }
-        self.liste_textes.append(temp)
-
-
-    
-    def draw(self):
-        for v in self.liste_textes:
-            pyxel.text(v["x"], v["y"], v["texte"],7)
+        
+        
             
 
         
@@ -308,7 +308,4 @@ class Menu:
     
 
 
-"""si joueur quitte la partie par le menu copier coller ça
-ATTENTION: NE PAS METTRE DANS UNE BOUCLE"""
-#webbrowser.open_new("https://www.youtube.com/watch?v=xvFZjo5PgG0")
 Game(128,128,"JEU")
