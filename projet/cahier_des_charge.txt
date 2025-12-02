@@ -24,18 +24,10 @@ par l'achat d'objets et armes
 
 
 
-Les DEVS :
-Quentin, Hugo, Felix, Gaetan
 
 
-Répartitions des taches:
 
--Creation des textures : ennemis, player,sol,balles,pv,
--Créations sons
--Création rooms des vagues
--Création ennemis(commencé-Hugo)
--Création menus (Quentin-arrete)
--Création collisions (Quentin)
+
 
 TODO:
 -> régler le fait que l'on puisse aller plus vite en diagonale
