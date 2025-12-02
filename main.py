@@ -1,21 +1,19 @@
-
 import pyxel
 import webbrowser
+from random import randint
 
 
-        
 class Game: #classe qui cree le jeu et qui possede la boucle de jeu
     def __init__(self,width,height,nom_jeu):
         self.width = width
         self.height = height
         self.nom = nom_jeu
         self.hitbox = True
-        
-        self.menu_actuel = "None" #None, GameOver, Start, Pause
+        self.pos_cible = [0,0]
         
 
         pyxel.init(self.width, self.height)
-        
+        self.menu_principal = Menu()
         
         self.player = Player("JOUEUR1")
         self.liste_mob = []
@@ -24,32 +22,45 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
 
     def update(self):
-        
-        
-        if self.menu_actuel == "None":
+        if pyxel.frame_count %90 ==0:
+            self.liste_mob.append(Mob(10,10,10,10))
+            # faire apparaitre les mobs dans une liste
+
             
-            if self.player.is_alive(): # boucle du jeu qui verifie si le joueur est mort
-                #ici si le player est vivant
-                #mettre la suite du jeu ici
-                self.player.move()
+            
+
+
+
+        if  self.menu_principal.is_showed:
+            if pyxel.btn(pyxel.KEY_RETURN) or pyxel.btn(pyxel.KEY_KP_ENTER):
+                self.menu_principal.is_showed = False
+
+        
+        if self.player.is_alive(): # boucle du jeu qui verifie si le joueur est mort
+            #ici si le player est vivant
+            #mettre la suite du jeu ici
+            self.player.move()
+            
+        else:#si le joueur est mort
+            print(self.player.nom, "est mort")
+            
+
+
+        for mob in self.liste_mob:
+            if pyxel.frame_count % 15 ==0:
+                self.pos_cible = [self.player.x,self.player.y] #envoie cible des mobs pour ajouter un deplacement moins linéaire
+
+            
+            mob.move(self.pos_cible)
+            if not mob.is_alive():
+                self.liste_mob.remove(mob)
                 
-                
-            else:#si le joueur est mort
-                print(self.player.nom, "est mort")
-                
-            #test de la mort des Mobs
-            for mobs in self.liste_mob:
-                if mobs.is_alive() == True:
-                    self.liste_mob.remove(mobs)
-                    
-            # update des balles de l'arc:
-                #...
-                
-            self.player.arme_active.update_attaque()
+        # update des balles de l'arc:
+            #...
+            
+        self.player.arme_active.update_attaque()
          
-        if self.menu_actuel == "GameOver":
-              webbrowser.open_new("https://www.youtube.com/watch?v=xvFZjo5PgG0")
-              pyxel.quit()
+       
         
             
             
@@ -59,31 +70,26 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
 
     def draw(self):
         pyxel.cls(0)
-        
-        self.menu()    
+        if self.menu_principal.is_showed:
+
+            self.menu_principal.draw()
             
-        if self.menu_actuel =="None":
+            
+
+        else:
             if self.hitbox:
                 self.player.draw_hitbox()
-    
+            
+            for v in self.liste_mob:
+                    if self.hitbox:
+                        v.draw_hitbox()
+                    v.draw()
+                    
+
+
             self.player.draw()
             
-    def menu(self):
-        if self.menu_actuel == "GameOver":
-            print('This is the end...')
-        
-        elif self.menu_actuel == "Pause":
-            print('pause activée')
             
-        elif self.menu_actuel == "Start":
-            print('Menu de départ')
-            
-        elif self.menu_actuel =="None":
-            print('rien à faire')
-    
-    def changer_menu(self, menu_remplacement):
-        self.menu_actuel = str(menu_remplacement)
-        
 
 
 class Armes:
@@ -96,34 +102,18 @@ class Armes:
         self.cooldown = cooldown
         self.critical_hit = critical_hit
         self.type_arme = type_arme
-        self.liste_attaque_actives = []  
-        self.vitesse_attaque = 1#plus bas mieux c
+        self.liste_attaque_actives = []    
     
     
     def creer_attaque(self, x,y,cote, vitesse):
         if self.type_arme == "arc":
-            self.liste_attaque_actives.append([x -vitesse, y+4, 2, 1, cote])#x,y,w,h, cote
-            
-            
-                
-                
+            if cote == "g":
+                self.liste_attaque_actives.append([x -vitesse, y+4, 2, 1, cote])#x,y,w,h, cote
                 
     def update_attaque(self):
-        
         for att in self.liste_attaque_actives:
-            if att[4] == "g" and pyxel.frame_count % self.vitesse_attaque == 0:
+            if att[4] == "g" and pyxel.frame_count % 4 == 0:
                 att[0] -= 2
-                
-            elif att[4] == "d" and pyxel.frame_count % self.vitesse_attaque == 0:
-                att[0] += 2
-                
-            elif att[4] == "h" and pyxel.frame_count % self.vitesse_attaque == 0:
-                att[1] -= 2
-                
-            elif att[4] == "b" and pyxel.frame_count % self.vitesse_attaque == 0:
-                att[1] += 2
-                
-            
                 
             
     def update(self):
@@ -136,10 +126,7 @@ class Armes:
     def draw(self):
         # pyxel.rect(self.x, self.y, 2, 4, 9)
         for lst in self.liste_attaque_actives:
-            if lst[4] == "g" or lst[4] == "d":
-                pyxel.rect(lst[0], lst[1], 2, 1, 2)
-            else:
-               pyxel.rect(lst[0], lst[1], 1, 2, 2) 
+            pyxel.rect(lst[0], lst[1], 2, 1, 2)
     
     
     
@@ -182,33 +169,25 @@ class Player: #classe qui cree le joueur
         """déplacement avec les touches de direction"""
         # TODO: gerer l'orientation du perso
         if pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_D):
-            self.cote = "d"
+            
             if (self.x < pyxel.width-5) :#eviter de sortir de l'écran
                 self.x = self.x + self.vitesse
 
         if pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.KEY_Q):
-            self.cote = "g"
+            
             if (self.x > 0) :
                 self.x = self.x - self.vitesse
                 
 
         if pyxel.btn(pyxel.KEY_DOWN) or pyxel.btn(pyxel.KEY_S):
-            self.cote = 'b'
             if (self.y < pyxel.height-5) :
                 self.y = self.y + self.vitesse
         if pyxel.btn(pyxel.KEY_UP) or pyxel.btn(pyxel.KEY_Z):
-            self.cote = 'h'
             if (self.y > 0) : 
                 self.y = self.y - self.vitesse
                 
         if pyxel.btn(pyxel.KEY_SPACE):
-            self.arme_active.creer_attaque(self.x, self.y,self.cote, self.vitesse)        
-        
-        if pyxel.btn(pyxel.KEY_U):
-            # test enlever pv
-            # print(self.vie)
-            # self.vie -= 5
-            pass
+            self.arme_active.creer_attaque(self.x, self.y,self.cote, self.vitesse)                 
         
             
     def orientation(self):
@@ -227,8 +206,6 @@ class Player: #classe qui cree le joueur
     
 
         
-    def draw_hitbox(self):
-        pyxel.rect(self.x-1,self.y-1,7,7,9) #7= taille player + 2 pour que l'on voie un peu le rectangle
 
     def degats(self,nb_degats):
         """
@@ -249,7 +226,8 @@ class Player: #classe qui cree le joueur
         else:
             return False
 
-
+    def draw_hitbox(self):
+            pyxel.rect(self.x-1,self.y-1,7,7,9) #7= taille player + 2 pour que l'on voie un peu le rectangle
 
     def draw(self):
         pyxel.rect(self.x,self.y,5,5,6)
@@ -276,7 +254,6 @@ class Player: #classe qui cree le joueur
             pyxel.rect(1, 1, length*(self.vie/self.vie_max), height, col)
         else:
             print('The END')#MENU de FIN
-            Game.changer_menu("GameOver")
         
          
             
@@ -292,18 +269,50 @@ class Player: #classe qui cree le joueur
 
 
 class Mob:
-    def __init__(self, life, damage, attack_speed, speed):
+    def __init__(self, life:int, damage:int, attack_speed:int, vitesse:int):
         """initialisation de la creation de mob"""
         self.life = life
         self.damage = damage
         self.attack_speed = attack_speed
-        self.speed = speed
+        self.vitesse = 1
+        self.x = randint(0,pyxel.width-7)
+        self.y = 0
+        self.cooldown_state = 3
+        self.cooldown_max = randint(3,7)
     
     def update(self):
         pass
     
+    def draw_hitbox(self):
+            pyxel.rect(self.x-1,self.y-1,7,7,9) #7= taille mob + 2 pour que l'on voie un peu le rectangle
+
+    def move(self, tableau_cible:list):
+        """Prend en parametre tableau ontenatn les coordonnes cibles vers lesquels ils doivent se deplacer 
+        tableau sous forme [x,y]
+        la variable cooldown existe pour que les mobs se deplacent de faconc plus saccadees"""
+        
+        
+        if self.peut_bouger():
+            #verifie si le mob peut jouer -> verifie son cooldown est ok
+            player_x = tableau_cible[0]
+            player_y = tableau_cible[1]
+            mob_x = self.x
+            mob_y = self.y
+            if player_y-5 >= mob_y:
+                self.y += self.vitesse
+
+            elif player_y+5 <= mob_y:
+                self.y -= self.vitesse
+
+            if player_x+5 <= mob_x:
+                self.x -= self.vitesse
+
+            elif player_x-5 >= mob_x:
+                self.x += self.vitesse
+
+        
     def draw(self):
-        pass
+        pyxel.rect(self.x,self.y,5,5,11)
     
     def degat(self):
         """change la vie du mob"""
@@ -316,11 +325,39 @@ class Mob:
         elif self.life <= 0:
             return False
         
-
-
-
+    def peut_bouger(self):
+        """renvoie True si le mob peut bouger
+        sinon renvoie False"""
+        if self.cooldown_state == 0:
+            self.cooldown_state = self.cooldown_max
+            return True
+        else:
+            self.cooldown_state -=1
+            return False
         
-        
+
+
+class Menu:
+    def __init__(self):
+        self.liste_textes = [] #forme = [x,y,"texte"] : {"x":x, "y":y, "texte":"texte"}
+        self.is_showed = True
+        self.ajouter_textes(0,0,"Bienvenue")
+
+
+
+    def ajouter_textes(self,x:int=0,y:int=0, texte : str=""):
+        temp = {
+            "x":x,
+            "y":y,
+            "texte":texte
+        }
+        self.liste_textes.append(temp)
+
+
+    
+    def draw(self):
+        for v in self.liste_textes:
+            pyxel.text(v["x"], v["y"], v["texte"],7)
             
 
         
@@ -330,4 +367,7 @@ class Mob:
     
 
 
+"""si joueur quitte la partie par le menu copier coller ça
+ATTENTION: NE PAS METTRE DANS UNE BOUCLE"""
+#webbrowser.open_new("https://www.youtube.com/watch?v=xvFZjo5PgG0")
 Game(128,128,"JEU")
