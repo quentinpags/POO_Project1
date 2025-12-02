@@ -95,18 +95,34 @@ class Armes:
         self.cooldown = cooldown
         self.critical_hit = critical_hit
         self.type_arme = type_arme
-        self.liste_attaque_actives = []    
+        self.liste_attaque_actives = []  
+        self.vitesse_attaque = 1#plus bas mieux c
     
     
     def creer_attaque(self, x,y,cote, vitesse):
         if self.type_arme == "arc":
-            if cote == "g":
-                self.liste_attaque_actives.append([x -vitesse, y+4, 2, 1, cote])#x,y,w,h, cote
+            self.liste_attaque_actives.append([x -vitesse, y+4, 2, 1, cote])#x,y,w,h, cote
+            
+            
+                
+                
                 
     def update_attaque(self):
+        
         for att in self.liste_attaque_actives:
-            if att[4] == "g" and pyxel.frame_count % 4 == 0:
+            if att[4] == "g" and pyxel.frame_count % self.vitesse_attaque == 0:
                 att[0] -= 2
+                
+            elif att[4] == "d" and pyxel.frame_count % self.vitesse_attaque == 0:
+                att[0] += 2
+                
+            elif att[4] == "h" and pyxel.frame_count % self.vitesse_attaque == 0:
+                att[1] -= 2
+                
+            elif att[4] == "b" and pyxel.frame_count % self.vitesse_attaque == 0:
+                att[1] += 2
+                
+            
                 
             
     def update(self):
@@ -119,7 +135,10 @@ class Armes:
     def draw(self):
         # pyxel.rect(self.x, self.y, 2, 4, 9)
         for lst in self.liste_attaque_actives:
-            pyxel.rect(lst[0], lst[1], 2, 1, 2)
+            if lst[4] == "g" or lst[4] == "d":
+                pyxel.rect(lst[0], lst[1], 2, 1, 2)
+            else:
+               pyxel.rect(lst[0], lst[1], 1, 2, 2) 
     
     
     
@@ -162,20 +181,22 @@ class Player: #classe qui cree le joueur
         """déplacement avec les touches de direction"""
         # TODO: gerer l'orientation du perso
         if pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_D):
-            
+            self.cote = "d"
             if (self.x < pyxel.width-5) :#eviter de sortir de l'écran
                 self.x = self.x + self.vitesse
 
         if pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.KEY_Q):
-            
+            self.cote = "g"
             if (self.x > 0) :
                 self.x = self.x - self.vitesse
                 
 
         if pyxel.btn(pyxel.KEY_DOWN) or pyxel.btn(pyxel.KEY_S):
+            self.cote = 'b'
             if (self.y < pyxel.height-5) :
                 self.y = self.y + self.vitesse
         if pyxel.btn(pyxel.KEY_UP) or pyxel.btn(pyxel.KEY_Z):
+            self.cote = 'h'
             if (self.y > 0) : 
                 self.y = self.y - self.vitesse
                 
