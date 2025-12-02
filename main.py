@@ -1,5 +1,6 @@
 import pyxel
 import webbrowser
+from random import randint
 
 
 class Game: #classe qui cree le jeu et qui possede la boucle de jeu
@@ -8,6 +9,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.height = height
         self.nom = nom_jeu
         self.hitbox = True
+        self.pos_cible = [0,0]
         
 
         pyxel.init(self.width, self.height)
@@ -20,6 +22,15 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
 
     def update(self):
+        if pyxel.frame_count %90 ==0:
+            self.liste_mob.append(Mob(10,10,10,10))
+            # faire apparaitre les mobs dans une liste
+
+            
+            
+
+
+
         if  self.menu_principal.is_showed:
             if pyxel.btn(pyxel.KEY_RETURN) or pyxel.btn(pyxel.KEY_KP_ENTER):
                 self.menu_principal.is_showed = False
@@ -33,10 +44,16 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         else:#si le joueur est mort
             print(self.player.nom, "est mort")
             
-        #test de la mort des Mobs
-        for mobs in self.liste_mob:
-            if mobs.is_alive() == True:
-                self.liste_mob.remove(mobs)
+
+
+        for mob in self.liste_mob:
+            if pyxel.frame_count % 15 ==0:
+                self.pos_cible = [self.player.x,self.player.y] #envoie cible des mobs pour ajouter un deplacement moins linéaire
+
+            
+            mob.move(self.pos_cible)
+            if not mob.is_alive():
+                self.liste_mob.remove(mob)
                 
         # update des balles de l'arc:
             #...
@@ -62,6 +79,13 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         else:
             if self.hitbox:
                 self.player.draw_hitbox()
+            
+            for v in self.liste_mob:
+                    if self.hitbox:
+                        v.draw_hitbox()
+                    v.draw()
+                    
+
 
             self.player.draw()
             
@@ -163,13 +187,7 @@ class Player: #classe qui cree le joueur
                 self.y = self.y - self.vitesse
                 
         if pyxel.btn(pyxel.KEY_SPACE):
-            self.arme_active.creer_attaque(self.x, self.y,self.cote, self.vitesse)        
-        
-        if pyxel.btn(pyxel.KEY_U):
-            # test enlever pv
-            # print(self.vie)
-            # self.vie -= 5
-            pass
+            self.arme_active.creer_attaque(self.x, self.y,self.cote, self.vitesse)                 
         
             
     def orientation(self):
@@ -188,8 +206,6 @@ class Player: #classe qui cree le joueur
     
 
         
-    def draw_hitbox(self):
-        pyxel.rect(self.x-1,self.y-1,7,7,9) #7= taille player + 2 pour que l'on voie un peu le rectangle
 
     def degats(self,nb_degats):
         """
@@ -210,7 +226,8 @@ class Player: #classe qui cree le joueur
         else:
             return False
 
-
+    def draw_hitbox(self):
+            pyxel.rect(self.x-1,self.y-1,7,7,9) #7= taille player + 2 pour que l'on voie un peu le rectangle
 
     def draw(self):
         pyxel.rect(self.x,self.y,5,5,6)
@@ -252,18 +269,50 @@ class Player: #classe qui cree le joueur
 
 
 class Mob:
-    def __init__(self, life, damage, attack_speed, speed):
+    def __init__(self, life:int, damage:int, attack_speed:int, vitesse:int):
         """initialisation de la creation de mob"""
         self.life = life
         self.damage = damage
         self.attack_speed = attack_speed
-        self.speed = speed
+        self.vitesse = 1
+        self.x = randint(0,pyxel.width-7)
+        self.y = 0
+        self.cooldown_state = 3
+        self.cooldown_max = randint(3,7)
     
     def update(self):
         pass
     
+    def draw_hitbox(self):
+            pyxel.rect(self.x-1,self.y-1,7,7,9) #7= taille mob + 2 pour que l'on voie un peu le rectangle
+
+    def move(self, tableau_cible:list):
+        """Prend en parametre tableau ontenatn les coordonnes cibles vers lesquels ils doivent se deplacer 
+        tableau sous forme [x,y]
+        la variable cooldown existe pour que les mobs se deplacent de faconc plus saccadees"""
+        
+        
+        if self.peut_bouger():
+            #verifie si le mob peut jouer -> verifie son cooldown est ok
+            player_x = tableau_cible[0]
+            player_y = tableau_cible[1]
+            mob_x = self.x
+            mob_y = self.y
+            if player_y-5 >= mob_y:
+                self.y += self.vitesse
+
+            elif player_y+5 <= mob_y:
+                self.y -= self.vitesse
+
+            if player_x+5 <= mob_x:
+                self.x -= self.vitesse
+
+            elif player_x-5 >= mob_x:
+                self.x += self.vitesse
+
+        
     def draw(self):
-        pass
+        pyxel.rect(self.x,self.y,5,5,11)
     
     def degat(self):
         """change la vie du mob"""
@@ -274,6 +323,16 @@ class Mob:
         if self.life > 0:
             return True
         elif self.life <= 0:
+            return False
+        
+    def peut_bouger(self):
+        """renvoie True si le mob peut bouger
+        sinon renvoie False"""
+        if self.cooldown_state == 0:
+            self.cooldown_state = self.cooldown_max
+            return True
+        else:
+            self.cooldown_state -=1
             return False
         
 
