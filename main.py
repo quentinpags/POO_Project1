@@ -10,7 +10,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.width = width
         self.height = height
         self.nom = nom_jeu
-        self.hitbox = True
+        self.hitbox = False
         self.pos_cible = [0,0]
         
         self.menu_actuel = "Start" #Playing, GameOver, Start, Pause
@@ -30,7 +30,37 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
         if self.menu_actuel == "Playing":
             
-            if self.player.is_alive(): # boucle du jeu qui verifie si le joueur est mort
+            self.update_playing()
+
+                    
+
+
+
+            
+
+        if self.menu_actuel == "Start":
+            if pyxel.btn(pyxel.KEY_RETURN) or pyxel.btn(pyxel.KEY_KP_ENTER):
+                self.menu_actuel  = "Playing"
+                
+                
+            
+                
+
+                
+        
+         
+        if self.menu_actuel == "GameOver":
+            webbrowser.open_new("https://www.youtube.com/watch?v=xvFZjo5PgG0")
+            pyxel.quit()
+        
+            
+            
+        
+
+
+    def update_playing(self):
+        
+        if self.player.is_alive(): # boucle du jeu qui verifie si le joueur est mort
                 #ici si le player est vivant
                 #mettre la suite du jeu ici
                 self.player.move()
@@ -47,33 +77,10 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                     if not mob.is_alive():
                         self.liste_mob.remove(mob)
 
-                    
+        else:#si le joueur est mort
+            print(self.player.nom, "est mort")
 
-
-
-            else:#si le joueur est mort
-                print(self.player.nom, "est mort")
-
-        if self.menu_actuel == "Start":
-        # if  self.menu_principal.is_showed:
-            if pyxel.btn(pyxel.KEY_RETURN) or pyxel.btn(pyxel.KEY_KP_ENTER):
-                self.menu_actuel  = "Playing"
-                
-                
-            
-                
-
-                
         self.player.arme_active.update_attaque()
-         
-        if self.menu_actuel == "GameOver":
-              webbrowser.open_new("https://www.youtube.com/watch?v=xvFZjo5PgG0")
-              pyxel.quit()
-        
-            
-            
-        
-
 
 
     def draw(self):
@@ -189,8 +196,8 @@ class Player: #classe qui cree le joueur
         
     def ajouter_arme(self, num):
         """ajoute une arme aux armes possédées par le joueur"""
-        self.liste_arme_joueur.append(Game.liste_arme[num])
-        print("ajout de l'arme", Game.liste_arme[num])
+        self.liste_arme_joueur.append(jeu.liste_arme[num])
+        print("ajout de l'arme", jeu.liste_arme[num])
     
                 
     
@@ -326,8 +333,7 @@ class Mob:
         self.cooldown_state = 3
         self.cooldown_max = randint(3,7)
     
-    def update(self):
-        pass
+
     
     def draw_hitbox(self):
             pyxel.rect(self.x-1,self.y-1,7,7,9) #7= taille mob + 2 pour que l'on voie un peu le rectangle
@@ -335,7 +341,7 @@ class Mob:
     def move(self, tableau_cible:list):
         """Prend en parametre tableau ontenatn les coordonnes cibles vers lesquels ils doivent se deplacer 
         tableau sous forme [x,y]
-        la variable cooldown existe pour que les mobs se deplacent de faconc plus saccadees"""
+        la variable cooldown existe pour que les mobs se deplacent de facon plus saccadees"""
 
 
         if self.peut_bouger():
@@ -361,7 +367,7 @@ class Mob:
     
     def degat(self):
         """change la vie du mob"""
-        pass
+        self.life -= 1
     
     def is_alive(self):
         """donne de l'or au joueur et disparaitsi false"""
@@ -394,4 +400,4 @@ class Mob:
     
 
 
-Game(128,128,"JEU")
+jeu = Game(128,128,"JEU")
