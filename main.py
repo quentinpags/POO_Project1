@@ -117,7 +117,9 @@ class Player: #classe qui cree le joueur
         self.y = pyxel.height//2 -2
         self.defense = 0
         self.attaque = 1
-        self.vie = 4 #vie initiale
+        self.vie_max = 200 #vie initiale
+        self.vie = 200
+        
         self.vitesse = 1 #vitesse de deplacement
         
         self.regeneration = 1#% de vie par secondes
@@ -163,6 +165,13 @@ class Player: #classe qui cree le joueur
         if pyxel.btn(pyxel.KEY_SPACE):
             self.arme_active.creer_attaque(self.x, self.y,self.cote, self.vitesse)        
         
+        if pyxel.btn(pyxel.KEY_U):
+            # test enlever pv
+            # print(self.vie)
+            # self.vie -= 5
+            pass
+        
+            
     def orientation(self):
         """renvoie le cote que le personnage va: par exemple touche gauche -> gauche
         gère l'orientation du personnage"""
@@ -188,6 +197,7 @@ class Player: #classe qui cree le joueur
         et lui enlève
         """
         self.vie -= nb_degats
+        
 
 
     def is_alive(self):
@@ -209,13 +219,34 @@ class Player: #classe qui cree le joueur
              
 
     def draw_health(self):
-       """affiche le nb de coeur restant en haut à gauche """
-       for i in range(self.vie):
-           pyxel.rect(8*i, 0, 8, 8, 1+i)
-           # pyxel.blt(x, y, img, u, v, w, h)
-    
-        # pyxel.rectb(0, 0, 32, 8, 2)#barre de vie sous forme de barre de vie
-        # pyxel.rect(1, 1, 30, 6, 3)
+        """affiche la barre de vie à gauche"""
+        
+       # for i in range(self.vie):
+       #     pyxel.rect(8*i, 0, 8, 8, 1+i)
+        height = 6   
+        length = 31
+        col = 3
+        
+        if self.vie_max //2 > self.vie:
+            col = 4
+        elif self.vie_max //3 > self.vie:
+            col = 5
+        
+        
+        if self.vie >=1:
+            pyxel.rect(1, 1, length*(self.vie/self.vie_max), height, col)
+        else:
+            print('The END')#MENU de FIN
+        
+         
+            
+            
+            
+            
+            
+        pyxel.rectb(0, 0, 32, 8, 6)#contour de la barre de vie
+        # pyxel.rectb(0, 0, 3.2*(i+1), 8, 2)
+        
 
 
 
