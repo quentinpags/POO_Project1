@@ -1,4 +1,3 @@
-
 import pyxel
 import webbrowser
 from random import randint
@@ -11,18 +10,20 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.height = height
         self.nom = nom_jeu
         self.hitbox = False
-        self.pos_cible = [0,0]
+        self.pos_cible = [0,0]#position vers lequel les mobs se dirigent
         
         self.menu_actuel = "Start" #Playing, GameOver, Start, Pause
         
 
         pyxel.init(self.width, self.height)
         
-        
+        self.position_curseur = 0
         self.player = Player("JOUEUR1")
         self.liste_mob = []
         self.liste_arme = [Armes("Orbe tourbillonante", 10, 2,0.5,"epee"),Armes("Epee du debutant",1,2, 0.20,"epee")]#liste des armes déblocables
         pyxel.run(self.update, self.draw)
+        
+    
         
 
     def update(self):
@@ -38,9 +39,9 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
 
             
 
-        if self.menu_actuel == "Start":
-            if pyxel.btn(pyxel.KEY_RETURN) or pyxel.btn(pyxel.KEY_KP_ENTER):
-                self.menu_actuel  = "Playing"
+        # if self.menu_actuel == "Start":
+        #     if pyxel.btn(pyxel.KEY_RETURN) or pyxel.btn(pyxel.KEY_KP_ENTER):
+        #         self.menu_actuel  = "Playing"
                 
                 
             
@@ -52,6 +53,8 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         if self.menu_actuel == "GameOver":
             webbrowser.open_new("https://www.youtube.com/watch?v=xvFZjo5PgG0")
             pyxel.quit()
+           
+
         
             
             
@@ -86,7 +89,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
     def draw(self):
         pyxel.cls(0)
         
-        self.menu()#debug    
+        # self.menu()#debug    
             
         if self.menu_actuel =="Playing":
             if self.hitbox:
@@ -98,8 +101,59 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                     if self.hitbox:
                         mob.draw_hitbox()
                     mob.draw()
+        
+        if self.menu_actuel == "Start":
+            self.draw_menu_start()
+    def draw_menu_start(self):
+        pyxel.cls(10)
+        
+        
+        option = {0: "Playing",
+                  1: "Sortie"}
+        
+        for i in range(len(option)):
+            pyxel.text(pyxel.width//2 -pyxel.width //3, pyxel.height//3 +9*i, option[i], 9)
             
+        pyxel.text(pyxel.width//2 -pyxel.width //3 - 14, pyxel.height//3 +9*self.position_curseur, "<X>", 9)#affiche le curseur lors du choix
+        option_choisie = self.choix_option(option)
+        if  option_choisie != None:
+            if option_choisie ==0:
+                self.changer_menu("Playing")
+            
+            # elif option_choisie ==1:
+            #     pyxel.text(8, 8, "Mouvement: zqsd ou touches directionnelles", col)
+            #     pyxel.text(x, y, "Attaquer [     Espace    ] en visant dans une direction", col)
+            
+            elif option_choisie ==1:
+                webbrowser.open_new("https://www.youtube.com/watch?v=xvFZjo5PgG0")
+                pyxel.quit()
+        
+    
+        
+    
+    def choix_option(self, liste_option):
+        """gere l'appuie sur les touches haut bas et entree pour rendre le menu fonctionnel"""
+        if pyxel.btnr(pyxel.KEY_UP):
+            self.position_curseur -= 1
+        
+        elif pyxel.btnr(pyxel.KEY_DOWN):
+            self.position_curseur += 1
+            
+        if self.position_curseur <0:
+            self.position_curseur = len(liste_option)-1
+        
+        if self.position_curseur > len(liste_option)-1:
+            self.position_curseur = 0
+            
+        if pyxel.btnp(pyxel.KEY_RETURN):
+            return self.position_curseur
+            
+        
+        
+
+        
     def menu(self):
+        """debug pour savoir ds quel menu on est"""
         if self.menu_actuel == "GameOver":
             print('This is the end...')
         
@@ -109,10 +163,12 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         elif self.menu_actuel == "Start":
             print('Menu de départ')
             
+            
         elif self.menu_actuel =="Playing":
             print('partie en cours')
     
     def changer_menu(self, menu_remplacement):
+        """change le menu actuel par le menu_remplacement"""
         self.menu_actuel = str(menu_remplacement)
         
 
@@ -339,7 +395,7 @@ class Mob:
             pyxel.rect(self.x-1,self.y-1,7,7,9) #7= taille mob + 2 pour que l'on voie un peu le rectangle
 
     def move(self, tableau_cible:list):
-        """Prend en parametre tableau ontenatn les coordonnes cibles vers lesquels ils doivent se deplacer 
+        """Prend en parametre tableau contenant les coordonnes cibles vers lesquels ils doivent se deplacer 
         tableau sous forme [x,y]
         la variable cooldown existe pour que les mobs se deplacent de facon plus saccadees"""
 
@@ -350,6 +406,7 @@ class Mob:
             player_y = tableau_cible[1]
             mob_x = self.x
             mob_y = self.y
+            
             if player_y-5 >= mob_y:
                 self.y += self.vitesse
 
