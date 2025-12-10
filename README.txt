@@ -1,5 +1,9 @@
 Nom code: POTATO
-inspiration de BROTATO: https://store.steampowered.com/app/1942280/Brotato/
+
+Dépendance: librairie pyxel et python installé
+
+Inspiration de BROTATO:
+https://store.steampowered.com/app/1942280/Brotato/
 
 Les membres du groupe:
 Quentin, Hugo, Felix, Gaetan
@@ -31,15 +35,16 @@ Objectifs:
 -Easter Egg
 -avoir des mobs(qui attaquent et bougent)
 -utiliser des armes(qui marchent)
+-avoir au moins un skin pour chaque entitée
 
 ----------------------------------------------
 Répartitions des taches:
 
--Creation des textures : ennemis, player,sol,balles,pv,
--Créations sons
--Création rooms des vagues
+-Creation des textures : ennemis, player,sol,balles,pv,(Gaetan)
+-Créations sons(Felix)
+-Création rooms des vagues(Quentin)
 -Création ennemis(commencé-Hugo)
--Création menus (Quentin-arrete)
+-Création menus (refonte ->Hugo)
 -Création collisions (Quentin)
 
 
