@@ -18,7 +18,12 @@ après chaque fin de vague acheter des objets pour améliorer votre personnage.
 
 Durant une vague les monstres réapparaissent jusqu'à ce que le timer de la vague soit écoulé
 ou que le joueur perde en ayant perdu toute sa vie
+------------------------------------------
+Touches utilisables:
+zqsd, touche haut, bas, gauche, droite pour se déplacer
+Barre espace pour attaquer (visee attaque dans le sens ou on va)
 
+----------------------------------------------
 Déroulement d'une vague:
 
 -Début de la vague
@@ -36,6 +41,7 @@ Objectifs:
 -avoir des mobs(qui attaquent et bougent)
 -utiliser des armes(qui marchent)
 -avoir au moins un skin pour chaque entitée
+-avoir un meilleur système d'attaque
 
 ----------------------------------------------
 Répartitions des taches:
