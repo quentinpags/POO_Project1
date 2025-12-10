@@ -42,6 +42,7 @@ Objectifs:
 -utiliser des armes(qui marchent)
 -avoir au moins un skin pour chaque entitée
 -avoir un meilleur système d'attaque
+-ajouter comment fonctionne les touches
 
 ----------------------------------------------
 Répartitions des taches:
@@ -52,6 +53,7 @@ Répartitions des taches:
 -Création ennemis(commencé-Hugo)
 -Création menus (refonte ->Hugo)
 -Création collisions (Quentin)
+
 
 
 
