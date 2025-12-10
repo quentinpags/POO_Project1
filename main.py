@@ -15,13 +15,14 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.menu_actuel = "Start" #Playing, GameOver, Start, Pause
         
 
-        pyxel.init(self.width, self.height)
+        pyxel.init(self.width, self.height, title= "Potato et Le Royaume Infesté")
         
         self.position_curseur = 0
         self.player = Player("JOUEUR1")
         self.liste_mob = []
         self.liste_arme = [Armes("Orbe tourbillonante", 10, 2,0.5,"epee"),Armes("Epee du debutant",1,2, 0.20,"epee")]#liste des armes déblocables
         pyxel.run(self.update, self.draw)
+        
         
     
         
@@ -104,25 +105,32 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
         if self.menu_actuel == "Start":
             self.draw_menu_start()
+            
+            
     def draw_menu_start(self):
+        
         pyxel.cls(10)
         
+        
+        #décor arrière plan qui défile (cascade?)
+        # pyxel.bltm(0, 0, 0, 0, 0, self.width, self.height)A ESSAYER SUR CAPYTALE
         
         option = {0: "Playing",
                   1: "Sortie"}
         
         for i in range(len(option)):
-            pyxel.text(pyxel.width//2 -pyxel.width //3, pyxel.height//3 +9*i, option[i], 9)
-            
-        pyxel.text(pyxel.width//2 -pyxel.width //3 - 14, pyxel.height//3 +9*self.position_curseur, "<X>", 9)#affiche le curseur lors du choix
+            pyxel.text(pyxel.width//2 -18, pyxel.height//3 +9*i, option[i], 9)
+        
+        pyxel.text(8, self.height - self.height//4, "Mouvement : ZQSD", 8)
+        pyxel.text(16, self.height - self.height//5, "Attaquer : [ Espace ]", 8)
+        pyxel.text(pyxel.width//2 -pyxel.width //8 - 18, pyxel.height//3 +9*self.position_curseur, "<X>", 9)#affiche le curseur lors du choix
         option_choisie = self.choix_option(option)
         if  option_choisie != None:
             if option_choisie ==0:
                 self.changer_menu("Playing")
             
-            # elif option_choisie ==1:
-            #     pyxel.text(8, 8, "Mouvement: zqsd ou touches directionnelles", col)
-            #     pyxel.text(x, y, "Attaquer [     Espace    ] en visant dans une direction", col)
+            
+            
             
             elif option_choisie ==1:
                 webbrowser.open_new("https://www.youtube.com/watch?v=xvFZjo5PgG0")
