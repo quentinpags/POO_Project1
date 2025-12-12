@@ -12,7 +12,9 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.hitbox = False
         self.pos_cible = [0,0]#position vers lequel les mobs se dirigent
         
-        self.menu_actuel = "Start" #Playing, GameOver, Start, Pause
+        
+        self.liste_menu = ["Playing", "GameOver", "Start", "Pause"]
+        self.menu_actuel = "Start" 
         
 
         pyxel.init(self.width, self.height, title= "Potato et Le Royaume Infesté")
@@ -96,12 +98,13 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             if self.hitbox:
                 self.player.draw_hitbox()
     
-            self.player.draw()
+            
 
             for mob in self.liste_mob:
                     if self.hitbox:
                         mob.draw_hitbox()
                     mob.draw()
+            self.player.draw()
         
         if self.menu_actuel == "Start":
             self.draw_menu_start()
@@ -177,7 +180,11 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
     
     def changer_menu(self, menu_remplacement):
         """change le menu actuel par le menu_remplacement"""
-        self.menu_actuel = str(menu_remplacement)
+        
+        #verifie que le menu est dans la liste des menus utilisables
+        for menu in self.liste_menu:
+            if str(menu_remplacement) == str(menu) :
+                self.menu_actuel = str(menu_remplacement)
         
 
 
@@ -192,11 +199,14 @@ class Armes:
         self.critical_hit = critical_hit
         self.type_arme = type_arme
         self.liste_attaque_actives = []  
-        self.vitesse_attaque = 1#plus bas mieux c
+        self.vitesse_attaque = 1# vitesse qu'a la balle a avancer
+        #plus bas mieux c
+        self.vitesse_progression = 2
+        self.delai_touche = 5#permet d'eviter de spam la barre espace
     
     
     def creer_attaque(self, x,y,cote, vitesse):
-        if self.type_arme == "arc":
+        if self.type_arme == "arc" and pyxel.frame_count % self.cooldown == 0:
             self.liste_attaque_actives.append([x -vitesse, y+4, 2, 1, cote])#x,y,w,h, cote
             
             
@@ -207,16 +217,16 @@ class Armes:
         
         for att in self.liste_attaque_actives:
             if att[4] == "g" and pyxel.frame_count % self.vitesse_attaque == 0:
-                att[0] -= 2
+                att[0] -= self.vitesse_progression
                 
             elif att[4] == "d" and pyxel.frame_count % self.vitesse_attaque == 0:
-                att[0] += 2
+                att[0] += self.vitesse_progression
                 
             elif att[4] == "h" and pyxel.frame_count % self.vitesse_attaque == 0:
-                att[1] -= 2
+                att[1] -= self.vitesse_progression
                 
             elif att[4] == "b" and pyxel.frame_count % self.vitesse_attaque == 0:
-                att[1] += 2
+                att[1] += self.vitesse_progression
                 
             
                 
@@ -250,7 +260,7 @@ class Player: #classe qui cree le joueur
         self.vie_max = 200 #vie initiale
         self.vie = 200
         
-        self.vitesse = 1 #vitesse de deplacement
+        self.vitesse = 0.75 #vitesse de deplacement
         
         self.regeneration = 1#% de vie par secondes
         self.liste_arme_joueur = [Armes("Arc du débutant", 1, 2, 0.1, "arc")]#liste des armes possédées apr joueur
@@ -264,7 +274,20 @@ class Player: #classe qui cree le joueur
         print("ajout de l'arme", jeu.liste_arme[num])
     
                 
-    
+    def ajouter_statistique(self, type_statistique):
+        
+        if type_statistique == "vitesse":
+            self.vitesse += 0.01
+        elif type_statistique == "attaque":
+            self.attaque += 10
+        
+        elif type_statistique == "vie":
+            self.vie_max += 10#on augment plus la vie que la vit et l'att car plus de dégats causés
+        
+        elif type_statistique == "regeneration":
+            self.regeneration += 1 
+        elif type_statistique == "defense":
+            self.defense += 1
         
                 
     
@@ -295,13 +318,15 @@ class Player: #classe qui cree le joueur
                 self.y = self.y - self.vitesse
                 
         if pyxel.btn(pyxel.KEY_SPACE):
-            self.arme_active.creer_attaque(self.x, self.y,self.cote, self.vitesse)        
+            
+            if pyxel.frame_count % self.arme_active.delai_touche == 0:
+                self.arme_active.creer_attaque(self.x, self.y,self.cote, self.vitesse)        
         
         if pyxel.btn(pyxel.KEY_U):
-            # test enlever pv
+            #test enlever pv
             # print(self.vie)
-            # self.vie -= 5
-            pass
+            self.vie -= 5
+            
         
             
     def orientation(self):
@@ -367,6 +392,9 @@ class Player: #classe qui cree le joueur
         
         if self.vie >=1:
             pyxel.rect(1, 1, length*(self.vie/self.vie_max), height, col)
+            pyxel.rect(1+length*(self.vie/self.vie_max), 1, length - length*(self.vie/self.vie_max), height, 0)
+            # TODO: faire le noir dans la barre de vie
+        
         else:
             print('The END')#MENU de FIN
             
