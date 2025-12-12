@@ -1,7 +1,7 @@
 import pyxel
 import webbrowser
 from random import randint
-
+# TODO:système de vague de + en + difficile, collision mob-player(degat) balle-sprite(degat au sprite et destruction balle)
 
 
         
@@ -14,7 +14,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.pos_cible = [0,0]#position vers lequel les mobs se dirigent
         
         
-        self.liste_menu = ["Playing", "GameOver", "Start", "Pause", "Bloqué"]
+        self.liste_menu = ["Playing", "GameOver", "Start", "Pause"]
         self.menu_actuel = "Start" 
         
 
@@ -28,6 +28,13 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         pyxel.run(self.update, self.draw)
         
         
+    def reset_partie(self):
+        """méthode qui permet de relancer une partie après une défaite, tt reset au niveau de départ"""
+        
+        self.changer_menu("Playing")
+        self.position_curseur = 0
+        self.player = Player("JOUEUR1")
+        self.liste_mob = []
         
         
     
@@ -109,7 +116,6 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             
     def draw_menu_fin(self):
         
-            
         pyxel.cls(9)
         pyxel.text(pyxel.width//2 -18, pyxel.height//3 +9, "Game Over", 0)
         option = {0:"Try Again",
@@ -128,7 +134,8 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         if  option_choisie != None:
             if option_choisie ==0:
                 #TODO: il faut restorer ttes les statistiques comme celles du depart
-                self.changer_menu("Playing")
+                self.reset_partie()
+                
             
             
             
