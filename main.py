@@ -3,6 +3,7 @@ import webbrowser
 from random import randint
 
 
+
         
 class Game: #classe qui cree le jeu et qui possede la boucle de jeu
     def __init__(self,width,height,nom_jeu):
@@ -13,7 +14,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.pos_cible = [0,0]#position vers lequel les mobs se dirigent
         
         
-        self.liste_menu = ["Playing", "GameOver", "Start", "Pause"]
+        self.liste_menu = ["Playing", "GameOver", "Start", "Pause", "Bloqué"]
         self.menu_actuel = "Start" 
         
 
@@ -25,6 +26,8 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.liste_arme = [Armes("Orbe tourbillonante", 10, 2,0.5,"epee"),Armes("Epee du debutant",1,2, 0.20,"epee")]#liste des armes déblocables
         
         pyxel.run(self.update, self.draw)
+        
+        
         
         
     
@@ -41,9 +44,9 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             if self.player.is_alive(): # boucle du jeu qui verifie si le joueur est mort
                     #ici si le player est vivant
                     #mettre la suite du jeu ici
-                    self.player.move()
+                    self.player.update()
                     if pyxel.frame_count %90 ==0:
-                        self.liste_mob.append(Mob(10,10,10,10))
+                        self.liste_mob.append(Mob(10,10,10,10,self.player))
                         # faire apparaitre les mobs dans une liste
 
                     for mob in self.liste_mob:
@@ -57,8 +60,17 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                             
                     self.player.arme_active.update_attaque()
             else:
-                self.changer_menu("GameOver")
                 
+            
+                if len(self.player.liste_explosions) !=0:
+                    if pyxel.frame_count%10 ==0:
+                        self.player.update()
+                        self.player.draw_explosions
+                    print(pyxel.frame_count)
+                
+                else:
+                    self.changer_menu("GameOver")
+            
         # if self.menu_actuel == "GameOver":
         #     print('fin')
             
@@ -92,8 +104,12 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             # print(self.player.nom, "est mort")
             
             self.draw_menu_fin()
+               
+            
             
     def draw_menu_fin(self):
+        
+            
         pyxel.cls(9)
         pyxel.text(pyxel.width//2 -18, pyxel.height//3 +9, "Game Over", 0)
         option = {0:"Try Again",
@@ -111,7 +127,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
 
         if  option_choisie != None:
             if option_choisie ==0:
-                
+                #TODO: il faut restorer ttes les statistiques comme celles du depart
                 self.changer_menu("Playing")
             
             
@@ -328,7 +344,7 @@ class Player: #classe qui cree le joueur
 
 
     def boutons(self):
-        """Fonction qui permet de verifier l'appui de boutons"""
+        """Fonction qui permet de bouger"""
         if pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_D):
             self.cote = "d"
             if (self.x < pyxel.width-5) :#eviter de sortir de l'écran
@@ -350,16 +366,17 @@ class Player: #classe qui cree le joueur
                 self.y = self.y - self.vitesse
                 
         if pyxel.btn(pyxel.KEY_SPACE):
-            self.arme_active.creer_attaque(self.x, self.y,self.cote, self.vitesse) 
+            if pyxel.frame_count % self.arme_active.delai_touche == 0:
+                     self.arme_active.creer_attaque(self.x, self.y,self.cote, self.vitesse)        
+            # self.arme_active.creer_attaque(self.x, self.y,self.cote, self.vitesse) 
 
-        if pyxel.btn(pyxel.KEY_U):
-            print("degat")
-            self.degats()       
+        # if pyxel.btn(pyxel.KEY_U):
+        #     print("degat")
+        #     self.degats()       
         
         
             
-            if pyxel.frame_count % self.arme_active.delai_touche == 0:
-                self.arme_active.creer_attaque(self.x, self.y,self.cote, self.vitesse)        
+        #     
         
         if pyxel.btn(pyxel.KEY_U):
             #test enlever pv
@@ -368,16 +385,7 @@ class Player: #classe qui cree le joueur
             
         
             
-    def orientation(self):
-        """renvoie le cote que le personnage va: par exemple touche gauche -> gauche
-        gère l'orientation du personnage"""
-        
-        if self.cote == 'g':
-            #x -> -x
-            pass
-        elif self.cote == "d":
-            #-x -> x
-            pass
+    
         
         
 
@@ -570,9 +578,8 @@ class Explosion:
     def is_alive(self):
         if self.etape == self.taille_max:
             self.alive = False
-            return self.alive
-        else:
-            return self.alive
+        return self.alive
+        
         
             
 
