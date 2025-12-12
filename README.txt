@@ -41,7 +41,7 @@ Objectifs:
 -avoir des mobs(qui attaquent et bougent)
 -utiliser des armes(qui marchent)
 -avoir au moins un skin pour chaque entitée
--avoir un meilleur système d'attaque
+-avoir un meilleur système d'attaque/ ajout d'une visée personnalisée
 -ajouter comment fonctionne les touches
 
 ----------------------------------------------

@@ -38,72 +38,32 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
         if self.menu_actuel == "Playing":
             
-            self.update_playing()
+            if self.player.is_alive(): # boucle du jeu qui verifie si le joueur est mort
+                    #ici si le player est vivant
+                    #mettre la suite du jeu ici
+                    self.player.move()
+                    if pyxel.frame_count %90 ==0:
+                        self.liste_mob.append(Mob(10,10,10,10))
+                        # faire apparaitre les mobs dans une liste
 
-        
+                    for mob in self.liste_mob:
+                        if pyxel.frame_count % 15 ==0:
+                            self.pos_cible = [self.player.x,self.player.y] #envoie cible des mobs pour ajouter un deplacement moins linéaire
 
-                    
 
-
-
-        
-
-        # if self.menu_actuel == "Start":
-        #     if pyxel.btn(pyxel.KEY_RETURN) or pyxel.btn(pyxel.KEY_KP_ENTER):
-        #         self.menu_actuel  = "Playing"
+                        mob.move(self.pos_cible)
+                        if not mob.is_alive():
+                            self.liste_mob.remove(mob)
+                            
+                    self.player.arme_active.update_attaque()
+            else:
+                self.changer_menu("GameOver")
                 
-                
+        # if self.menu_actuel == "GameOver":
+        #     print('fin')
             
-                
-
-                
-        
-         
-        if self.menu_actuel == "GameOver":
-            webbrowser.open_new("https://www.youtube.com/watch?v=xvFZjo5PgG0")
-            pyxel.quit()
-
 
         
-           
-
-        
-            
-            
-        
-
-
-    def update_playing(self):
-        
-        if self.player.is_alive(): # boucle du jeu qui verifie si le joueur est mort
-                #ici si le player est vivant
-                #mettre la suite du jeu ici
-                self.player.update()
-                if pyxel.frame_count %90 ==0:
-                    self.liste_mob.append(Mob(10,10,10,10,self.player))
-                    # faire apparaitre les mobs dans une liste
-
-                for mob in self.liste_mob:
-                    if pyxel.frame_count % 15 ==0:
-                        self.pos_cible = [self.player.x,self.player.y] #envoie cible des mobs pour ajouter un deplacement moins linéaire
-
-
-                    mob.move(self.pos_cible)
-                    if not mob.is_alive():
-                        self.liste_mob.remove(mob)
-                        
-
-
-
-                    
-
-                
-
-
-        else:#si le joueur est mort
-            print(self.player.nom, "est mort")
-
-        self.player.arme_active.update_attaque()
 
 
     def draw(self):
@@ -128,7 +88,42 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         if self.menu_actuel == "Start":
             self.draw_menu_start()
             
+        elif self.menu_actuel == "GameOver":#si le joueur est mort
+            # print(self.player.nom, "est mort")
             
+            self.draw_menu_fin()
+            
+    def draw_menu_fin(self):
+        pyxel.cls(9)
+        pyxel.text(pyxel.width//2 -18, pyxel.height//3 +9, "Game Over", 0)
+        option = {0:"Try Again",
+                  1:"Sortie"}
+        
+        
+        for i in range(len(option)):
+            pyxel.text(pyxel.width//2 -18, pyxel.height//3 +30 +10*i, option[i], 8)
+        
+        
+        
+        #COPIE DE draw_menu_start:
+        option_choisie = self.choix_option(option)
+        pyxel.text(pyxel.width//2 -32, pyxel.height//3 +30 +10*self.position_curseur, "<X>", 0)#affiche le curseur lors du choix
+
+        if  option_choisie != None:
+            if option_choisie ==0:
+                
+                self.changer_menu("Playing")
+            
+            
+            
+            
+            elif option_choisie ==1:
+                webbrowser.open_new("https://www.youtube.com/watch?v=xvFZjo5PgG0")
+                pyxel.quit()
+
+
+
+        
     def draw_menu_start(self):
         
         pyxel.cls(10)
@@ -145,7 +140,10 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
         pyxel.text(8, self.height - self.height//4, "Mouvement : ZQSD", 8)
         pyxel.text(16, self.height - self.height//5, "Attaquer : [ Espace ]", 8)
+        
+        
         pyxel.text(pyxel.width//2 -pyxel.width //8 - 18, pyxel.height//3 +9*self.position_curseur, "<X>", 9)#affiche le curseur lors du choix
+        
         option_choisie = self.choix_option(option)
         if  option_choisie != None:
             if option_choisie ==0:
@@ -204,6 +202,8 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         for menu in self.liste_menu:
             if str(menu_remplacement) == str(menu) :
                 self.menu_actuel = str(menu_remplacement)
+                
+        print(menu_remplacement)
         
 
 
@@ -265,9 +265,7 @@ class Armes:
     
     
     
-    def abilite(self):
-        """l'arme a une proba d'avoir compétence spéciale"""
-        pass
+    
 
 class Player: #classe qui cree le joueur
     def __init__(self,nom):
@@ -316,6 +314,10 @@ class Player: #classe qui cree le joueur
         
     def update(self):
         """déplacement avec les touches de direction"""
+        
+        
+        
+        
         for explosion in self.liste_explosions:
             if not explosion.is_alive():
                 self.liste_explosions.remove(explosion)
@@ -362,7 +364,7 @@ class Player: #classe qui cree le joueur
         if pyxel.btn(pyxel.KEY_U):
             #test enlever pv
             # print(self.vie)
-            self.vie -= 5
+            self.degats(5)
             
         
             
@@ -390,6 +392,8 @@ class Player: #classe qui cree le joueur
         et lui enlève
         """
         self.vie -= nb_degats
+        if self.vie <0:
+            self.vie =0
         if self.is_alive():
             self.liste_explosions.append(Explosion(self.x,self.y))
         else:
@@ -447,6 +451,8 @@ class Player: #classe qui cree le joueur
         length = 31
         col = 3
         
+        
+        
         if self.vie_max //2 > self.vie:
             col = 4
         elif self.vie_max //3 > self.vie:
@@ -456,10 +462,9 @@ class Player: #classe qui cree le joueur
         if self.vie >=1:
             pyxel.rect(1, 1, length*(self.vie/self.vie_max), height, col)
             pyxel.rect(1+length*(self.vie/self.vie_max), 1, length - length*(self.vie/self.vie_max), height, 0)
-            # TODO: faire le noir dans la barre de vie
+            
         
-        else:
-            print('The END')#MENU de FIN
+        
             
         
          
