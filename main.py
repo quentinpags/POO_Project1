@@ -23,6 +23,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.player = Player("JOUEUR1")
         self.liste_mob = []
         self.liste_arme = [Armes("Orbe tourbillonante", 10, 2,0.5,"epee"),Armes("Epee du debutant",1,2, 0.20,"epee")]#liste des armes déblocables
+        
         pyxel.run(self.update, self.draw)
         
         
@@ -30,6 +31,9 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
 
     def update(self):
+        
+
+        
         
         
         if self.menu_actuel == "Playing":
@@ -77,6 +81,8 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                     if self.hitbox:
                         mob.draw_hitbox()
                     mob.draw()
+
+
             self.player.draw()
         
         if self.menu_actuel == "Start":
@@ -277,6 +283,7 @@ class Player: #classe qui cree le joueur
         self.liste_arme_joueur = [Armes("Arc du débutant", 1, 2, 0.1, "arc")]#liste des armes possédées apr joueur
         self.arme_active = self.liste_arme_joueur[0]#arme utilisé par le joueur
         self.cote = "g"#va a gauche
+        self.liste_explosions = []
         
         
     def ajouter_arme(self, num):
@@ -305,12 +312,23 @@ class Player: #classe qui cree le joueur
     
     
         
-    def move(self):
+    def update(self):
         """déplacement avec les touches de direction"""
         
         
         
         
+        for explosion in self.liste_explosions:
+            if not explosion.is_alive():
+                self.liste_explosions.remove(explosion)
+
+        self.boutons() #verifie appui de boutons
+
+
+
+
+    def boutons(self):
+        """Fonction qui permet de verifier l'appui de boutons"""
         if pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_D):
             self.cote = "d"
             if (self.x < pyxel.width-5) :#eviter de sortir de l'écran
@@ -332,6 +350,13 @@ class Player: #classe qui cree le joueur
                 self.y = self.y - self.vitesse
                 
         if pyxel.btn(pyxel.KEY_SPACE):
+            self.arme_active.creer_attaque(self.x, self.y,self.cote, self.vitesse) 
+
+        if pyxel.btn(pyxel.KEY_U):
+            print("degat")
+            self.degats()       
+        
+        
             
             if pyxel.frame_count % self.arme_active.delai_touche == 0:
                 self.arme_active.creer_attaque(self.x, self.y,self.cote, self.vitesse)        
@@ -359,10 +384,9 @@ class Player: #classe qui cree le joueur
     
 
         
-    def draw_hitbox(self):
-        pyxel.rect(self.x-1,self.y-1,7,7,9) #7= taille player + 2 pour que l'on voie un peu le rectangle
+    
 
-    def degats(self,nb_degats):
+    def degats(self,nb_degats:int=1):
         """
         Fonction qui prend en parametre le nb de degats a enlever au joueur
         et lui enlève
@@ -370,6 +394,16 @@ class Player: #classe qui cree le joueur
         self.vie -= nb_degats
         if self.vie <0:
             self.vie =0
+        if self.is_alive():
+            self.liste_explosions.append(Explosion(self.x,self.y))
+        else:
+            self.liste_explosions.append(Explosion(self.x,self.y,150))
+            
+
+
+        
+            
+
         
 
 
@@ -386,10 +420,27 @@ class Player: #classe qui cree le joueur
 
 
     def draw(self):
-        pyxel.rect(self.x,self.y,5,5,6)
-        self.draw_health()
-        self.arme_active.draw()
-             
+        self.draw_explosions()
+        if self.is_alive():
+            pyxel.rect(self.x,self.y,5,5,6)
+            self.draw_health()
+            self.arme_active.draw()
+        
+
+
+    def draw_hitbox(self):
+        pyxel.rect(self.x-1,self.y-1,7,7,9) #7= taille player + 2 pour que l'on voie un peu le rectangle
+
+    
+    def draw_explosions(self):
+        x = self.x
+        y = self.y
+        for explosion in self.liste_explosions:
+            if explosion.is_alive():
+                explosion.x =x+2
+                explosion.y = y+2
+                explosion.draw()
+
 
     def draw_health(self):
         """affiche la barre de vie à gauche"""
@@ -430,7 +481,7 @@ class Player: #classe qui cree le joueur
 
 
 class Mob:
-    def __init__(self, life:int, damage:int, attack_speed:int, vitesse:int):
+    def __init__(self, life:int, damage:int, attack_speed:int, vitesse:int,player):
         """initialisation de la creation de mob"""
         self.life = life
         self.damage = damage
@@ -441,6 +492,7 @@ class Mob:
         self.y = 0
         self.cooldown_state = 3
         self.cooldown_max = randint(3,7)
+        self.player = player
     
 
     
@@ -473,7 +525,8 @@ class Mob:
                 self.x += self.vitesse
 
     def draw(self):
-        pyxel.rect(self.x,self.y,5,5,11)
+        if self.player.is_alive():
+            pyxel.rect(self.x,self.y,5,5,11)
     
     def degat(self):
         """change la vie du mob"""
@@ -499,7 +552,27 @@ class Mob:
 
 
 
+class Explosion:
+    def __init__(self ,x:int,y:int,taille_max:int= 5):
+        self.taille_max = taille_max
+        self.x = x+2
+        self.y = y+2
+        self.etape = 0
+        self.alive = True
         
+    
+    def draw(self):
+        
+        
+        self.etape += 1
+        pyxel.circ(self.x,self.y,self.etape,9)
+
+    def is_alive(self):
+        if self.etape == self.taille_max:
+            self.alive = False
+            return self.alive
+        else:
+            return self.alive
         
             
 
