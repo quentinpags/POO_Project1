@@ -9,6 +9,9 @@ Les membres du projet:
 Quentin, Hugo, Felix, Gaetan
 
 
+----------------------------------------------
+
+
 Description de la mission:
 
     Bienvenue dans notre jeu, Potato et Le Royaume Infesté.
@@ -21,11 +24,15 @@ Description de la mission:
     ou que le joueur perde en ayant perdu toute sa vie, le but du joueur étant de tuer le plus d'ennemis possible afin d'avoir le plus de ressources possible pour améliorer son personnage.
 
 
+----------------------------------------------
+
 
 Commandes utilisables:
     ZQSD, touche directionnelles pour se déplacer
     Barre espace pour attaquer (visee attaque dans le sens ou on va)
 
+
+----------------------------------------------
 
 
 Récapitulatif du déroulement d'une vague:
@@ -40,6 +47,8 @@ Récapitulatif du déroulement d'une vague:
     -recommencer une vague pour voir jusqu'à laquelle vous pouvez aller
 
 
+----------------------------------------------
+
 
 Les Objectifs dans ce jeu sont:
     -ajouter des Easters Eggs
@@ -50,8 +59,10 @@ Les Objectifs dans ce jeu sont:
     -une aide dans le jeu afin d'expliquer le role de chaque touches
 
 
-Fragmentation du projet en plusieurs parties :
+----------------------------------------------
 
+
+Fragmentation du projet en plusieurs parties :
     Gaetan:
         TODO
         -Creation des textures : ennemis, player,sol,balles,pv
