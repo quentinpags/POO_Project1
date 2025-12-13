@@ -2,58 +2,57 @@ Nom code: POTATO
 
 Dépendance: librairie pyxel et python installé
 
-Inspiration de BROTATO:
+Inspiration du jeu BROTATO:
 https://store.steampowered.com/app/1942280/Brotato/
 
-Les membres du groupe:
+Les membres du projet:
 Quentin, Hugo, Felix, Gaetan
 
 
-Bienvenue dans notre jeu, Potato.
-Le but du jeu est simple, votre personnage devra survivre à des vagues d'ennemis de plus en plus puissantes.
-A chaque vagues les ennemis auront plus de vie et feront plus de degats.
-Pour vous permettre de réussir à faire le plus de vagues possible, vous pourrez,
-après chaque fin de vague acheter des objets pour améliorer votre personnage.
+Description de la mission:
+
+Bienvenue dans notre jeu, Potato et Le Royaume Infesté.
+Le but du jeu est simple, vous incarnez un personnage qui devra survivre à des vagues d'ennemis de plus en plus puissantes, afin de résister à un maximum de vagues.
+A chaque vagues les ennemis auront plus de vie et feront plus de dégâts.
+Pour vous permettre de réussir votre mission qui est de survivre le plus longtemps, vous pourrez, après chaque fin de vague améliorer votre personnage et une vague sur 5 acheter des améliorations.
 
 
 Durant une vague les monstres réapparaissent jusqu'à ce que le timer de la vague soit écoulé
-ou que le joueur perde en ayant perdu toute sa vie
+ou que le joueur perde en ayant perdu toute sa vie, le but du joueur étant de tuer le plus d'ennemis possible afin d'avoir le plus de ressources possible pour améliorer son personnage.
+
 ------------------------------------------
-Touches utilisables:
-zqsd, touche haut, bas, gauche, droite pour se déplacer
+Commandes utilisables:
+ZQSD, touche directionnelles pour se déplacer
 Barre espace pour attaquer (visee attaque dans le sens ou on va)
 
 ----------------------------------------------
-Déroulement d'une vague:
+Récapitulatif du déroulement d'une vague:
 
 -Début de la vague
--Combat pour la survie(gain de piece)
+-Combat pour la survie(gain de ressources)
 -Fin de vague(remise de la vie à 100%)
 
 -Amelioration des stats(1 stat gagné par vague)
--Ouverture de la boutique(toutes les 5 vagues)
+-Ouverture de la boutique(toutes les 5 vagues afin de dépenser des ressources)
 
--recommencer une vague
+-recommencer une vague pour voir jusqu'à laquelle vous pouvez aller
 
 ----------------------------------------------
-Objectifs:
--Easter Egg
+Les Objectifs dans ce jeu sont:
+-ajouter des Easters Eggs
 -avoir des mobs(qui attaquent et bougent)
 -utiliser des armes(qui marchent)
--avoir au moins un skin pour chaque entitée
--avoir un meilleur système d'attaque/ ajout d'une visée personnalisée
--ajouter comment fonctionne les touches
+-avoir au moins un skin pour chaque entités
+-avoir un système d'attaque fluide/ ajout d'une visée personnalisée
+-une aide dans le jeu afin d'expliquer le role de chaque touches
 
 ----------------------------------------------
-Répartitions des taches:
+Fragmentation du projet en plusieurs parties :
 
 -Creation des textures : ennemis, player,sol,balles,pv,(Gaetan)
--Créations sons(Felix)
--Création rooms des vagues(Quentin)
--Création ennemis(commencé-Hugo)
--Création menus (refonte ->Hugo)
--Création collisions (Quentin)
-
-
-
+-Créations des sons(Felix)
+-Création des vagues(ennemis arrivent de + en + puissant)(Quentin)
+-Création ennemis(Hugo)
+-Création menus(Hugo)
+-Création collisions(Quentin)
 
