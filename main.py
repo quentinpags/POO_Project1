@@ -16,14 +16,15 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
         self.liste_menu = ["Playing", "GameOver", "Start", "Pause"]
         self.menu_actuel = "Start" 
-        
+        self.fps = 30
 
-        pyxel.init(self.width, self.height, title= "Potato et Le Royaume Infesté")
+        pyxel.init(self.width, self.height, title= "Potato et Le Royaume Infesté",fps=self.fps)
         
         self.position_curseur = 0
         self.player = Player("JOUEUR1")
         self.liste_mob = []
         self.liste_arme = [Armes("Orbe tourbillonante", 10, 2,0.5,"epee"),Armes("Epee du debutant",1,2, 0.20,"epee")]#liste des armes déblocables
+        self.counter = self.fps*3 #decompte avant fin du jeu pour que l'explosion marche bien 30 est le nb de frame par seconde
         
         pyxel.run(self.update, self.draw)
         
@@ -50,7 +51,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         if self.position_curseur > len(liste_option)-1:
             self.position_curseur = 0
             
-        if pyxel.btnp(pyxel.KEY_RETURN):
+        if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.KEY_KP_ENTER):
             return self.position_curseur
             
         
@@ -95,7 +96,8 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             self.update_playing()
 
 
-    def update_playing(self):        
+    def update_playing(self):
+                
         if self.player.is_alive(): # boucle du jeu qui verifie si le joueur est mort
                 #ici si le player est vivant
                 #mettre la suite du jeu ici
@@ -116,14 +118,15 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 self.player.arme_active.update_attaque()
         else:
             
-        
-            if len(self.player.liste_explosions) !=0:
-                if pyxel.frame_count%10 ==0:
+            self.counter-=1
+            if len(self.player.liste_explosions) !=0 or (len(self.player.liste_explosions) ==1 and self.player.liste_explosions[0].taille_max == self.player.liste_explosions[0].etape-1):
+                
                     self.player.update()
                     self.player.draw_explosions
-                print(pyxel.frame_count)
+                
             
-            else:
+            
+            if  self.counter <=0 or (len(self.player.liste_explosions) ==1 and self.player.liste_explosions[0].taille_max == self.player.liste_explosions[0].etape+1):
                 self.changer_menu("GameOver")
             
        
@@ -133,11 +136,12 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
 
 
     def draw(self):
-        pyxel.cls(0)
+        
         
         # self.menu()#debug    
             
         if self.menu_actuel =="Playing":
+            pyxel.cls(0)
             if self.hitbox:
                 self.player.draw_hitbox()
     
@@ -152,6 +156,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             self.player.draw()
         
         if self.menu_actuel == "Start":
+            
             self.draw_menu_start()
             
         elif self.menu_actuel == "GameOver":#si le joueur est mort
@@ -303,7 +308,7 @@ class Player: #classe qui cree le joueur
         self.vie_max = 200 #vie initiale
         self.vie = 200
         
-        self.vitesse = 0.75 #vitesse de deplacement
+        self.vitesse = 1 #vitesse de deplacement
         
         self.regeneration = 1#% de vie par secondes
         self.liste_arme_joueur = [Armes("Arc du débutant", 1, 2, 0.1, "arc")]#liste des armes possédées apr joueur
