@@ -201,7 +201,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
         #COPIE DE draw_menu_start:
         option_choisie = self.choix_option(option)
-        self.affichage_curseur(pyxel.width//2 -32, pyxel.height//3 +30 +10*self.position_curseur)#affiche le curseur lors du choix
+        self.affichage_curseur(pyxel.width//2 -32, pyxel.height//3 +30 +10*self.position_curseur, 0)#affiche le curseur lors du choix
 
         if  option_choisie != None:
             if option_choisie ==0:
@@ -224,27 +224,25 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
         pyxel.text(8, self.height - self.height//4, "Mouvement : ZQSD", 8)
         pyxel.text(16, self.height - self.height//5, "Attaquer : [ Espace ]", 8)#affiche l'aide
-        self.affichage_curseur(pyxel.width//2 -pyxel.width //8 - 18, pyxel.height//3 +9*self.position_curseur)
+        self.affichage_curseur(pyxel.width//2 -pyxel.width //8 - 18, pyxel.height//3 +9*self.position_curseur, 9)
         
         
         
         option_choisie = self.choix_option(option)
         if  option_choisie != None:
             if option_choisie ==0:
-                self.changer_menu("Playing")
+                self.pause = False
             
             elif option_choisie ==1:
                 webbrowser.open_new("https://www.youtube.com/watch?v=xvFZjo5PgG0")
                 pyxel.quit()
         
-    def affichage_curseur(self, x, y):
-        pyxel.text(x, y, "<X>", 9)
+    def affichage_curseur(self, x, y, col):
+        pyxel.text(x, y, "<X>", col)
         
     def draw_menu_start(self):
         """dessine le menu de départ lorsque le menu est 'Start' dans lequel on choisit de jouer on de quitter le jeu"""
-        pyxel.cls(0)
-        """Fonction qui affiche le jeu lorsque le mode de jeu est start (menu principal)"""
-        
+        pyxel.cls(0)        
         
         #décor arrière plan qui défile (cascade?)
         # pyxel.bltm(0, 0, 0, 0, 0, self.width, self.height)A ESSAYER SUR CAPYTALE
@@ -257,7 +255,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
         pyxel.text(8, self.height - self.height//4, "Mouvement : ZQSD", 8)
         pyxel.text(16, self.height - self.height//5, "Attaquer : [ Espace ]", 8)#affiche l'aide
-        self.affichage_curseur(pyxel.width//2 -pyxel.width //8 - 18, pyxel.height//3 +9*self.position_curseur)#affiche le curseur lors du choix
+        self.affichage_curseur(pyxel.width//2 -pyxel.width //8 - 18, pyxel.height//3 +9*self.position_curseur, 9)#affiche le curseur lors du choix
         
         
         option_choisie = self.choix_option(option)
