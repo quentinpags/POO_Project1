@@ -6,10 +6,10 @@ from random import randint
 
         
 class Game: #classe qui cree le jeu et qui possede la boucle de jeu
-    def __init__(self,width,height,nom_jeu):
+    def __init__(self,width:int,height:int,nom_jeu:str):
         self.width = width
         self.height = height
-        self.nom = nom_jeu
+        self.nom = nom_jeu #str
         self.hitbox = False
         self.pos_cible = [0,0]#position vers lequel les mobs se dirigent
         
@@ -18,7 +18,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.menu_actuel = "Start" 
         self.fps = 30
 
-        pyxel.init(self.width, self.height, title= "Potato et Le Royaume Infesté",fps=self.fps)
+        pyxel.init(self.width, self.height, title= "Potato et Le Royaume Infesté",fps=self.fps) #initialisation du jeu
         
         self.position_curseur = 0
         self.player = Player("JOUEUR1")
@@ -36,7 +36,9 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.position_curseur = 0
         self.player = Player("JOUEUR1")
         self.liste_mob = []
-        
+        self.counter = self.fps*3 #decompte avant fin du jeu pour que l'explosion marche bien 30 est le nb de frame par seconde
+
+
     def choix_option(self, liste_option):
         """gere l'appuie sur les touches haut bas et entree pour rendre le menu fonctionnel
         et renvoie l'id  de la position du curseur"""
@@ -89,11 +91,14 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
 
     def update(self):
                
+        """Fonction qui est appelée par pyxel pour mettre a jour le jeu"""
+        
         if self.menu_actuel == "Playing":
             self.update_playing()
 
 
     def update_playing(self):
+        """Fonction qui lorsque le mode de jeu est playing met le jeu à jour"""
                 
         if self.player.is_alive(): # boucle du jeu qui verifie si le joueur est mort
                 #ici si le player est vivant
@@ -133,6 +138,11 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
 
 
     def draw(self):
+        """Appelé par pyxel ; permet d'afficher le jeu"""
+        
+        
+        # self.menu()#debug    
+            
         if self.menu_actuel =="Playing":
             pyxel.cls(0)
             if self.hitbox:
@@ -157,6 +167,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             
             
     def draw_menu_fin(self):
+        """Fonction qui affiche le jeu lorsque le mode de jeu est fin"""
         
         pyxel.cls(9)
         pyxel.text(pyxel.width//2 -18, pyxel.height//3 +9, "Game Over", 0)
@@ -186,8 +197,13 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
 
         
     def draw_menu_start(self):
-        """dessine le menu de départ dans lequel on choisit de jouer on de quitter le jeu"""
+        """dessine le menu de départ lorsque le menu est 'Start' dans lequel on choisit de jouer on de quitter le jeu"""
         pyxel.cls(0)
+        """Fonction qui affiche le jeu lorsque le mode de jeu est start (menu principal)"""
+        
+        
+        #décor arrière plan qui défile (cascade?)
+        # pyxel.bltm(0, 0, 0, 0, 0, self.width, self.height)A ESSAYER SUR CAPYTALE
         
         option = {0: "Playing",
                   1: "Sortie"}#tableau des options possible
@@ -259,7 +275,9 @@ class Armes:
     
 
 class Player: #classe qui cree le joueur
-    def __init__(self,nom):
+    def __init__(self,nom:str):
+        """In: nom -> le nom du joueur"""
+
         self.nom = nom
         self.x = pyxel.width//2 -2 #faire spawn le perso au milieu de l'écran
         self.y = pyxel.height//2 -2
@@ -376,6 +394,7 @@ class Player: #classe qui cree le joueur
 
 
     def draw(self):
+        """Permet de dessiner le joueur"""
         self.draw_explosions()
         if self.is_alive():
             pyxel.rect(self.x,self.y,5,5,6)
@@ -385,11 +404,13 @@ class Player: #classe qui cree le joueur
 
 
     def draw_hitbox(self):
-        """fonction de débug qui entoure le joueur"""
+        """Permet de dessiner la hitbox du joueur
+        Pour le DEBUG"""
         pyxel.rect(self.x-1,self.y-1,7,7,9) #7= taille player + 2 pour que l'on voie un peu le rectangle
 
     
     def draw_explosions(self):
+        """Dessine les explosions du joueur"""
         x = self.x
         y = self.y
         for explosion in self.liste_explosions:
@@ -438,7 +459,7 @@ class Player: #classe qui cree le joueur
 
 
 class Mob:
-    def __init__(self, life:int, damage:int, attack_speed:int, vitesse:int,player:isinstance):
+    def __init__(self, life:int, damage:int, attack_speed:int, vitesse:int,player:object):
         """initialisation de la creation de mob
         Player est la l'instance du joueur """
         self.life = life
@@ -482,7 +503,8 @@ class Mob:
 
 
         if self.peut_bouger():
-            #verifie si le mob peut jouer -> verifie son cooldown est ok
+            """verifie si le mob peut jouer -> verifie son cooldown est ok;
+            permet que le mob avance de maniere plus 'zombie' """
             player_x = tableau_cible[0]
             player_y = tableau_cible[1]
             mob_x = self.x
@@ -501,10 +523,12 @@ class Mob:
                 self.x += self.vitesse
 
     def draw(self):
+        """Dessine le Mob"""
         if self.player.is_alive():
             pyxel.rect(self.x,self.y,5,5,11)
 
     def draw_hitbox(self):
+            """Dessine hitbox Mob"""
             pyxel.rect(self.x-1,self.y-1,7,7,9) #7= taille mob + 2 pour que l'on voie un peu le rectangle
     
     
@@ -522,12 +546,15 @@ class Explosion:
         
     
     def draw(self):
+        """Dessine les explosions"""
         
         
         self.etape += 1
         pyxel.circ(self.x,self.y,self.etape,9)
 
     def is_alive(self):
+        """Renvoie True si l'explosion est encore en vie 
+        -> doit encore être visible"""
         if self.etape == self.taille_max:
             self.alive = False
         return self.alive
@@ -542,4 +569,4 @@ class Explosion:
     
 
 
-jeu = Game(128,128,"JEU")
+jeu = Game(128,128,"JEU")#lance le jeu
