@@ -520,8 +520,25 @@ class Mob:
         self.attack_speed = attack_speed
         self.vitesse = vitesse
         self.vitesse = 1
-        self.x = randint(0,pyxel.width-7)
-        self.y = 0
+        
+        tmp = randint(1,4)
+        if tmp == 1: #fait spawn les mobs en haut 
+            self.x= randint(2,pyxel.width-7)
+            self.y = 0
+
+        elif tmp == 2: #fait spawn les mobs en gauche
+            self.x = 0
+            self.y = randint(2,pyxel.width-7)
+
+        elif tmp == 3:#fait spawn les mobs en droite
+            self.x = pyxel.width-7
+            self.y = randint(2,pyxel.width-7)
+
+        elif tmp == 4:
+            self.x = randint(2,pyxel.width-7)
+            self.y = pyxel.width-7
+
+
         self.cooldown_state = 3
         self.cooldown_max = randint(3,7)
         self.player = player
