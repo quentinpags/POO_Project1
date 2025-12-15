@@ -321,35 +321,37 @@ class Player: #classe qui cree le joueur
     
     def boutons(self):
         """Fonction qui permet de gérer la fonctions des touches"""
-        if pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_D):
-            self.cote = "d"
-            if (self.x < pyxel.width-5) :#eviter de sortir de l'écran
-                self.x = self.x + self.vitesse
 
-        if pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.KEY_Q):
-            self.cote = "g"
-            if (self.x > 0) :
-                self.x = self.x - self.vitesse
+        if self.is_alive():
+            if pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_D):
+                self.cote = "d"
+                if (self.x < pyxel.width-5) :#eviter de sortir de l'écran
+                    self.x = self.x + self.vitesse
+
+            if pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.KEY_Q):
+                self.cote = "g"
+                if (self.x > 0) :
+                    self.x = self.x - self.vitesse
+                    
+
+            if pyxel.btn(pyxel.KEY_DOWN) or pyxel.btn(pyxel.KEY_S):
+                self.cote = 'b'
+                if (self.y < pyxel.height-5) :
+                    self.y = self.y + self.vitesse
+            if pyxel.btn(pyxel.KEY_UP) or pyxel.btn(pyxel.KEY_Z):
+                self.cote = 'h'
+                if (self.y > 0) : 
+                    self.y = self.y - self.vitesse
+                    
+            if pyxel.btn(pyxel.KEY_SPACE):
+                if pyxel.frame_count % self.arme_active.cooldown == 0:
+                        self.arme_active.creer_attaque(self.x, self.y,self.cote, self.vitesse)        
                 
 
-        if pyxel.btn(pyxel.KEY_DOWN) or pyxel.btn(pyxel.KEY_S):
-            self.cote = 'b'
-            if (self.y < pyxel.height-5) :
-                self.y = self.y + self.vitesse
-        if pyxel.btn(pyxel.KEY_UP) or pyxel.btn(pyxel.KEY_Z):
-            self.cote = 'h'
-            if (self.y > 0) : 
-                self.y = self.y - self.vitesse
-                
-        if pyxel.btn(pyxel.KEY_SPACE):
-            if pyxel.frame_count % self.arme_active.cooldown == 0:
-                     self.arme_active.creer_attaque(self.x, self.y,self.cote, self.vitesse)        
             
-
-        
-        if pyxel.btn(pyxel.KEY_U) : #pour le debug
-  
-            self.degats(5)
+            if pyxel.btn(pyxel.KEY_U) : #pour le debug
+    
+                self.degats(5)
             
      
         
