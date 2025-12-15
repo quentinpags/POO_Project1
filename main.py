@@ -1,8 +1,7 @@
 import pyxel
 import webbrowser
 from random import randint
-# TODO:système de vague de + en + difficile, collision mob-player(degat) balle-sprite(degat au sprite et destruction balle)
-#TODO: faire un mode pour voir les coordonnées a l'ecran grace à la sourie
+
 
         
 class Game: #classe qui cree le jeu et qui possede la boucle de jeu
@@ -14,7 +13,9 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.pos_cible = [0,0]#position vers lequel les mobs se dirigent
         
         
-        self.liste_menu = ["Playing", "GameOver", "Start", "Pause", "Amelioration"]#liste des menus disponibles
+        self.liste_menu = ["Playing", "GameOver", "Start", "Amelioration"]#liste des menus disponibles
+        self.pause = False
+        
         self.menu_actuel = "Start" 
         self.fps = 30
 
@@ -27,7 +28,11 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.counter = self.fps*3 #decompte avant fin du jeu pour que l'explosion marche bien 30 est le nb de frame par seconde
         
         pyxel.run(self.update, self.draw)
+    
         
+    
+        
+            
         
     def reset_partie(self):
         """méthode qui permet de relancer une partie après une défaite, tt reset au niveau de départ"""
@@ -57,7 +62,8 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             
         
         
-
+    
+        
         
     def menu(self):
         """debug pour savoir ds quel menu on est"""
@@ -88,9 +94,24 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
 
     def update(self):
-               
         if self.menu_actuel == "Playing":
-            self.update_playing()
+            if pyxel.btnp(pyxel.KEY_P):
+                if self.pause == False:
+                    self.pause =True
+                
+                else:
+                    self.pause = False
+                    
+            if self.pause == False:
+                self.update_playing()
+        
+        # if self.menu_actuel == "Playing" and self.pause == True:
+        if pyxel.btn(pyxel.KEY_O):
+            pyxel.mouse(False)
+            print(pyxel.mouse_x, pyxel.mouse_y)
+            
+        if pyxel.btn(pyxel.KEY_I):
+            pyxel.mouse(True)    
 
 
     def update_playing(self):
@@ -133,7 +154,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
 
 
     def draw(self):
-        if self.menu_actuel =="Playing":
+        if self.menu_actuel =="Playing" and self.pause== False:
             pyxel.cls(0)
             if self.hitbox:
                 self.player.draw_hitbox()
@@ -153,6 +174,9 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             
         elif self.menu_actuel == "GameOver":#si le joueur est mort
             self.draw_menu_fin()
+            
+        elif self.pause == True:
+            self.draw_menu_pause()
                
             
             
@@ -171,7 +195,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
         #COPIE DE draw_menu_start:
         option_choisie = self.choix_option(option)
-        pyxel.text(pyxel.width//2 -32, pyxel.height//3 +30 +10*self.position_curseur, "<X>", 0)#affiche le curseur lors du choix
+        self.affichage_curseur(pyxel.width//2 -32, pyxel.height//3 +30 +10*self.position_curseur)#affiche le curseur lors du choix
 
         if  option_choisie != None:
             if option_choisie ==0:
@@ -183,13 +207,38 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 pyxel.quit()
 
 
-
+    def draw_menu_pause(self):
+        pyxel.cls(0)
+        pyxel.text(self.width//2-10, 1, "Pause", 6)
+        option = {0: "Continuer",
+                  1: "Sortie"}#tableau des options possible
+        
+        for i in range(len(option)):
+            pyxel.text(pyxel.width//2 -15, pyxel.height//3 +9*i, option[i], 9)
+        
+        pyxel.text(8, self.height - self.height//4, "Mouvement : ZQSD", 8)
+        pyxel.text(16, self.height - self.height//5, "Attaquer : [ Espace ]", 8)#affiche l'aide
+        self.affichage_curseur(pyxel.width//2 -pyxel.width //8 - 18, pyxel.height//3 +9*self.position_curseur)
+        
+        
+        
+        option_choisie = self.choix_option(option)
+        if  option_choisie != None:
+            if option_choisie ==0:
+                self.changer_menu("Playing")
+            
+            elif option_choisie ==1:
+                webbrowser.open_new("https://www.youtube.com/watch?v=xvFZjo5PgG0")
+                pyxel.quit()
+        
+    def affichage_curseur(self, x, y):
+        pyxel.text(x, y, "<X>", 9)
         
     def draw_menu_start(self):
         """dessine le menu de départ dans lequel on choisit de jouer on de quitter le jeu"""
         pyxel.cls(0)
         
-        option = {0: "Playing",
+        option = {0: "Jouer",
                   1: "Sortie"}#tableau des options possible
         
         for i in range(len(option)):
@@ -197,7 +246,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
         pyxel.text(8, self.height - self.height//4, "Mouvement : ZQSD", 8)
         pyxel.text(16, self.height - self.height//5, "Attaquer : [ Espace ]", 8)#affiche l'aide
-        pyxel.text(pyxel.width//2 -pyxel.width //8 - 18, pyxel.height//3 +9*self.position_curseur, "<X>", 9)#affiche le curseur lors du choix
+        self.affichage_curseur(pyxel.width//2 -pyxel.width //8 - 18, pyxel.height//3 +9*self.position_curseur)#affiche le curseur lors du choix
         
         
         option_choisie = self.choix_option(option)
@@ -332,6 +381,7 @@ class Player: #classe qui cree le joueur
         if pyxel.btn(pyxel.KEY_U) : #pour le debug
   
             self.degats(5)
+        
             
      
         
