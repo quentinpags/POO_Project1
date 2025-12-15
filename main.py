@@ -2,7 +2,7 @@ import pyxel
 import webbrowser
 from random import randint
 # TODO:système de vague de + en + difficile, collision mob-player(degat) balle-sprite(degat au sprite et destruction balle)
-
+#TODO: faire un mode pour voir les coordonnées a l'ecran grace à la sourie
 
         
 class Game: #classe qui cree le jeu et qui possede la boucle de jeu
@@ -14,7 +14,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.pos_cible = [0,0]#position vers lequel les mobs se dirigent
         
         
-        self.liste_menu = ["Playing", "GameOver", "Start", "Pause"]
+        self.liste_menu = ["Playing", "GameOver", "Start", "Pause", "Amelioration"]#liste des menus disponibles
         self.menu_actuel = "Start" 
         self.fps = 30
 
@@ -23,7 +23,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.position_curseur = 0
         self.player = Player("JOUEUR1")
         self.liste_mob = []
-        self.liste_arme = [Armes("Orbe tourbillonante", 10, 2,0.5,"epee"),Armes("Epee du debutant",1,2, 0.20,"epee")]#liste des armes déblocables
+        self.liste_arme = [Armes("Orbe tourbillonante", 10, 2,"epee"),Armes("Epee du debutant",1,2,"epee")]#liste des armes déblocables
         self.counter = self.fps*3 #decompte avant fin du jeu pour que l'explosion marche bien 30 est le nb de frame par seconde
         
         pyxel.run(self.update, self.draw)
@@ -38,7 +38,8 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.liste_mob = []
         
     def choix_option(self, liste_option):
-        """gere l'appuie sur les touches haut bas et entree pour rendre le menu fonctionnel"""
+        """gere l'appuie sur les touches haut bas et entree pour rendre le menu fonctionnel
+        et renvoie l'id  de la position du curseur"""
         if pyxel.btnr(pyxel.KEY_UP):
             self.position_curseur -= 1
         
@@ -81,17 +82,13 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             if str(menu_remplacement) == str(menu) :
                 self.menu_actuel = str(menu_remplacement)
                 
-        print(menu_remplacement)
+        
         
     
         
 
     def update(self):
-        
-
-        
-        
-        
+               
         if self.menu_actuel == "Playing":
             self.update_playing()
 
@@ -136,10 +133,6 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
 
 
     def draw(self):
-        
-        
-        # self.menu()#debug    
-            
         if self.menu_actuel =="Playing":
             pyxel.cls(0)
             if self.hitbox:
@@ -156,12 +149,9 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             self.player.draw()
         
         if self.menu_actuel == "Start":
-            
             self.draw_menu_start()
             
         elif self.menu_actuel == "GameOver":#si le joueur est mort
-            # print(self.player.nom, "est mort")
-            
             self.draw_menu_fin()
                
             
@@ -174,24 +164,20 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                   1:"Sortie"}
         
         
-        for i in range(len(option)):
+        for i in range(len(option)):#crée l'affichage du menu
             pyxel.text(pyxel.width//2 -18, pyxel.height//3 +30 +10*i, option[i], 8)
         
         
         
         #COPIE DE draw_menu_start:
         option_choisie = self.choix_option(option)
-        pyxel.text(pyxel.width//2 -32, pyxel.height//3 +30 +10*self.position_curseur, "-->", 0)#affiche le curseur lors du choix
+        pyxel.text(pyxel.width//2 -32, pyxel.height//3 +30 +10*self.position_curseur, "<X>", 0)#affiche le curseur lors du choix
 
         if  option_choisie != None:
             if option_choisie ==0:
-                #TODO: il faut restorer ttes les statistiques comme celles du depart
                 self.reset_partie()
+             
                 
-            
-            
-            
-            
             elif option_choisie ==1:
                 webbrowser.open_new("https://www.youtube.com/watch?v=xvFZjo5PgG0")
                 pyxel.quit()
@@ -200,71 +186,53 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
 
         
     def draw_menu_start(self):
-        
+        """dessine le menu de départ dans lequel on choisit de jouer on de quitter le jeu"""
         pyxel.cls(0)
         
-        
-        #décor arrière plan qui défile (cascade?)
-        # pyxel.bltm(0, 0, 0, 0, 0, self.width, self.height)A ESSAYER SUR CAPYTALE
-        
         option = {0: "Playing",
-                  1: "Sortie"}
+                  1: "Sortie"}#tableau des options possible
         
         for i in range(len(option)):
             pyxel.text(pyxel.width//2 -18, pyxel.height//3 +9*i, option[i], 9)
         
         pyxel.text(8, self.height - self.height//4, "Mouvement : ZQSD", 8)
-        pyxel.text(16, self.height - self.height//5, "Attaquer : [ Espace ]", 8)
-        
-        
+        pyxel.text(16, self.height - self.height//5, "Attaquer : [ Espace ]", 8)#affiche l'aide
         pyxel.text(pyxel.width//2 -pyxel.width //8 - 18, pyxel.height//3 +9*self.position_curseur, "<X>", 9)#affiche le curseur lors du choix
+        
         
         option_choisie = self.choix_option(option)
         if  option_choisie != None:
             if option_choisie ==0:
                 self.changer_menu("Playing")
             
-            
-            
-            
             elif option_choisie ==1:
                 webbrowser.open_new("https://www.youtube.com/watch?v=xvFZjo5PgG0")
                 pyxel.quit()
         
-    
-        
-    
-    
-        
-
 
 class Armes:
-    def __init__(self, nom, degats, cooldown, critical_hit, type_arme):
+    def __init__(self, nom:str, degats:int, cooldown:int, type_arme:str):
         """cooldown: temps avant prochaine attaque
         critical_hit -> en %"""
-        #pas encore appellée
         self.nom = nom
         self.degats = degats
-        self.cooldown = cooldown
-        self.critical_hit = critical_hit
+        self.cooldown = cooldown #temps entre les attaques
+        
         self.type_arme = type_arme
         self.liste_attaque_actives = []  
         self.vitesse_attaque = 1# vitesse qu'a la balle a avancer
-        #plus bas mieux c
-        self.vitesse_progression = 2
-        self.delai_touche = 5#permet d'eviter de spam la barre espace
+        self.vitesse_progression = 2#vitesse de déplacement de l'attaque
+        
     
     
     def creer_attaque(self, x,y,cote, vitesse):
+        """cree une attaque en fonction du type d'arme utilisée"""        
         if self.type_arme == "arc" and pyxel.frame_count % self.cooldown == 0:
-            self.liste_attaque_actives.append([x -vitesse, y+4, 2, 1, cote])#x,y,w,h, cote
-            
-            
-                
-                
-                
+            self.liste_attaque_actives.append([x -vitesse, y+4, 2, 1, cote])#(on rajoute l'attaque à la liste d'attaque)
+    
+    
     def update_attaque(self):
-        
+        """gere la progression des attaques dans le temps"""
         for att in self.liste_attaque_actives:
             if att[4] == "g" and pyxel.frame_count % self.vitesse_attaque == 0:
                 att[0] -= self.vitesse_progression
@@ -277,24 +245,16 @@ class Armes:
                 
             elif att[4] == "b" and pyxel.frame_count % self.vitesse_attaque == 0:
                 att[1] += self.vitesse_progression
-                
+             
             
-                
-            
-            
-    
-    # def caracteristique(self):
-    #     return[self.nom, self.degats, self.cooldown, self.critical_hit, self.type_arme]
     
     def draw(self):
-        # pyxel.rect(self.x, self.y, 2, 4, 9)
+        """dessine l'attaque"""
         for lst in self.liste_attaque_actives:
             if lst[4] == "g" or lst[4] == "d":
                 pyxel.rect(lst[0], lst[1], 2, 1, 2)
             else:
                pyxel.rect(lst[0], lst[1], 1, 2, 2) 
-    
-    
     
     
 
@@ -311,7 +271,7 @@ class Player: #classe qui cree le joueur
         self.vitesse = 1 #vitesse de deplacement
         
         self.regeneration = 1#% de vie par secondes
-        self.liste_arme_joueur = [Armes("Arc du débutant", 1, 2, 0.1, "arc")]#liste des armes possédées apr joueur
+        self.liste_arme_joueur = [Armes("Arc du débutant", 1, 2, "arc")]#liste des armes possédées apr joueur
         self.arme_active = self.liste_arme_joueur[0]#arme utilisé par le joueur
         self.cote = "g"#va a gauche
         self.liste_explosions = []
@@ -324,7 +284,8 @@ class Player: #classe qui cree le joueur
     
                 
     def ajouter_statistique(self, type_statistique):
-        
+        """ajoute des le type de statistique au joueur"""
+        # TODO:rajouter un montant
         if type_statistique == "vitesse":
             self.vitesse += 0.01
         elif type_statistique == "attaque":
@@ -337,19 +298,11 @@ class Player: #classe qui cree le joueur
             self.regeneration += 1 
         elif type_statistique == "defense":
             self.defense += 1
-        
-                
-    
-    
-    
+     
         
     
-
-
-
-
     def boutons(self):
-        """Fonction qui permet de bouger"""
+        """Fonction qui permet de gérer la fonctions des touches"""
         if pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_D):
             self.cote = "d"
             if (self.x < pyxel.width-5) :#eviter de sortir de l'écran
@@ -371,33 +324,17 @@ class Player: #classe qui cree le joueur
                 self.y = self.y - self.vitesse
                 
         if pyxel.btn(pyxel.KEY_SPACE):
-            if pyxel.frame_count % self.arme_active.delai_touche == 0:
+            if pyxel.frame_count % self.arme_active.cooldown == 0:
                      self.arme_active.creer_attaque(self.x, self.y,self.cote, self.vitesse)        
-            # self.arme_active.creer_attaque(self.x, self.y,self.cote, self.vitesse) 
-
-        # if pyxel.btn(pyxel.KEY_U):
-        #     print("degat")
-        #     self.degats()       
-        
-        
             
-        #     
+
         
         if pyxel.btn(pyxel.KEY_U) : #pour le debug
   
             self.degats(5)
             
+     
         
-            
-    
-        
-        
-
-    
-
-        
-    
-
     def degats(self,nb_degats:int=1):
         """
         Fonction qui prend en parametre le nb de degats a enlever au joueur
@@ -431,10 +368,6 @@ class Player: #classe qui cree le joueur
 
     def update(self):
         """déplacement avec les touches de direction"""
-        
-        
-        
-        
         for explosion in self.liste_explosions:
             if not explosion.is_alive():
                 self.liste_explosions.remove(explosion)
@@ -452,6 +385,7 @@ class Player: #classe qui cree le joueur
 
 
     def draw_hitbox(self):
+        """fonction de débug qui entoure le joueur"""
         pyxel.rect(self.x-1,self.y-1,7,7,9) #7= taille player + 2 pour que l'on voie un peu le rectangle
 
     
