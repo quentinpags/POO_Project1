@@ -6,7 +6,7 @@ Inspiration du jeu BROTATO:
 https://store.steampowered.com/app/1942280/Brotato/
 
 Les membres du projet:
-Quentin, Hugo, Felix, Gaetan
+Quentin Pagès, Hugo Pagès, Felix Margail, Gaetan Vabre
 
 
 ----------------------------------------------
@@ -64,12 +64,12 @@ Les Objectifs dans ce jeu sont:
 
 Fragmentation du projet en plusieurs parties :
     Gaetan:
-        TODO
+        TODO:
         -Creation des textures : ennemis, player,sol,balles,pv
 
     Felix:
         TODO
-        -Créations des sons(Felix)
+        -Créations des sons
 
 
     Hugo:
