@@ -5,10 +5,10 @@ from random import randint
 
         
 class Game: #classe qui cree le jeu et qui possede la boucle de jeu
-    def __init__(self,width,height,nom_jeu):
+    def __init__(self,width:int,height:int,nom_jeu:str):
         self.width = width
         self.height = height
-        self.nom = nom_jeu
+        self.nom = nom_jeu #str
         self.hitbox = False
         self.pos_cible = [0,0]#position vers lequel les mobs se dirigent
         
@@ -19,7 +19,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.menu_actuel = "Start" 
         self.fps = 30
 
-        pyxel.init(self.width, self.height, title= "Potato et Le Royaume Infesté",fps=self.fps)
+        pyxel.init(self.width, self.height, title= "Potato et Le Royaume Infesté",fps=self.fps) #initialisation du jeu
         
         self.position_curseur = 0
         self.player = Player("JOUEUR1")
@@ -41,7 +41,9 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.position_curseur = 0
         self.player = Player("JOUEUR1")
         self.liste_mob = []
-        
+        self.counter = self.fps*3 #decompte avant fin du jeu pour que l'explosion marche bien 30 est le nb de frame par seconde
+
+
     def choix_option(self, liste_option):
         """gere l'appuie sur les touches haut bas et entree pour rendre le menu fonctionnel
         et renvoie l'id  de la position du curseur"""
@@ -93,7 +95,8 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
     
         
 
-    def update(self):
+    def update(self):     
+        """Fonction qui est appelée par pyxel pour mettre a jour le jeu"""
         if self.menu_actuel == "Playing":
             if pyxel.btnp(pyxel.KEY_P):
                 if self.pause == False:
@@ -115,6 +118,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
 
 
     def update_playing(self):
+        """Fonction qui lorsque le mode de jeu est playing met le jeu à jour"""
                 
         if self.player.is_alive(): # boucle du jeu qui verifie si le joueur est mort
                 #ici si le player est vivant
@@ -154,6 +158,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
 
 
     def draw(self):
+        """permet d'afficher le jeu"""
         if self.menu_actuel =="Playing" and self.pause== False:
             pyxel.cls(0)
             if self.hitbox:
@@ -181,6 +186,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             
             
     def draw_menu_fin(self):
+        """Fonction qui affiche le jeu lorsque le mode de jeu est fin"""
         
         pyxel.cls(9)
         pyxel.text(pyxel.width//2 -18, pyxel.height//3 +9, "Game Over", 0)
@@ -235,8 +241,13 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         pyxel.text(x, y, "<X>", 9)
         
     def draw_menu_start(self):
-        """dessine le menu de départ dans lequel on choisit de jouer on de quitter le jeu"""
+        """dessine le menu de départ lorsque le menu est 'Start' dans lequel on choisit de jouer on de quitter le jeu"""
         pyxel.cls(0)
+        """Fonction qui affiche le jeu lorsque le mode de jeu est start (menu principal)"""
+        
+        
+        #décor arrière plan qui défile (cascade?)
+        # pyxel.bltm(0, 0, 0, 0, 0, self.width, self.height)A ESSAYER SUR CAPYTALE
         
         option = {0: "Jouer",
                   1: "Sortie"}#tableau des options possible
@@ -308,7 +319,9 @@ class Armes:
     
 
 class Player: #classe qui cree le joueur
-    def __init__(self,nom):
+    def __init__(self,nom:str):
+        """In: nom -> le nom du joueur"""
+
         self.nom = nom
         self.x = pyxel.width//2 -2 #faire spawn le perso au milieu de l'écran
         self.y = pyxel.height//2 -2
@@ -352,30 +365,32 @@ class Player: #classe qui cree le joueur
     
     def boutons(self):
         """Fonction qui permet de gérer la fonctions des touches"""
-        if pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_D):
-            self.cote = "d"
-            if (self.x < pyxel.width-5) :#eviter de sortir de l'écran
-                self.x = self.x + self.vitesse
 
-        if pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.KEY_Q):
-            self.cote = "g"
-            if (self.x > 0) :
-                self.x = self.x - self.vitesse
-                
+        if self.is_alive():
+            if pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_D):
+                self.cote = "d"
+                if (self.x < pyxel.width-5) :#eviter de sortir de l'écran
+                    self.x = self.x + self.vitesse
 
-        if pyxel.btn(pyxel.KEY_DOWN) or pyxel.btn(pyxel.KEY_S):
-            self.cote = 'b'
-            if (self.y < pyxel.height-5) :
-                self.y = self.y + self.vitesse
-        if pyxel.btn(pyxel.KEY_UP) or pyxel.btn(pyxel.KEY_Z):
-            self.cote = 'h'
-            if (self.y > 0) : 
-                self.y = self.y - self.vitesse
+            if pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.KEY_Q):
+                self.cote = "g"
+                if (self.x > 0) :
+                    self.x = self.x - self.vitesse
+                    
+
+            if pyxel.btn(pyxel.KEY_DOWN) or pyxel.btn(pyxel.KEY_S):
+                self.cote = 'b'
+                if (self.y < pyxel.height-5) :
+                    self.y = self.y + self.vitesse
+            if pyxel.btn(pyxel.KEY_UP) or pyxel.btn(pyxel.KEY_Z):
+                self.cote = 'h'
+                if (self.y > 0) : 
+                    self.y = self.y - self.vitesse
+                    
+            if pyxel.btn(pyxel.KEY_SPACE):
+                if pyxel.frame_count % self.arme_active.cooldown == 0:
+                        self.arme_active.creer_attaque(self.x, self.y,self.cote, self.vitesse)        
                 
-        if pyxel.btn(pyxel.KEY_SPACE):
-            if pyxel.frame_count % self.arme_active.cooldown == 0:
-                     self.arme_active.creer_attaque(self.x, self.y,self.cote, self.vitesse)        
-            
 
         
         if pyxel.btn(pyxel.KEY_U) : #pour le debug
@@ -426,6 +441,7 @@ class Player: #classe qui cree le joueur
 
 
     def draw(self):
+        """Permet de dessiner le joueur"""
         self.draw_explosions()
         if self.is_alive():
             pyxel.rect(self.x,self.y,5,5,6)
@@ -435,11 +451,13 @@ class Player: #classe qui cree le joueur
 
 
     def draw_hitbox(self):
-        """fonction de débug qui entoure le joueur"""
+        """Permet de dessiner la hitbox du joueur
+        Pour le DEBUG"""
         pyxel.rect(self.x-1,self.y-1,7,7,9) #7= taille player + 2 pour que l'on voie un peu le rectangle
 
     
     def draw_explosions(self):
+        """Dessine les explosions du joueur"""
         x = self.x
         y = self.y
         for explosion in self.liste_explosions:
@@ -488,7 +506,7 @@ class Player: #classe qui cree le joueur
 
 
 class Mob:
-    def __init__(self, life:int, damage:int, attack_speed:int, vitesse:int,player:isinstance):
+    def __init__(self, life:int, damage:int, attack_speed:int, vitesse:int,player:object):
         """initialisation de la creation de mob
         Player est la l'instance du joueur """
         self.life = life
@@ -496,8 +514,25 @@ class Mob:
         self.attack_speed = attack_speed
         self.vitesse = vitesse
         self.vitesse = 1
-        self.x = randint(0,pyxel.width-7)
-        self.y = 0
+        
+        tmp = randint(1,4)
+        if tmp == 1: #fait spawn les mobs en haut 
+            self.x= randint(2,pyxel.width-7)
+            self.y = 0
+
+        elif tmp == 2: #fait spawn les mobs en gauche
+            self.x = 0
+            self.y = randint(2,pyxel.width-7)
+
+        elif tmp == 3:#fait spawn les mobs en droite
+            self.x = pyxel.width-7
+            self.y = randint(2,pyxel.width-7)
+
+        elif tmp == 4:
+            self.x = randint(2,pyxel.width-7)
+            self.y = pyxel.width-7
+
+
         self.cooldown_state = 3
         self.cooldown_max = randint(3,7)
         self.player = player
@@ -532,7 +567,8 @@ class Mob:
 
 
         if self.peut_bouger():
-            #verifie si le mob peut jouer -> verifie son cooldown est ok
+            """verifie si le mob peut jouer -> verifie son cooldown est ok;
+            permet que le mob avance de maniere plus 'zombie' """
             player_x = tableau_cible[0]
             player_y = tableau_cible[1]
             mob_x = self.x
@@ -551,10 +587,12 @@ class Mob:
                 self.x += self.vitesse
 
     def draw(self):
+        """Dessine le Mob"""
         if self.player.is_alive():
             pyxel.rect(self.x,self.y,5,5,11)
 
     def draw_hitbox(self):
+            """Dessine hitbox Mob"""
             pyxel.rect(self.x-1,self.y-1,7,7,9) #7= taille mob + 2 pour que l'on voie un peu le rectangle
     
     
@@ -572,12 +610,15 @@ class Explosion:
         
     
     def draw(self):
+        """Dessine les explosions"""
         
         
         self.etape += 1
         pyxel.circ(self.x,self.y,self.etape,9)
 
     def is_alive(self):
+        """Renvoie True si l'explosion est encore en vie 
+        -> doit encore être visible"""
         if self.etape == self.taille_max:
             self.alive = False
         return self.alive
@@ -592,4 +633,4 @@ class Explosion:
     
 
 
-jeu = Game(128,128,"JEU")
+jeu = Game(128,128,"JEU")#lance le jeu
