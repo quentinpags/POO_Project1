@@ -31,7 +31,7 @@ par l'achat d'objets et armes
 
 TODO:
 -> régler le fait que l'on puisse aller plus vite en diagonale
--> rickroll(2lignes de code à la fin du jeu)
+-> système de vague
 
 
 !!! REGLES COMMIT !!!

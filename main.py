@@ -181,7 +181,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
         #COPIE DE draw_menu_start:
         option_choisie = self.choix_option(option)
-        pyxel.text(pyxel.width//2 -32, pyxel.height//3 +30 +10*self.position_curseur, "<X>", 0)#affiche le curseur lors du choix
+        pyxel.text(pyxel.width//2 -32, pyxel.height//3 +30 +10*self.position_curseur, "-->", 0)#affiche le curseur lors du choix
 
         if  option_choisie != None:
             if option_choisie ==0:
@@ -201,7 +201,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
     def draw_menu_start(self):
         
-        pyxel.cls(10)
+        pyxel.cls(0)
         
         
         #décor arrière plan qui défile (cascade?)
