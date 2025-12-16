@@ -10,8 +10,9 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.width = width
         self.height = height
         self.nom = nom_jeu #str
-        self.hitbox = True
+        self.hitbox = False
         self.pos_cible = [0,0]#position vers lequel les mobs se dirigent
+        
         
         
         self.liste_menu = ["Playing", "GameOver", "Start", "Amelioration"]#liste des menus disponibles
@@ -19,21 +20,33 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
         self.menu_actuel = "Start" 
         self.fps = 30
-
         pyxel.init(self.width, self.height, title= "Potato et Le Royaume Infesté",fps=self.fps) #initialisation du jeu
         
         self.position_curseur = 0
-        self.player = Player("JOUEUR1")
+        self.player = Player("JOUEUR1",self)
         self.liste_mob = []
-        self.liste_arme = []#liste des armes déblocables
+        self.liste_balles = []
         self.counter = self.fps*3 #decompte avant fin du jeu pour que l'explosion marche bien 30 est le nb de frame par seconde
-        self.i =0
         pyxel.run(self.update, self.draw)
         
     
         
     
+    def collisions(self,instance1,instance2):
+        """Appelle les differentes fonctions qui vérifient les collisions
+        renvoie True si l'instance 1 est dans l'instance 2
+        prend en parametre deux instances"""
+
+        x1 = instance1.x
+        x2=instance2.x
         
+        y1 = instance1.y
+        y2=instance2.y
+        taille1 = instance1.taille
+        taille2 = instance1.taille 
+        
+        if (x1 <= x2 <= x1+taille1 or x1<= x2+taille2  <= x1+taille1) and (y1 <= y2 <= y1+taille1 or y1<= y2+taille2  <= y1+taille1) :
+            return True
             
         
     def reset_partie(self):
@@ -118,8 +131,11 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             
         if pyxel.btn(pyxel.KEY_I):
             pyxel.mouse(True)
+
+        
+
+
             
-        self.player.liste_arme_joueur[0].gere_suppr(self.width,self.height)
 
 
             
@@ -139,14 +155,27 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 for mob in self.liste_mob:
                     if pyxel.frame_count % 15 ==0:
                         self.pos_cible = [self.player.x,self.player.y] #envoie cible des mobs pour ajouter un deplacement moins linéaire
-                    self.player.collisions(mob)
+                    if self.collisions(self.player,mob):
+                        self.player.degats()
 
 
                     mob.update(self.pos_cible)
                     if not mob.is_alive():
                         self.liste_mob.remove(mob)
+                
+                for balle in self.liste_balles:#fais bouger les balles
+                    balle.move()
+                    if balle.is_alive == False:
+                        self.liste_balles.remove(balle)
+
+                for balle in self.liste_balles:#collisions enbtre balle et mobs
+                    for mob in self.liste_mob:
+                        if self.collisions(mob,balle):
+                            self.liste_mob.remove(mob)
+                            self.liste_balles.remove(balle)
+
+                
                         
-                self.player.arme_active.update_attaque()
         else:
             
             self.counter-=1
@@ -179,6 +208,8 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                     if self.hitbox:
                         mob.draw_hitbox()
                     mob.draw()
+            for balle in self.liste_balles:
+                balle.draw()
 
 
             self.player.draw()
@@ -318,68 +349,11 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 pyxel.quit()
         
 
-class Armes:
-    def __init__(self, nom:str, degats:int, cooldown:int, type_arme:str):
-        """cooldown: temps avant prochaine attaque
-        critical_hit -> en %"""
-        self.nom = nom
-        self.degats = degats
-        self.cooldown = cooldown #temps entre les attaques
-        
-        self.type_arme = type_arme
-        self.liste_attaque_actives = []  
-        self.vitesse_attaque = 1# vitesse qu'a la balle a avancer
-        self.vitesse_progression = 2#vitesse de déplacement de l'attaque
-        self.is_alive = True
-        
-        
-    
-    
-    def creer_attaque(self, x,y,cote, vitesse):
-        """cree une attaque en fonction du type d'arme utilisée"""        
-        if self.type_arme == "arc" and pyxel.frame_count % self.cooldown == 0:
-            self.liste_attaque_actives.append([x -vitesse, y+4, 2, 1, cote])#(on rajoute l'attaque à la liste d'attaque)
-    
-    
-    def update_attaque(self):
-        """gere la progression des attaques dans le temps"""
-        for att in self.liste_attaque_actives:
-            if att[4] == "g" and pyxel.frame_count % self.vitesse_attaque == 0:
-                att[0] -= self.vitesse_progression
-                
-            elif att[4] == "d" and pyxel.frame_count % self.vitesse_attaque == 0:
-                att[0] += self.vitesse_progression
-                
-            elif att[4] == "h" and pyxel.frame_count % self.vitesse_attaque == 0:
-                att[1] -= self.vitesse_progression
-                
-            elif att[4] == "b" and pyxel.frame_count % self.vitesse_attaque == 0:
-                att[1] += self.vitesse_progression
-            
-             
-                
-            
-    def gere_suppr(self, width, height):
-        """gere la suppression de la balle"""
-        for att in self.liste_attaque_actives:
-            if att[0] > width or att[1] > height or att[0] < 0 or att[1]<0:
-                self.liste_attaque_actives.remove(att)
-                        
-            
-            
-    
-    def draw(self):
-        """dessine l'attaque"""
-        for lst in self.liste_attaque_actives:
-            if lst[4] == "g" or lst[4] == "d":
-                pyxel.rect(lst[0], lst[1], 2, 1, 2)
-            else:
-               pyxel.rect(lst[0], lst[1], 1, 2, 2) 
     
     
 
 class Player: #classe qui cree le joueur
-    def __init__(self,nom:str):
+    def __init__(self,nom:str,game_instance:object):
         """In: nom -> le nom du joueur"""
 
         self.nom = nom
@@ -389,12 +363,10 @@ class Player: #classe qui cree le joueur
         self.attaque = 1
         self.vie_max = 200 #vie initiale
         self.vie = 200
-        
+        self.game_instance = game_instance
         self.vitesse = 1 #vitesse de deplacement
         
         self.regeneration = 1#% de vie par secondes
-        self.liste_arme_joueur = [Armes("Arc du débutant", 1, 2, "arc")]#liste des armes possédées apr joueur
-        self.arme_active = self.liste_arme_joueur[0]#arme utilisé par le joueur
         self.cote = "g"#va a gauche
         self.liste_explosions = []
         self.taille = 5
@@ -448,9 +420,10 @@ class Player: #classe qui cree le joueur
                 if (self.y > 0) : 
                     self.y = self.y - self.vitesse
                     
-            if pyxel.btn(pyxel.KEY_SPACE):
-                if pyxel.frame_count % self.arme_active.cooldown == 0:
-                        self.arme_active.creer_attaque(self.x, self.y,self.cote, self.vitesse)        
+            if pyxel.btnp(pyxel.KEY_SPACE):
+                self.game_instance.liste_balles.append(Bullets(self.x,self.y,self.cote))
+
+                
                 
 
             
@@ -475,20 +448,8 @@ class Player: #classe qui cree le joueur
   
             self.degats(5)
 
-    def collisions(self,instance2):
-        """Appelle les differentes fonctions qui vérifient les collisions
-        renvoie True si l'instance 1 est dans l'instance 2
-        prend en parametre deux instances"""
 
-        x1 = self.x
-        x2=instance2.x
-        taille1 = self.taille
-        y1 = self.y
-        y2=instance2.y
-        taille2 = instance2.taille 
-        
-        if (x1 <x2 < x1+taille1 or x1< x2+taille2  < x1+taille1) and (y1 <y2 < y1+taille1 or y1< y2+taille2  < y1+taille1) :
-            self.degats()
+
             
      
         
@@ -538,7 +499,6 @@ class Player: #classe qui cree le joueur
         if self.is_alive():
             pyxel.rect(self.x,self.y,5,5,6)
             self.draw_health()
-            self.arme_active.draw()
             
 
 
@@ -594,8 +554,36 @@ class Player: #classe qui cree le joueur
         # pyxel.rectb(0, 0, 3.2*(i+1), 8, 2)
         
 
+class Bullets:
+    def __init__(self,x:int,y:int,direction:str,vitesse:int = 1):
+        self.x = x
+        self.y = y
+        self.direction = direction #"g"gauche,"d"droite,"b"bas,"h"haut
+        self.vitesse = vitesse
+        self.is_alive = True
 
+    def move(self):
+        if self.direction == "g":
+            self.x -= self.vitesse
 
+        elif self.direction == "d":
+            self.x +=1
+        
+        elif self.direction == "b":
+            self.y +=1
+
+        elif self.direction == "h":
+            self.y -=1
+
+        if not ((0<self.x< pyxel.width+5) or (0<self.y< pyxel.height+5)):
+            self.is_alive = False
+
+    def draw(self):
+        pyxel.rect(self.x,self.y, 2,2,9)
+
+    
+
+        
 
 class Mob:
     def __init__(self, life:int, damage:int, attack_speed:int, vitesse:int,player:object):
