@@ -1,6 +1,7 @@
 import pyxel
 import webbrowser
-from random import randint
+import random
+
 
 
         
@@ -24,7 +25,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.position_curseur = 0
         self.player = Player("JOUEUR1")
         self.liste_mob = []
-        self.liste_arme = [Armes("Orbe tourbillonante", 10, 2,"epee"),Armes("Epee du debutant",1,2,"epee")]#liste des armes déblocables
+        self.liste_arme = []#liste des armes déblocables
         self.counter = self.fps*3 #decompte avant fin du jeu pour que l'explosion marche bien 30 est le nb de frame par seconde
         
         pyxel.run(self.update, self.draw)
@@ -114,8 +115,12 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             print(pyxel.mouse_x, pyxel.mouse_y)
             
         if pyxel.btn(pyxel.KEY_I):
-            pyxel.mouse(True)    
+            pyxel.mouse(True)
+            
+        self.player.liste_arme_joueur[0].gere_suppr(self.width,self.height)
 
+
+            
 
     def update_playing(self):
         """Fonction qui lorsque le mode de jeu est playing met le jeu à jour"""
@@ -176,6 +181,9 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
         if self.menu_actuel == "Start":
             self.draw_menu_start()
+        
+        if self.menu_actuel == "Amelioration":
+            self.draw_menu_stat()
             
         elif self.menu_actuel == "GameOver":#si le joueur est mort
             self.draw_menu_fin()
@@ -183,6 +191,44 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         elif self.pause == True:
             self.draw_menu_pause()
                
+    def draw_menu_stat(self):
+        """menu après une vague pour choisir une statistique"""
+        #TODO: ajouter des infos pour les nerds, choisir stat pui re entré pour commencer, num de la vague, ration kill dégats
+        #une note sur le gameplay, avec un commentaire?
+        pyxel.cls(0)
+        option = []
+        for i in range(1,4):
+            choix= random.random()
+            if choix <0.20:
+                #force
+                pyxel.rect(self.width//8 +20*i, self.height//2, 18, 18, 9)
+                
+            elif choix < 0.40:
+                pyxel.rect(self.width//8 +20*i, self.height//2, 18, 18, 9)#defense
+            elif choix <0.60:
+                pyxel.rect(self.width//8 +20*i, self.height//2, 18, 18, 9)#regen
+            elif choix < 0.80:
+                pyxel.rect(self.width//8 +20*i, self.height//2, 18, 18, 9)#vie_max
+            else:
+                pyxel.rect(self.width//8 +20*i, self.height//2, 18, 18, 9)#degats
+                
+            option.append(random.random())
+            
+        option = {0:"Vague Suivante"}
+        self.affichage_curseur(self.width//8 +3, self.height//2+25, 9)
+        option_choisie = self.choix_option(option)
+        if option_choisie == 0:
+            self.changer_menu("Playing")
+        
+        
+        pyxel.text(self.width//8 +20, self.height//2+25, "Reprendre", 9)
+            
+            
+            
+            
+            
+        
+        
             
             
     def draw_menu_fin(self):
@@ -303,7 +349,15 @@ class Armes:
                 
             elif att[4] == "b" and pyxel.frame_count % self.vitesse_attaque == 0:
                 att[1] += self.vitesse_progression
-             
+                
+            
+    def gere_suppr(self, width, height):
+        """gere la suppression de la balle"""
+        for att in self.liste_attaque_actives:
+            if att[0] > width or att[1] > height or att[0] < 0 or att[1]<0:
+                self.liste_attaque_actives.remove(att)
+                        
+            
             
     
     def draw(self):
@@ -343,21 +397,21 @@ class Player: #classe qui cree le joueur
         print("ajout de l'arme", jeu.liste_arme[num])
     
                 
-    def ajouter_statistique(self, type_statistique):
+    def ajouter_statistique(self, type_statistique, montant):
         """ajoute des le type de statistique au joueur"""
-        # TODO:rajouter un montant
+
         if type_statistique == "vitesse":
-            self.vitesse += 0.01
+            self.vitesse += montant
         elif type_statistique == "attaque":
-            self.attaque += 10
+            self.attaque += montant
         
         elif type_statistique == "vie":
-            self.vie_max += 10#on augment plus la vie que la vit et l'att car plus de dégats causés
+            self.vie_max += montant #on augment plus la vie que la vit et l'att car plus de dégats causés
         
         elif type_statistique == "regeneration":
-            self.regeneration += 1 
+            self.regeneration += montant 
         elif type_statistique == "defense":
-            self.defense += 1
+            self.defense += montant
      
         
     
@@ -365,23 +419,23 @@ class Player: #classe qui cree le joueur
         """Fonction qui permet de gérer la fonctions des touches"""
 
         if self.is_alive():
-            if pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_D):
-                self.cote = "d"
+            if pyxel.btn(pyxel.KEY_D):
+                # self.cote = "d"
                 if (self.x < pyxel.width-5) :#eviter de sortir de l'écran
                     self.x = self.x + self.vitesse
 
-            if pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.KEY_Q):
-                self.cote = "g"
+            if pyxel.btn(pyxel.KEY_Q):
+                # self.cote = "g"
                 if (self.x > 0) :
                     self.x = self.x - self.vitesse
                     
 
-            if pyxel.btn(pyxel.KEY_DOWN) or pyxel.btn(pyxel.KEY_S):
-                self.cote = 'b'
+            if pyxel.btn(pyxel.KEY_S):
+                # self.cote = 'b'
                 if (self.y < pyxel.height-5) :
                     self.y = self.y + self.vitesse
-            if pyxel.btn(pyxel.KEY_UP) or pyxel.btn(pyxel.KEY_Z):
-                self.cote = 'h'
+            if pyxel.btn(pyxel.KEY_Z):
+                # self.cote = 'h'
                 if (self.y > 0) : 
                     self.y = self.y - self.vitesse
                     
@@ -390,7 +444,24 @@ class Player: #classe qui cree le joueur
                         self.arme_active.creer_attaque(self.x, self.y,self.cote, self.vitesse)        
                 
 
-        
+            
+            #visee avec les touches de directions:
+            if pyxel.btn(pyxel.KEY_RIGHT):
+                self.cote = "d"
+            if pyxel.btn(pyxel.KEY_LEFT):
+                self.cote = "g"
+            if pyxel.btn(pyxel.KEY_UP):
+                self.cote = "h"
+            if pyxel.btn(pyxel.KEY_DOWN):
+                self.cote = "b"
+                
+            
+            
+
+
+
+
+
         if pyxel.btn(pyxel.KEY_U) : #pour le debug
   
             self.degats(5)
@@ -445,7 +516,7 @@ class Player: #classe qui cree le joueur
             pyxel.rect(self.x,self.y,5,5,6)
             self.draw_health()
             self.arme_active.draw()
-        
+            
 
 
     def draw_hitbox(self):
@@ -513,26 +584,26 @@ class Mob:
         self.vitesse = vitesse
         self.vitesse = 1
         
-        tmp = randint(1,4)
+        tmp = random.randint(1,4)
         if tmp == 1: #fait spawn les mobs en haut 
-            self.x= randint(2,pyxel.width-7)
+            self.x= random.randint(2,pyxel.width-7)
             self.y = 0
 
         elif tmp == 2: #fait spawn les mobs en gauche
             self.x = 0
-            self.y = randint(2,pyxel.width-7)
+            self.y = random.randint(2,pyxel.width-7)
 
         elif tmp == 3:#fait spawn les mobs en droite
             self.x = pyxel.width-7
-            self.y = randint(2,pyxel.width-7)
+            self.y = random.randint(2,pyxel.width-7)
 
         elif tmp == 4:
-            self.x = randint(2,pyxel.width-7)
+            self.x = random.randint(2,pyxel.width-7)
             self.y = pyxel.width-7
 
 
         self.cooldown_state = 3
-        self.cooldown_max = randint(3,7)
+        self.cooldown_max = random.randint(3,7)
         self.player = player
     
 
@@ -541,7 +612,7 @@ class Mob:
         self.life -= 1
     
     def is_alive(self):
-        """donne de l'or au joueur et disparaitsi false"""
+        """donne de l'or au joueur et disparait si false"""
         if self.life > 0:
             return True
         elif self.life <= 0:
