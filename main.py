@@ -9,7 +9,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.width = width
         self.height = height
         self.nom = nom_jeu #str
-        self.hitbox = False
+        self.hitbox = True
         self.pos_cible = [0,0]#position vers lequel les mobs se dirigent
         
         
@@ -26,8 +26,9 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.liste_mob = []
         self.liste_arme = [Armes("Orbe tourbillonante", 10, 2,"epee"),Armes("Epee du debutant",1,2,"epee")]#liste des armes déblocables
         self.counter = self.fps*3 #decompte avant fin du jeu pour que l'explosion marche bien 30 est le nb de frame par seconde
-        
+        self.i =0
         pyxel.run(self.update, self.draw)
+        
     
         
     
@@ -93,6 +94,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
         
     
+
         
 
     def update(self):     
@@ -119,6 +121,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
 
     def update_playing(self):
         """Fonction qui lorsque le mode de jeu est playing met le jeu à jour"""
+        
                 
         if self.player.is_alive(): # boucle du jeu qui verifie si le joueur est mort
                 #ici si le player est vivant
@@ -131,6 +134,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 for mob in self.liste_mob:
                     if pyxel.frame_count % 15 ==0:
                         self.pos_cible = [self.player.x,self.player.y] #envoie cible des mobs pour ajouter un deplacement moins linéaire
+                    self.player.collisions(mob)
 
 
                     mob.update(self.pos_cible)
@@ -280,6 +284,8 @@ class Armes:
         self.liste_attaque_actives = []  
         self.vitesse_attaque = 1# vitesse qu'a la balle a avancer
         self.vitesse_progression = 2#vitesse de déplacement de l'attaque
+        self.is_alive = True
+        
         
     
     
@@ -303,6 +309,7 @@ class Armes:
                 
             elif att[4] == "b" and pyxel.frame_count % self.vitesse_attaque == 0:
                 att[1] += self.vitesse_progression
+            
              
             
     
@@ -335,6 +342,7 @@ class Player: #classe qui cree le joueur
         self.arme_active = self.liste_arme_joueur[0]#arme utilisé par le joueur
         self.cote = "g"#va a gauche
         self.liste_explosions = []
+        self.taille = 5
         
         
     def ajouter_arme(self, num):
@@ -394,7 +402,21 @@ class Player: #classe qui cree le joueur
         if pyxel.btn(pyxel.KEY_U) : #pour le debug
   
             self.degats(5)
+
+    def collisions(self,instance2):
+        """Appelle les differentes fonctions qui vérifient les collisions
+        renvoie True si l'instance 1 est dans l'instance 2
+        prend en parametre deux instances"""
+
+        x1 = self.x
+        x2=instance2.x
+        taille1 = self.taille
+        y1 = self.y
+        y2=instance2.y
+        taille2 = instance2.taille 
         
+        if (x1 <x2 < x1+taille1 or x1< x2+taille2  < x1+taille1) and (y1 <y2 < y1+taille1 or y1< y2+taille2  < y1+taille1) :
+            self.degats()
             
      
         
@@ -512,6 +534,7 @@ class Mob:
         self.attack_speed = attack_speed
         self.vitesse = vitesse
         self.vitesse = 1
+        self.taille = 5
         
         tmp = randint(1,4)
         if tmp == 1: #fait spawn les mobs en haut 
@@ -587,7 +610,7 @@ class Mob:
     def draw(self):
         """Dessine le Mob"""
         if self.player.is_alive():
-            pyxel.rect(self.x,self.y,5,5,11)
+            pyxel.rect(self.x,self.y,self.taille,self.taille,11)
 
     def draw_hitbox(self):
             """Dessine hitbox Mob"""
