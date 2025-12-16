@@ -1,6 +1,7 @@
 import pyxel
 import webbrowser
 import random
+#obj à atteindre pour avoir skin
 
 
 
@@ -17,6 +18,8 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
         self.liste_menu = ["Playing", "GameOver", "Start", "Amelioration"]#liste des menus disponibles
         self.pause = False
+        self.etape_stat = 0 #après chauqe fin de vague 0 -> choix des stat 1-> reprendre la partie
+        
         
         self.menu_actuel = "Start" 
         self.fps = 30
@@ -56,59 +59,12 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.position_curseur = 0
         self.player = Player("JOUEUR1",self)
         self.liste_mob = []
+        self.liste_balles = []
         self.counter = self.fps*3 #decompte avant fin du jeu pour que l'explosion marche bien 30 est le nb de frame par seconde
 
 
-    def choix_option(self, liste_option):
-        """gere l'appuie sur les touches haut bas et entree pour rendre le menu fonctionnel
-        et renvoie l'id  de la position du curseur"""
-        if pyxel.btnr(pyxel.KEY_UP):
-            self.position_curseur -= 1
-        
-        elif pyxel.btnr(pyxel.KEY_DOWN):
-            self.position_curseur += 1
-            
-        if self.position_curseur <0:
-            self.position_curseur = len(liste_option)-1
-        
-        if self.position_curseur > len(liste_option)-1:
-            self.position_curseur = 0
-            
-        if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.KEY_KP_ENTER):
-            return self.position_curseur
-            
-        
-        
     
-        
-        
-    def menu(self):
-        """debug pour savoir ds quel menu on est"""
-        if self.menu_actuel == "GameOver":
-            print('This is the end...')
-        
-        elif self.menu_actuel == "Pause":
-            print('pause activée')
             
-        elif self.menu_actuel == "Start":
-            print('Menu de départ')
-            
-            
-        elif self.menu_actuel =="Playing":
-            print('partie en cours')
-    
-    def changer_menu(self, menu_remplacement):
-        """change le menu actuel par le menu_remplacement"""
-        
-        #verifie que le menu est dans la liste des menus utilisables
-        for menu in self.liste_menu:
-            if str(menu_remplacement) == str(menu) :
-                self.menu_actuel = str(menu_remplacement)
-                
-        
-        
-    
-
         
 
     def update(self):     
@@ -225,45 +181,131 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             
         elif self.pause == True:
             self.draw_menu_pause()
+            
+    def draw_menu_start(self):
+        """dessine le menu de départ lorsque le menu est 'Start' dans lequel on choisit de jouer on de quitter le jeu"""
+        pyxel.cls(0)        
+        
+        #décor arrière plan qui défile (cascade?)
+        # pyxel.bltm(0, 0, 0, 0, 0, self.width, self.height)A ESSAYER SUR CAPYTALE
+        
+        option = {0: "Jouer",
+                  1: "Sortie"}#tableau des options possible
+        
+        for i in range(len(option)):
+            pyxel.text(pyxel.width//2 -18, pyxel.height//3 +9*i, option[i], 9)
+        
+        pyxel.text(8, self.height - self.height//4, "Mouvement : ZQSD", 8)
+        pyxel.text(16, self.height - self.height//5, "Attaquer : [ Espace ]", 8)#affiche l'aide
+        self.affichage_curseur(pyxel.width//2 -pyxel.width //8 - 18, pyxel.height//3 +9*self.position_curseur, 9)#affiche le curseur lors du choix
+        
+        
+        option_choisie = self.choix_option(option)
+        if  option_choisie != None:
+            if option_choisie ==0:
+                self.changer_menu("Playing")
+            
+            elif option_choisie ==1:
+                webbrowser.open_new("https://www.youtube.com/watch?v=xvFZjo5PgG0")
+                pyxel.quit()
+                
+    def draw_menu_pause(self):
+        """dessine le menu Pause lors de l'appuie sur la touche P"""
+        pyxel.cls(0)
+        pyxel.text(self.width//2-10, 1, "Pause", 6)
+        option = {0: "Continuer",
+                  1: "Sortie"}#tableau des options possible
+        
+        for i in range(len(option)):
+            pyxel.text(pyxel.width//2 -15, pyxel.height//3 +9*i, option[i], 9)
+        
+        pyxel.text(8, self.height - self.height//4, "Mouvement : ZQSD", 8)
+        pyxel.text(16, self.height - self.height//5, "Attaquer : [ Espace ]", 8)#affiche l'aide
+        self.affichage_curseur(pyxel.width//2 -pyxel.width //8 - 18, pyxel.height//3 +9*self.position_curseur, 9)
+        
+        
+        
+        option_choisie = self.choix_option(option)
+        if  option_choisie != None:
+            if option_choisie ==0:
+                self.pause = False
+            
+            elif option_choisie ==1:
+                webbrowser.open_new("https://www.youtube.com/watch?v=xvFZjo5PgG0")
+                pyxel.quit()
+        
+    
                
     def draw_menu_stat(self):
         """menu après une vague pour choisir une statistique"""
         #TODO: ajouter des infos pour les nerds, choisir stat pui re entré pour commencer, num de la vague, ration kill dégats
         #une note sur le gameplay, avec un commentaire?
+        # TODO: faire touche; si appuyé choisit aléatoirement le bonus
         pyxel.cls(0)
-        option = []
-        for i in range(1,4):
-            choix= random.random()
-            if choix <0.20:
-                #force
-                pyxel.rect(self.width//8 +20*i, self.height//2, 18, 18, 9)
+        if self.etape_stat ==0:
+            option = []
+            for i in range(1,4):
+                choix= random.random()
+                if choix <0.20:
+                    #force
+                    pyxel.rect(self.width//8 +20*i, self.height//2, 18, 18, 9)
+                    
+                elif choix < 0.40:
+                    pyxel.rect(self.width//8 +20*i, self.height//2, 18, 18, 9)#defense
+                elif choix <0.60:
+                    pyxel.rect(self.width//8 +20*i, self.height//2, 18, 18, 9)#regen
+                elif choix < 0.80:
+                    pyxel.rect(self.width//8 +20*i, self.height//2, 18, 18, 9)#vie_max
+                else:
+                    pyxel.rect(self.width//8 +20*i, self.height//2, 18, 18, 9)#degats
+                    
+                option.append(choix)
                 
-            elif choix < 0.40:
-                pyxel.rect(self.width//8 +20*i, self.height//2, 18, 18, 9)#defense
-            elif choix <0.60:
-                pyxel.rect(self.width//8 +20*i, self.height//2, 18, 18, 9)#regen
-            elif choix < 0.80:
-                pyxel.rect(self.width//8 +20*i, self.height//2, 18, 18, 9)#vie_max
-            else:
-                pyxel.rect(self.width//8 +20*i, self.height//2, 18, 18, 9)#degats
+            choix_option = self.choix_option(option)
+            
+            if choix_option != None:
+                if choix_option == 0:
+                    print('choix 0')
+                    
+                elif choix_option == 1:
+                    print('choix 1')
+                    
+                elif choix_option == 2:
+                    print('choix 2')
+                self.etape_stat = 1
                 
-            option.append(random.random())
+                
+            self.affichage_curseur(self.width//8+23 +20*self.position_curseur, self.height//2 +20, 7)
+                
+                
+        elif self.etape_stat ==1:
             
-        option = {0:"Vague Suivante"}
-        self.affichage_curseur(self.width//8 +3, self.height//2+25, 9)
-        option_choisie = self.choix_option(option)
-        if option_choisie == 0:
-            self.changer_menu("Playing")
-        
-        
-        pyxel.text(self.width//8 +20, self.height//2+25, "Reprendre", 9)
-            
-            
+            opt= ["vie : "+str(self.player.vie_max), "degats / attaques : "+str(self.player.attaque),"defense : "+str(self.player.defense), "vitesse : "+str(self.player.vitesse),
+                  "ennemis touches : ", "ennemis ratés : "]
+            for i in range(len(opt)):
+                pyxel.text(0, 0+8*i, opt[i], 12)
             
             
+            option = {0:"Vague Suivante",
+                      1:"Changer skin"}
             
-        
-        
+            choix_option = self.choix_option(option)
+            if choix_option == 0:
+                self.changer_menu("Playing")
+            
+            elif choix_option == 1:
+                print('In Development...')#TODO
+            
+            pyxel.text(0, 90, "-------------------------------------------------------------", 9)
+            
+            self.affichage_curseur(self.width//8 +3, self.height//2+30+self.position_curseur*8, 9)
+            for j in range(len(option)):
+                pyxel.text(self.width//8 +25, self.height//2+30+8*j, option[j], 9)
+                
+                
+            pyxel.rectb(100, 104, self.width-100, self.height-104, 9)#case pour montrer le skin changé
+            
+            
             
             
     def draw_menu_fin(self):
@@ -293,60 +335,52 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 webbrowser.open_new("https://www.youtube.com/watch?v=xvFZjo5PgG0")
                 pyxel.quit()
 
-
-    def draw_menu_pause(self):
-        pyxel.cls(0)
-        pyxel.text(self.width//2-10, 1, "Pause", 6)
-        option = {0: "Continuer",
-                  1: "Sortie"}#tableau des options possible
-        
-        for i in range(len(option)):
-            pyxel.text(pyxel.width//2 -15, pyxel.height//3 +9*i, option[i], 9)
-        
-        pyxel.text(8, self.height - self.height//4, "Mouvement : ZQSD", 8)
-        pyxel.text(16, self.height - self.height//5, "Attaquer : [ Espace ]", 8)#affiche l'aide
-        self.affichage_curseur(pyxel.width//2 -pyxel.width //8 - 18, pyxel.height//3 +9*self.position_curseur, 9)
-        
-        
-        
-        option_choisie = self.choix_option(option)
-        if  option_choisie != None:
-            if option_choisie ==0:
-                self.pause = False
-            
-            elif option_choisie ==1:
-                webbrowser.open_new("https://www.youtube.com/watch?v=xvFZjo5PgG0")
-                pyxel.quit()
-        
     def affichage_curseur(self, x, y, col):
         pyxel.text(x, y, "<X>", col)
         
-    def draw_menu_start(self):
-        """dessine le menu de départ lorsque le menu est 'Start' dans lequel on choisit de jouer on de quitter le jeu"""
-        pyxel.cls(0)        
+    def menu(self):
+        """debug pour savoir ds quel menu on est"""
+        if self.menu_actuel == "GameOver":
+            print('This is the end...')
         
-        #décor arrière plan qui défile (cascade?)
-        # pyxel.bltm(0, 0, 0, 0, 0, self.width, self.height)A ESSAYER SUR CAPYTALE
-        
-        option = {0: "Jouer",
-                  1: "Sortie"}#tableau des options possible
-        
-        for i in range(len(option)):
-            pyxel.text(pyxel.width//2 -18, pyxel.height//3 +9*i, option[i], 9)
-        
-        pyxel.text(8, self.height - self.height//4, "Mouvement : ZQSD", 8)
-        pyxel.text(16, self.height - self.height//5, "Attaquer : [ Espace ]", 8)#affiche l'aide
-        self.affichage_curseur(pyxel.width//2 -pyxel.width //8 - 18, pyxel.height//3 +9*self.position_curseur, 9)#affiche le curseur lors du choix
-        
-        
-        option_choisie = self.choix_option(option)
-        if  option_choisie != None:
-            if option_choisie ==0:
-                self.changer_menu("Playing")
+        elif self.menu_actuel == "Pause":
+            print('pause activée')
             
-            elif option_choisie ==1:
-                webbrowser.open_new("https://www.youtube.com/watch?v=xvFZjo5PgG0")
-                pyxel.quit()
+        elif self.menu_actuel == "Start":
+            print('Menu de départ')
+            
+            
+        elif self.menu_actuel =="Playing":
+            print('partie en cours')
+    
+    def changer_menu(self, menu_remplacement):
+        """change le menu actuel par le menu_remplacement"""
+        
+        #verifie que le menu est dans la liste des menus utilisables
+        for menu in self.liste_menu:
+            if str(menu_remplacement) == str(menu) :
+                self.menu_actuel = str(menu_remplacement)
+                
+    def choix_option(self, liste_option):
+        """gere l'appuie sur les touches haut bas et entree pour rendre le menu fonctionnel
+        et renvoie l'id  de la position du curseur"""
+        if pyxel.btnr(pyxel.KEY_UP) or pyxel.btnr(pyxel.KEY_LEFT):
+            self.position_curseur -= 1
+        
+        elif pyxel.btnr(pyxel.KEY_DOWN) or pyxel.btnr(pyxel.KEY_RIGHT) :
+            self.position_curseur += 1
+            
+        if self.position_curseur <0:
+            self.position_curseur = len(liste_option)-1
+        
+        if self.position_curseur > len(liste_option)-1:
+            self.position_curseur = 0
+            
+        if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.KEY_KP_ENTER):
+            return self.position_curseur
+    
+        
+    
         
 
     
@@ -370,6 +404,10 @@ class Player: #classe qui cree le joueur
         self.cote = "g"#va a gauche
         self.liste_explosions = []
         self.taille = 5
+        
+        
+        # TODO: changer de skin à la fin de chaque vague
+        # self.num_skin ={0:[[x, y, img, u, v, w, h],[x, y, img, u, v, w, h]]}#comporte l'id du skin et les différentes animations
         
         
     def ajouter_arme(self, num):
@@ -420,8 +458,9 @@ class Player: #classe qui cree le joueur
                 if (self.y > 0) : 
                     self.y = self.y - self.vitesse
                     
-            if pyxel.btnp(pyxel.KEY_SPACE):
-                self.game_instance.liste_balles.append(Bullets(self.x,self.y,self.cote))
+            if pyxel.btn(pyxel.KEY_SPACE):
+                if pyxel.frame_count%8 ==0:
+                    self.game_instance.liste_balles.append(Bullets(self.x,self.y,self.cote))
 
                 
                 
