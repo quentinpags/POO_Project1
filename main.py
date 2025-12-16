@@ -54,7 +54,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
         self.changer_menu("Playing")
         self.position_curseur = 0
-        self.player = Player("JOUEUR1")
+        self.player = Player("JOUEUR1",self)
         self.liste_mob = []
         self.counter = self.fps*3 #decompte avant fin du jeu pour que l'explosion marche bien 30 est le nb de frame par seconde
 
