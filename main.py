@@ -418,6 +418,7 @@ class Player: #classe qui cree le joueur
         self.cote = "g"#va a gauche
         self.liste_explosions = []
         self.taille = 5
+        self.i =0# variable qui permet de compter chaque iteration de la fonction update et permet d'enlever dépendance a pyxel.frame_count
         
         
         # TODO: changer de skin à la fin de chaque vague
@@ -471,8 +472,10 @@ class Player: #classe qui cree le joueur
                 # self.cote = 'h'
                 if (self.y > 0) : 
                     self.y = self.y - self.vitesse
-            
-            
+                    
+            if pyxel.btn(pyxel.KEY_SPACE):
+                if  self.i%8 <= 1:
+                    self.game_instance.liste_balles.append(Bullets(self.x,self.y,self.cote))
 
                 
                 
@@ -542,6 +545,7 @@ class Player: #classe qui cree le joueur
                 self.liste_explosions.remove(explosion)
 
         self.boutons() #verifie appui de boutons
+        self.i+=1
 
 
     def draw(self):
