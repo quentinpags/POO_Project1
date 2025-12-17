@@ -35,18 +35,22 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
     
         
     
-    def collisions(self,instance1,instance2):
+    def collisions(self,instance1:object,instance2:object):
         """Appelle les differentes fonctions qui vérifient les collisions
         renvoie True si l'instance 1 est dans l'instance 2
         prend en parametre deux instances"""
 
+        # position x des deux instances
         x1 = instance1.x
         x2=instance2.x
         
+        # position y des deux instances
         y1 = instance1.y
         y2=instance2.y
+        
+        #taille des deux instances pour que les collisions soient plus fidèles 
         taille1 = instance1.taille
-        taille2 = instance1.taille 
+        taille2 = instance1.taille
         
         if (x1 <= x2 <= x1+taille1 or x1<= x2+taille2  <= x1+taille1) and (y1 <= y2 <= y1+taille1 or y1<= y2+taille2  <= y1+taille1) :
             return True
@@ -98,7 +102,6 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
 
     def update_playing(self):
         """Fonction qui lorsque le mode de jeu est playing met le jeu à jour"""
-        
                 
         if self.player.is_alive(): # boucle du jeu qui verifie si le joueur est mort
                 #ici si le player est vivant
@@ -129,12 +132,15 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                         if self.collisions(mob,balle):
                             self.liste_mob.remove(mob)
                             self.liste_balles.remove(balle)
+                            self.player.score += 1
+
+                        
 
                 
                         
         else:
             
-            self.counter-=1
+            self.counter-=1 
             if len(self.player.liste_explosions) !=0 or (len(self.player.liste_explosions) ==1 and self.player.liste_explosions[0].taille_max == self.player.liste_explosions[0].etape-1):
                 
                     self.player.update()
@@ -419,7 +425,7 @@ class Player: #classe qui cree le joueur
         self.liste_explosions = []
         self.taille = 5
         self.i =0# variable qui permet de compter chaque iteration de la fonction update et permet d'enlever dépendance a pyxel.frame_count
-        
+        self.score = 0
         
         # TODO: changer de skin à la fin de chaque vague
         # self.num_skin ={0:[[x, y, img, u, v, w, h],[x, y, img, u, v, w, h]]}#comporte l'id du skin et les différentes animations
