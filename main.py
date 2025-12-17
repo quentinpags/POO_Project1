@@ -281,7 +281,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         elif self.etape_stat ==1:
             
             opt= ["vie : "+str(self.player.vie_max), "degats / attaques : "+str(self.player.attaque),"defense : "+str(self.player.defense), "vitesse : "+str(self.player.vitesse),
-                  "ennemis touches : ", "ennemis ratés : "]
+                  "ennemis touches : ", "ennemis rates : "]
             for i in range(len(opt)):
                 pyxel.text(0, 0+8*i, opt[i], 12)
             
