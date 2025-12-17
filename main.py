@@ -2,7 +2,7 @@ import pyxel
 import webbrowser
 import random
 #obj à atteindre pour avoir skin
-
+#faire un fond transparent pour le menu pause
 
 
         
@@ -240,7 +240,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         """menu après une vague pour choisir une statistique"""
         #TODO: ajouter des infos pour les nerds, choisir stat pui re entré pour commencer, num de la vague, ration kill dégats
         #une note sur le gameplay, avec un commentaire?
-        # TODO: faire touche; si appuyé choisit aléatoirement le bonus
+        
         pyxel.cls(0)
         if self.etape_stat ==0:
             option = []
@@ -305,7 +305,18 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 
             pyxel.rectb(100, 104, self.width-100, self.height-104, 9)#case pour montrer le skin changé
             
+    def choix_stat(self, nb):
+        if nb <0.20:
+            self.player.ajouter_statistique("attaque", 5)#force            
             
+        elif nb < 0.40:
+            self.player.ajouter_statistique("defense", 1)#defense
+        elif nb <0.60:
+            self.player.ajouter_statistique("regeneration", 1)#regen
+        elif nb < 0.80:
+            self.player.ajouter_statistique("vie", 5)#vie_max
+        else:
+            self.player.ajouter_statistique("vitesse", 1)#degats        
             
             
     def draw_menu_fin(self):
@@ -378,6 +389,9 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             
         if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.KEY_KP_ENTER):
             return self.position_curseur
+        
+        elif pyxel.btn(pyxel.KEY_A):#pour choisir aléatoirement un menu
+            return random.randint(0, len(liste_option)-1)
     
         
     
