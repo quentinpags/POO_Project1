@@ -650,13 +650,13 @@ class Bullets:
             self.x -= self.vitesse
 
         elif self.direction == "d":
-            self.x +=1
+            self.x +=self.vitesse
         
         elif self.direction == "b":
-            self.y +=1
+            self.y +=self.vitesse
 
         elif self.direction == "h":
-            self.y -=1
+            self.y -=self.vitesse
 
         if ((self.x<0 or self.x > pyxel.width) or (self.y<0 or self.y > pyxel.height)):
             self.is_alive = False
