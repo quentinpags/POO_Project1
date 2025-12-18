@@ -669,10 +669,10 @@ class Bullets:
         
 
 class Mob:
-    def __init__(self, life:int, damage:int, attack_speed:int, vitesse:int,player:object):
+    def __init__(self, vie:int, damage:int, attack_speed:int, vitesse:int,player:object):
         """initialisation de la creation de mob
         Player est la l'instance du joueur """
-        self.life = life
+        self.vie = vie
         self.damage = damage
         self.attack_speed = attack_speed
         self.vitesse = vitesse
@@ -704,13 +704,13 @@ class Mob:
 
     def degat(self):
         """change la vie du mob"""
-        self.life -= 1
+        self.vie -= 1
     
     def is_alive(self):
         """donne de l'or au joueur et disparait si false"""
-        if self.life > 0:
+        if self.vie > 0:
             return True
-        elif self.life <= 0:
+        elif self.vie <= 0:
             return False
         
     def peut_bouger(self):
