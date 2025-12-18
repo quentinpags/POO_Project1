@@ -490,7 +490,7 @@ class Player: #classe qui cree le joueur
                     self.y = self.y - self.vitesse
                     
             
-            if  self.i%8 <= 1:
+            if  self.i%8 == 0:
                 self.game_instance.liste_armes[self.game_instance.arme_principale].creer_balle()
 
                 
@@ -707,7 +707,7 @@ class Mob:
         self.vie -= 1
     
     def is_alive(self):
-        """donne de l'or au joueur et disparait si false"""
+        """renvoie True si le mob est mort"""
         if self.vie > 0:
             return True
         elif self.vie <= 0:
@@ -723,7 +723,12 @@ class Mob:
             self.cooldown_state -=1
             return False
     
+    def degat(self,nb_degats:int):
+        self.vie -= nb_degats
+            
 
+        
+    
     def update(self, tableau_cible:list):
         """Prend en parametre tableau contenant les coordonnes cibles vers lesquels ils doivent se deplacer 
         tableau sous forme [x,y]
