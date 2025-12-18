@@ -479,9 +479,9 @@ class Player: #classe qui cree le joueur
                 if (self.y > 0) : 
                     self.y = self.y - self.vitesse
                     
-            if pyxel.btn(pyxel.KEY_SPACE):
-                if  self.i%8 <= 1:
-                    self.game_instance.liste_balles.append(Bullets(self.x,self.y,self.cote))
+            
+            if  self.i%8 <= 1:
+                self.game_instance.liste_balles.append(Bullets(self.x,self.y,self.cote))
 
                 
                 
@@ -636,7 +636,7 @@ class Bullets:
         elif self.direction == "h":
             self.y -=1
 
-        if not ((0<self.x< pyxel.width+5) or (0<self.y< pyxel.height+5)):
+        if ((self.x<0 or self.x > pyxel.width) or (self.y<0 or self.y > pyxel.height)):
             self.is_alive = False
 
     def draw(self):
