@@ -29,6 +29,9 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.player = Player("JOUEUR1",self)
         self.liste_mob = []
         self.liste_balles = []
+        self.liste_armes = [Armes("Principale",10,1,self,self.player),Armes("Principale",10,10,self,self.player)]
+
+        self.arme_principale = 0
         self.counter = self.fps*3 #decompte avant fin du jeu pour que l'explosion marche bien 30 est le nb de frame par seconde
         pyxel.run(self.update, self.draw)
         
@@ -54,7 +57,14 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
         if (x1 <= x2 <= x1+taille1 or x1<= x2+taille2  <= x1+taille1) and (y1 <= y2 <= y1+taille1 or y1<= y2+taille2  <= y1+taille1) :
             return True
-            
+    
+    def changer_arme_principale(self):
+        dernier_indice_possible = len(self.liste_armes) -1
+        if dernier_indice_possible ==self.arme_principale:
+            self.arme_principale = 0
+
+        else:
+            self.arme_principale +=1
         
     def reset_partie(self):
         """méthode qui permet de relancer une partie après une défaite, tt reset au niveau de départ"""
@@ -479,9 +489,9 @@ class Player: #classe qui cree le joueur
                 if (self.y > 0) : 
                     self.y = self.y - self.vitesse
                     
-            if pyxel.btn(pyxel.KEY_SPACE):
-                if  self.i%8 <= 1:
-                    self.game_instance.liste_balles.append(Bullets(self.x,self.y,self.cote))
+            
+            if  self.i%8 == 0:
+                self.game_instance.liste_armes[self.game_instance.arme_principale].creer_balle()
 
                 
                 
@@ -504,9 +514,9 @@ class Player: #classe qui cree le joueur
 
 
 
-        if pyxel.btn(pyxel.KEY_U) : #pour le debug
+        if pyxel.btnp(pyxel.KEY_U) : #pour le debug
   
-            self.degats(5)
+            self.game_instance.changer_arme_principale()
 
 
 
@@ -613,7 +623,19 @@ class Player: #classe qui cree le joueur
             
         pyxel.rectb(0, 0, 32, 8, 6)#contour de la barre de vie
         # pyxel.rectb(0, 0, 3.2*(i+1), 8, 2)
-        
+class Armes:
+    def __init__(self,nom:str,degats:int,vitesse:int, game_instance:object,player_instance:object):
+        self.nom = nom
+        self.dagats = degats #ajouter degats aux balles
+        self.vitesse = vitesse
+        self.game_instance = game_instance
+        self.player_instance = player_instance
+
+    def creer_balle(self):
+        self.game_instance.liste_balles.append(Bullets(self.player_instance.x,
+                                                        self.player_instance.y,
+                                                        self.player_instance.cote,
+                                                        self.vitesse))
 
 class Bullets:
     def __init__(self,x:int,y:int,direction:str,vitesse:int = 1):
@@ -628,15 +650,15 @@ class Bullets:
             self.x -= self.vitesse
 
         elif self.direction == "d":
-            self.x +=1
+            self.x +=self.vitesse
         
         elif self.direction == "b":
-            self.y +=1
+            self.y +=self.vitesse
 
         elif self.direction == "h":
-            self.y -=1
+            self.y -=self.vitesse
 
-        if not ((0<self.x< pyxel.width+5) or (0<self.y< pyxel.height+5)):
+        if ((self.x<0 or self.x > pyxel.width) or (self.y<0 or self.y > pyxel.height)):
             self.is_alive = False
 
     def draw(self):
@@ -647,10 +669,10 @@ class Bullets:
         
 
 class Mob:
-    def __init__(self, life:int, damage:int, attack_speed:int, vitesse:int,player:object):
+    def __init__(self, vie:int, damage:int, attack_speed:int, vitesse:int,player:object):
         """initialisation de la creation de mob
         Player est la l'instance du joueur """
-        self.life = life
+        self.vie = vie
         self.damage = damage
         self.attack_speed = attack_speed
         self.vitesse = vitesse
@@ -682,13 +704,13 @@ class Mob:
 
     def degat(self):
         """change la vie du mob"""
-        self.life -= 1
+        self.vie -= 1
     
     def is_alive(self):
-        """donne de l'or au joueur et disparait si false"""
-        if self.life > 0:
+        """renvoie True si le mob est mort"""
+        if self.vie > 0:
             return True
-        elif self.life <= 0:
+        elif self.vie <= 0:
             return False
         
     def peut_bouger(self):
@@ -701,7 +723,12 @@ class Mob:
             self.cooldown_state -=1
             return False
     
+    def degat(self,nb_degats:int):
+        self.vie -= nb_degats
+            
 
+        
+    
     def update(self, tableau_cible:list):
         """Prend en parametre tableau contenant les coordonnes cibles vers lesquels ils doivent se deplacer 
         tableau sous forme [x,y]
