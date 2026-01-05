@@ -18,13 +18,14 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
         self.liste_menu = ["Playing", "GameOver", "Start", "Amelioration"]#liste des menus disponibles
         self.pause = False
-        self.etape_stat = 0 #après chauqe fin de vague 0 -> choix des stat 1-> reprendre la partie
+        
         
         
         self.menu_actuel = "Start" 
         self.fps = 30
         pyxel.init(self.width, self.height, title= "Potato et Le Royaume Infesté",fps=self.fps) #initialisation du jeu
         
+        self.etape_stat = 0 #après chauqe fin de vague 0 -> choix des stat 1-> reprendre la partie
         self.position_curseur = 0
         self.player = Player("JOUEUR1",self)
         self.liste_mob = []
@@ -33,6 +34,16 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
 
         self.arme_principale = 0
         self.counter = self.fps*3 #decompte avant fin du jeu pour que l'explosion marche bien 30 est le nb de frame par seconde
+        
+        
+        
+        self.liste_difficulte = [0.75]#liste des difficultés possible
+        self.difficulte_choisi = 0
+        self.num_vague = 0
+        self.temps_vague_initiale = 10#variable qui ne change pas#temps par défaut de la vague
+        self.temps_vague = int(self.temps_vague_initiale* ((self.num_vague+1) *self.liste_difficulte[int(self.difficulte_choisi)]))#temps avant fin de la vague en frame
+        
+        
         pyxel.run(self.update, self.draw)
         
     
@@ -75,6 +86,12 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.liste_mob = []
         self.liste_balles = []
         self.counter = self.fps*3 #decompte avant fin du jeu pour que l'explosion marche bien 30 est le nb de frame par seconde
+        self.temps_vague = self.temps_vague_initiale#on reprend la valeur par défaut
+        
+        self.etape_stat = 0 #après chauqe fin de vague 0 -> choix des stat 1-> reprendre la partie
+        self.liste_armes = [Armes("Principale",10,1,self,self.player),Armes("Principale",10,10,self,self.player)]
+        self.arme_principale = 0
+        self.num_vague =0
 
 
     
@@ -143,6 +160,16 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                             self.liste_mob.remove(mob)
                             self.liste_balles.remove(balle)
                             self.player.score += 1
+                            
+                #implémentation de la fin de la vague
+                
+                
+                if self.temps_vague <= 0:
+                    print("fin")
+                    self.changer_menu("Amelioration")
+                elif self.player.i % self.fps == 0 :
+                    self.temps_vague -= 1
+                    
 
                         
 
@@ -185,11 +212,14 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
 
 
             self.player.draw()
+            
+            pyxel.text(self.width-15, 5, str(self.temps_vague), 7)#affiche le temps restant avant la fin de la vague
+            pyxel.text(self.width//2, 5,str(self.num_vague), 7)#affiche num de vague
         
         if self.menu_actuel == "Start":
             self.draw_menu_start()
         
-        if self.menu_actuel == "Amelioration":
+        elif self.menu_actuel == "Amelioration":
             self.draw_menu_stat()
             
         elif self.menu_actuel == "GameOver":#si le joueur est mort
@@ -308,6 +338,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             choix_option = self.choix_option(option)
             if choix_option == 0:
                 self.changer_menu("Playing")
+                self.creer_nouv_vague()
             
             elif choix_option == 1:
                 print('In Development...')#TODO
@@ -410,7 +441,18 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             return random.randint(0, len(liste_option)-1)
     
         
-    
+    def creer_nouv_vague(self):
+        self.player.x = pyxel.width//2 -2 #faire spawn le perso au milieu de l'écran
+        self.player.y = pyxel.height//2 -2
+        self.liste_balles = []
+        self.liste_explosion = []
+        self.liste_mob = []
+        self.num_vague +=1
+        self.changer_menu("Playing")
+        self.temps_vague =int(self.temps_vague_initiale* ((self.num_vague+1) *self.liste_difficulte[int(self.difficulte_choisi)]))#cycle de vague/amelioration voir ligne44
+        self.etape_stat = 0
+        
+        
         
 
     
@@ -490,7 +532,7 @@ class Player: #classe qui cree le joueur
                     self.y = self.y - self.vitesse
                     
             
-            if  self.i%8 == 0:
+            if  self.i%20 == 0:
                 self.game_instance.liste_armes[self.game_instance.arme_principale].creer_balle()
 
                 
