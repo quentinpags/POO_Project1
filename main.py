@@ -43,6 +43,9 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.temps_vague_initiale = 10#variable qui ne change pas#temps par défaut de la vague
         self.temps_vague = int(self.temps_vague_initiale* ((self.num_vague+1) *self.liste_difficulte[int(self.difficulte_choisi)]))#temps avant fin de la vague en frame
         
+        #stat
+        self.nb_kill = 0#compte le nb de kill de mob fait au long de tt les vagues
+        self.nb_balle_rate = 0
         
         pyxel.run(self.update, self.draw)
         
@@ -92,6 +95,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.liste_armes = [Armes("Principale",10,1,self,self.player),Armes("Principale",10,10,self,self.player)]
         self.arme_principale = 0
         self.num_vague =0
+        self.nb_kill = 0
 
 
     
@@ -149,17 +153,19 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                     if not mob.is_alive():
                         self.liste_mob.remove(mob)
                 
-                for balle in self.liste_balles:#fais bouger les balles
+                for balle in self.liste_balles:#fais bouger les balles et gère la suppression de celles -ci si on va trop loin
                     balle.move()
                     if balle.is_alive == False:
                         self.liste_balles.remove(balle)
+                        self.nb_balle_rate +=1
 
                 for balle in self.liste_balles:#collisions enbtre balle et mobs
                     for mob in self.liste_mob:
                         if self.collisions(mob,balle):
                             self.liste_mob.remove(mob)
                             self.liste_balles.remove(balle)
-                            self.player.score += 1
+                            self.nb_kill +=1#augmente le nb de kill de la partie
+
                             
                 #implémentation de la fin de la vague
                 
@@ -327,7 +333,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         elif self.etape_stat ==1:
             
             opt= ["vie : "+str(self.player.vie_max), "degats / attaques : "+str(self.player.attaque),"defense : "+str(self.player.defense), "vitesse : "+str(self.player.vitesse),
-                  "ennemis touches : ", "ennemis rates : "]
+                  "ennemis tues : "+str(self.nb_kill), "balles rates : "+str(self.nb_balle_rate)]
             for i in range(len(opt)):
                 pyxel.text(0, 0+8*i, opt[i], 12)
             
@@ -449,7 +455,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.liste_mob = []
         self.num_vague +=1
         self.changer_menu("Playing")
-        self.temps_vague =int(self.temps_vague_initiale* ((self.num_vague+1) *self.liste_difficulte[int(self.difficulte_choisi)]))#cycle de vague/amelioration voir ligne44
+        self.temps_vague = int(self.temps_vague_initiale* ((self.num_vague+1) *self.liste_difficulte[int(self.difficulte_choisi)]))#cycle de vague/amelioration voir ligne44
         self.etape_stat = 0
         
         
@@ -477,7 +483,7 @@ class Player: #classe qui cree le joueur
         self.liste_explosions = []
         self.taille = 5
         self.i =0# variable qui permet de compter chaque iteration de la fonction update et permet d'enlever dépendance a pyxel.frame_count
-        self.score = 0
+        self.autoshoot = True
         
         # TODO: changer de skin à la fin de chaque vague
         # self.num_skin ={0:[[x, y, img, u, v, w, h],[x, y, img, u, v, w, h]]}#comporte l'id du skin et les différentes animations
@@ -531,11 +537,20 @@ class Player: #classe qui cree le joueur
                 if (self.y > 0) : 
                     self.y = self.y - self.vitesse
                     
+            if self.autoshoot == True:
+                if  self.i%20 == 0:
+                    self.game_instance.liste_armes[self.game_instance.arme_principale].creer_balle()
             
-            if  self.i%20 == 0:
-                self.game_instance.liste_armes[self.game_instance.arme_principale].creer_balle()
-
+            elif self.autoshoot == False: 
+                if pyxel.btn(pyxel.KEY_SPACE):
+                    if self.i%20 == 0:
+                        self.game_instance.liste_armes[self.game_instance.arme_principale].creer_balle()
                 
+            if pyxel.btnr(pyxel.KEY_M):
+                if self.autoshoot == True:
+                    self.autoshoot = False
+                elif self.autoshoot == False:
+                    self.autoshoot = True
                 
 
             
@@ -702,6 +717,7 @@ class Bullets:
 
         if ((self.x<0 or self.x > pyxel.width) or (self.y<0 or self.y > pyxel.height)):
             self.is_alive = False
+            
 
     def draw(self):
         pyxel.rect(self.x,self.y, 2,2,9)
@@ -744,10 +760,7 @@ class Mob:
         self.player = player
     
 
-    def degat(self):
-        """change la vie du mob"""
-        self.vie -= 1
-    
+       
     def is_alive(self):
         """renvoie True si le mob est mort"""
         if self.vie > 0:
