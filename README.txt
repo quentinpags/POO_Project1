@@ -28,8 +28,11 @@ Description de la mission:
 
 
 Commandes utilisables:
-    ZQSD, touche directionnelles pour se déplacer
+    ZQSD pour se déplacer 
     Barre espace pour attaquer (visee attaque dans le sens ou on va)
+    U pour changer d'arme
+    touche directionnelles pour viser avec les armes
+
 
 
 ----------------------------------------------
