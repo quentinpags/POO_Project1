@@ -37,13 +37,16 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.counter = self.fps*3 #decompte avant fin du jeu pour que l'explosion marche bien 30 est le nb de frame par seconde
         
         
+        self.difficulte_max = 100
+        self.liste_difficulte = [0.75]#liste des difficultés possible
+        self.difficulte_choisi = 1
         
         self.liste_difficulte = [1.3, 1.5 ,2]#liste des difficultés possible
         #facile difficile et infernale
         self.difficulte_choisi = 0
         self.num_vague = 0
-        self.temps_vague_initiale = 10#variable qui ne change pas#temps par défaut de la vague
-        self.temps_vague = int(self.temps_vague_initiale* ((self.num_vague+1) *self.liste_difficulte[int(self.difficulte_choisi)]))#temps avant fin de la vague en frame
+        self.temps_vague_initiale = 1000000000000000#variable qui ne change pas#temps par défaut de la vague
+        self.temps_vague = 100#temps avant fin de la vague en frame
         
         #stat
         self.nb_kill = 0#compte le nb de kill de mob fait au long de tt les vagues
@@ -85,7 +88,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
     def reset_partie(self):
         """méthode qui permet de relancer une partie après une défaite, tt reset au niveau de départ"""
-        
+        self.difficulte_choisi = 0
         self.changer_menu("Playing")
         self.position_curseur = 0
         self.player = Player("JOUEUR1",self)
@@ -134,7 +137,8 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         if self.player.is_alive(): # boucle du jeu qui verifie si le joueur est mort
                 #ici si le player est vivant
                 self.player.update()
-                if pyxel.frame_count %90 ==0:
+                
+                if self.player.i %(self.difficulte_max - self.difficulte_choisi) ==0:
                     self.liste_mob.append(Mob(10,10,10,10,self.player))
                     # faire apparaitre les mobs dans une liste
 
@@ -159,7 +163,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                     for mob in self.liste_mob:
                         if self.collisions(mob,balle):
                             self.liste_mob.remove(mob)
-                            self.liste_balles.remove(balle)
+                            balle.is_alive = False
                             self.nb_kill +=1#augmente le nb de kill de la partie
 
                             
@@ -478,7 +482,8 @@ class Player: #classe qui cree le joueur
         self.cote = "g"#va a gauche
         self.liste_explosions = []
         self.taille = 5
-        self.i =0# variable qui permet de compter chaque iteration de la fonction update et permet d'enlever dépendance a pyxel.frame_count
+        self.i =0# variable qui permet de compter chaque iteration de la fonction update et permet d'enlever dépendance a pyxel.frame_count, se met a jour quand le player est update donc quand le jeu est en train de tourner (evite les bugs avec les pauses) 
+        
         self.autoshoot = True
         self.tir_possible = True#permet de fluidifier le tir
         # TODO: changer de skin à la fin de chaque vague
