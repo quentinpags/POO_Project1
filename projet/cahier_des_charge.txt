@@ -33,13 +33,12 @@ TODO:
 -> régler le fait que l'on puisse aller plus vite en diagonale
 -> système de vague
 -> rajouter différents mode de difficulté, avec plus de mob et plus de temps de vague
--> remettre en place le framecount originel
+
 -> ajouter une difficulté facile et difficile dans laquel mob font moins de dégats, vagues durent moins longtemps...
 -> ajouter une difficulté croissante DANS les vagues
 
--> ajouter possibilité autoshoot
--> ajouter une variable rechargement qui ne prend plus en compte i mais une variable a part afin 
-de pouvoir tirer quand on veut, sans supprimer le cooldown
+-> choisir rapidité des balles, dégats des balles et des mobs et vitesse entre chaque attaque d'une arme
+
 
 
 

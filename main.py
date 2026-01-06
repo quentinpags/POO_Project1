@@ -8,44 +8,49 @@ import random
         
 class Game: #classe qui cree le jeu et qui possede la boucle de jeu
     def __init__(self,width:int,height:int,nom_jeu:str):
-        self.width = width
-        self.height = height
-        self.nom = nom_jeu #str
-        self.hitbox = False
+        self.width = width#largeur ecran
+        self.height = height#hauteur ecran
+        self.nom = nom_jeu #nom du jeu en str
+        self.hitbox = False#affiche hitbox avec True et
         self.pos_cible = [0,0]#position vers lequel les mobs se dirigent
         
         
         
         self.liste_menu = ["Playing", "GameOver", "Start", "Amelioration"]#liste des menus disponibles
-        self.pause = False
+        self.pause = False#en pause si True et jouable quand False
         
         
-        
-        self.menu_actuel = "Start" 
-        self.fps = 30
+        self.menu_actuel = "Start"
+        self.fps = 30#nombre de frame que le jeu affiche par seconde
         pyxel.init(self.width, self.height, title= "Potato et Le Royaume Infesté",fps=self.fps) #initialisation du jeu
         
-        self.etape_stat = 0 #après chauqe fin de vague 0 -> choix des stat 1-> reprendre la partie
-        self.position_curseur = 0
-        self.player = Player("JOUEUR1",self)
+        self.etape_stat = 0 #après chaque fin de vague 0 -> choix des stat 1-> reprendre la partie
+        self.position_curseur = 0#position du curseur qui permet de choisir quel option on choisit dans les menus
+        self.player = Player("JOUEUR1",self)#initialisation joueur
+        
+        #Creation de liste qui garderont les valeurs de leurs classes respectives
         self.liste_mob = []
         self.liste_balles = []
         self.liste_armes = [Armes("Principale",10,1,self,self.player),Armes("Principale",10,10,self,self.player)]
 
-        self.arme_principale = 0
+        self.arme_principale = 0#arme utilisé à un temps t
         self.counter = self.fps*3 #decompte avant fin du jeu pour que l'explosion marche bien 30 est le nb de frame par seconde
         
         
         self.difficulte_max = 100
         self.liste_difficulte = [0.75]#liste des difficultés possible
         self.difficulte_choisi = 1
+        
+        self.liste_difficulte = [1.3, 1.5 ,2]#liste des difficultés possible
+        #facile difficile et infernale
+        self.difficulte_choisi = 0
         self.num_vague = 0
         self.temps_vague_initiale = 1000000000000000#variable qui ne change pas#temps par défaut de la vague
         self.temps_vague = 100#temps avant fin de la vague en frame
         
         #stat
         self.nb_kill = 0#compte le nb de kill de mob fait au long de tt les vagues
-        self.nb_balle_rate = 0
+        self.nb_balle_rate = 0#statistique pour entre chaque vague
         
         pyxel.run(self.update, self.draw)
         
@@ -73,8 +78,9 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             return True
     
     def changer_arme_principale(self):
+        """change l'arme principale avec la suivante dans la liste des liste_armes possible"""
         dernier_indice_possible = len(self.liste_armes) -1
-        if dernier_indice_possible ==self.arme_principale:
+        if dernier_indice_possible == self.arme_principale:
             self.arme_principale = 0
 
         else:
@@ -104,18 +110,18 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
 
     def update(self):     
         """Fonction qui est appelée par pyxel pour mettre a jour le jeu"""
-        if self.menu_actuel == "Playing":
-            if pyxel.btnp(pyxel.KEY_P):
+        
+        if self.menu_actuel == "Playing":#menu de combat contre les mobs
+            if pyxel.btnp(pyxel.KEY_P):#pour mettre une pause
                 if self.pause == False:
                     self.pause =True
-                
                 else:
                     self.pause = False
-                    
             if self.pause == False:
                 self.update_playing()
-        
-        # if self.menu_actuel == "Playing" and self.pause == True:
+                
+        #-------------------------------------
+        #commande de débug et/ou d'aide au dev
         if pyxel.btn(pyxel.KEY_O):
             pyxel.mouse(False)
             print(pyxel.mouse_x, pyxel.mouse_y)
@@ -123,20 +129,13 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         if pyxel.btn(pyxel.KEY_I):
             pyxel.mouse(True)
 
-        
-
-
-            
-
-
-            
+     
 
     def update_playing(self):
         """Fonction qui lorsque le mode de jeu est playing met le jeu à jour"""
                 
         if self.player.is_alive(): # boucle du jeu qui verifie si le joueur est mort
                 #ici si le player est vivant
-                #mettre la suite du jeu ici
                 self.player.update()
                 
                 if self.player.i %(self.difficulte_max - self.difficulte_choisi) ==0:
@@ -486,7 +485,7 @@ class Player: #classe qui cree le joueur
         self.i =0# variable qui permet de compter chaque iteration de la fonction update et permet d'enlever dépendance a pyxel.frame_count, se met a jour quand le player est update donc quand le jeu est en train de tourner (evite les bugs avec les pauses) 
         
         self.autoshoot = True
-        
+        self.tir_possible = True#permet de fluidifier le tir
         # TODO: changer de skin à la fin de chaque vague
         # self.num_skin ={0:[[x, y, img, u, v, w, h],[x, y, img, u, v, w, h]]}#comporte l'id du skin et les différentes animations
         
@@ -544,10 +543,12 @@ class Player: #classe qui cree le joueur
                     self.game_instance.liste_armes[self.game_instance.arme_principale].creer_balle()
             
             elif self.autoshoot == False: 
-                if pyxel.btn(pyxel.KEY_SPACE):
-                    if self.i%20 == 0:
+                if self.i%20 == 0 or self.tir_possible ==True:
+                    if pyxel.btn(pyxel.KEY_SPACE):
                         self.game_instance.liste_armes[self.game_instance.arme_principale].creer_balle()
-                
+                        self.tir_possible = False
+                    else:
+                       self.tir_possible = True 
             if pyxel.btnr(pyxel.KEY_M):
                 if self.autoshoot == True:
                     self.autoshoot = False
