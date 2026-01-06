@@ -39,11 +39,11 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
         self.difficulte_max = 100
         self.liste_difficulte = [0.75]#liste des difficultés possible
-        self.difficulte_choisi = 1
+        self.difficulte_choisie = 1
         
         self.liste_difficulte = [1.3, 1.5 ,2]#liste des difficultés possible
         #facile difficile et infernale
-        self.difficulte_choisi = 0
+        self.difficulte_choisie = 0
         self.num_vague = 0
         self.temps_vague_initiale = 1000000000000000#variable qui ne change pas#temps par défaut de la vague
         self.temps_vague = 100#temps avant fin de la vague en frame
@@ -88,7 +88,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
     def reset_partie(self):
         """méthode qui permet de relancer une partie après une défaite, tt reset au niveau de départ"""
-        self.difficulte_choisi = 0
+        self.difficulte_choisie = 0
         self.changer_menu("Playing")
         self.position_curseur = 0
         self.player = Player("JOUEUR1",self)
@@ -138,7 +138,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 #ici si le player est vivant
                 self.player.update()
                 
-                if self.player.i %(self.difficulte_max - self.difficulte_choisi) ==0:
+                if self.player.i %(self.difficulte_max - self.difficulte_choisie) ==0:
                     self.liste_mob.append(Mob(10,10,10,10,self.player))
                     # faire apparaitre les mobs dans une liste
 
@@ -455,7 +455,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.liste_mob = []
         self.num_vague +=1
         self.changer_menu("Playing")
-        self.temps_vague = int(self.temps_vague_initiale* ((self.num_vague+1) *self.liste_difficulte[int(self.difficulte_choisi)]))#cycle de vague/amelioration voir ligne44
+        self.temps_vague = int(self.temps_vague_initiale* ((self.num_vague+1) *self.liste_difficulte[int(self.difficulte_choisie)]))#cycle de vague/amelioration voir ligne44
         self.etape_stat = 0
         
         
