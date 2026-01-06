@@ -36,7 +36,10 @@ TODO:
 -> remettre en place le framecount originel
 -> ajouter une difficulté facile et difficile dans laquel mob font moins de dégats, vagues durent moins longtemps...
 -> ajouter une difficulté croissante DANS les vagues
--> ajouter nb de kill
+
+-> ajouter possibilité autoshoot
+-> ajouter une variable rechargement qui ne prend plus en compte i mais une variable a part afin 
+de pouvoir tirer quand on veut, sans supprimer le cooldown
 
 
 
