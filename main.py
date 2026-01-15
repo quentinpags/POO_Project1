@@ -50,7 +50,6 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
         #stat
         self.nb_kill = 0#compte le nb de kill de mob fait au long de tt les vagues
-        self.nb_balle_rate = 0#statistique pour entre chaque vague
         
         pyxel.run(self.update, self.draw)
         
@@ -142,7 +141,22 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                     self.liste_mob.append(Mob(10,10,10,10,self.player))
                     # faire apparaitre les mobs dans une liste
 
-                for mob in self.liste_mob:
+
+                for balle in self.liste_balles:#fais bouger les balles et gère la suppression de celles -ci si on va trop loin
+                    balle.move()
+                    if balle.is_alive == False:
+                        self.liste_balles.remove(balle)
+
+                
+                    for mob in self.liste_mob:
+                        if self.collisions(mob,balle):
+                            mob.degat(1) #changer valeur degats
+                            balle.is_alive = False
+                        if not mob.is_alive():
+                            self.nb_kill +=1#augmente le nb de kill de la partie
+
+
+                for mob in self.liste_mob:#verifie collision entre le joueur et le mob et donne des dégats au joueur si collision
                     if pyxel.frame_count % 15 ==0:
                         self.pos_cible = [self.player.x,self.player.y] #envoie cible des mobs pour ajouter un deplacement moins linéaire
                     if self.collisions(self.player,mob):
@@ -153,18 +167,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                     if not mob.is_alive():
                         self.liste_mob.remove(mob)
                 
-                for balle in self.liste_balles:#fais bouger les balles et gère la suppression de celles -ci si on va trop loin
-                    balle.move()
-                    if balle.is_alive == False:
-                        self.liste_balles.remove(balle)
-                        self.nb_balle_rate +=1
-
-                for balle in self.liste_balles:#collisions enbtre balle et mobs
-                    for mob in self.liste_mob:
-                        if self.collisions(mob,balle):
-                            self.liste_mob.remove(mob)
-                            balle.is_alive = False
-                            self.nb_kill +=1#augmente le nb de kill de la partie
+                
 
                             
                 #implémentation de la fin de la vague
@@ -333,7 +336,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         elif self.etape_stat ==1:
             
             opt= ["vie : "+str(self.player.vie_max), "degats / attaques : "+str(self.player.attaque),"defense : "+str(self.player.defense), "vitesse : "+str(self.player.vitesse),
-                  "ennemis tues : "+str(self.nb_kill), "balles rates : "+str(self.nb_balle_rate)]
+                  "ennemis tues : "+str(self.nb_kill)]
             for i in range(len(opt)):
                 pyxel.text(0, 0+8*i, opt[i], 12)
             
@@ -782,6 +785,7 @@ class Mob:
             return False
     
     def degat(self,nb_degats:int):
+        """Fais descendre les Points de vie du mob en fonction du nombre de dégat reçu"""
         self.vie -= nb_degats
             
 
