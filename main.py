@@ -348,12 +348,15 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             if choix_option != None:
                 if choix_option == 0:
                     self.choix_stat(self.choix[0])
+                    self.difficulte_choisie +=1
                     
                 elif choix_option == 1:
                     self.choix_stat(self.choix[1])
+                    self.difficulte_choisie +=1
                     
                 elif choix_option == 2:
                     self.choix_stat(self.choix[2])
+                    self.difficulte_choisie +=1
                 self.etape_stat = 1
                 
                 
