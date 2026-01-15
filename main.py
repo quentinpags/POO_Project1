@@ -102,6 +102,9 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.arme_principale = 0
         self.num_vague =0
         self.nb_kill = 0
+        #stats
+        self.nb_kill = 0
+        self.nb_balles_rates =0
 
 
     
@@ -151,7 +154,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 
                     for mob in self.liste_mob:
                         if self.collisions(mob,balle):
-                            mob.degat(1) #changer valeur degats
+                            mob.degat(self.player.attaque) #degats au mob selon les points d'attaque du joueur
                             balle.is_alive = False
                         if not mob.is_alive():
                             self.nb_kill +=1#augmente le nb de kill de la partie
