@@ -45,17 +45,27 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         #facile difficile et infernale
         self.difficulte_choisie = 0
         self.num_vague = 0
-        self.temps_vague_initiale = 1000000000000000#variable qui ne change pas#temps par défaut de la vague
-        self.temps_vague = 100#temps avant fin de la vague en frame
+        self.temps_vague_initiale = 5#variable qui ne change pas#temps par défaut de la vague
+        self.temps_vague = 5#temps avant fin de la vague en frame
         
         #stat
         self.nb_kill = 0#compte le nb de kill de mob fait au long de tt les vagues
         self.nb_balle_rate = 0#statistique pour entre chaque vague
         
+        
+        self.choix = []
         pyxel.run(self.update, self.draw)
         
     
+    def afficher_aide(self):
+        """affiche une aide sur les touches pouvant etre utilisées"""
+        pyxel.text(16, self.height - self.height//4, "Mouvement : ZQSD", 8)
+        pyxel.text(16, self.height - self.height//5, "Attaquer : [ Espace ]", 8)#affiche l'aide
+        pyxel.text(16, self.height - self.height//7, "M: autoshoot on/off", 8)
+        self.affichage_curseur(pyxel.width//2 -pyxel.width //8 - 18, pyxel.height//3 +9*self.position_curseur, 9)#affiche le curseur lors du choix        
         
+    
+    
     
     def collisions(self,instance1:object,instance2:object):
         """Appelle les differentes fonctions qui vérifient les collisions
@@ -201,7 +211,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
 
 
     def draw(self):
-        """permet d'afficher le jeu"""
+        """permet d'afficher tout les éléments du jeu"""
         if self.menu_actuel =="Playing" and self.pause== False:
             pyxel.cls(0)
             if self.hitbox:
@@ -242,22 +252,25 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         # pyxel.bltm(0, 0, 0, 0, 0, self.width, self.height)A ESSAYER SUR CAPYTALE
         
         option = {0: "Jouer",
-                  1: "Sortie"}#tableau des options possible
+                  1: "Credit",
+                  2: "Sortie"}#tableau des options possible
         
         for i in range(len(option)):
             pyxel.text(pyxel.width//2 -18, pyxel.height//3 +9*i, option[i], 9)
         
-        pyxel.text(8, self.height - self.height//4, "Mouvement : ZQSD", 8)
-        pyxel.text(16, self.height - self.height//5, "Attaquer : [ Espace ]", 8)#affiche l'aide
-        self.affichage_curseur(pyxel.width//2 -pyxel.width //8 - 18, pyxel.height//3 +9*self.position_curseur, 9)#affiche le curseur lors du choix
+        self.afficher_aide()
+        
         
         
         option_choisie = self.choix_option(option)
         if  option_choisie != None:
             if option_choisie ==0:
                 self.changer_menu("Playing")
-            
             elif option_choisie ==1:
+                print("Hugo, Quentin, Felix, Gaetan")#TODO:a afficher dans la tilemap
+                
+                
+            elif option_choisie ==2:
                 webbrowser.open_new("https://www.youtube.com/watch?v=xvFZjo5PgG0")
                 pyxel.quit()
                 
@@ -271,9 +284,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         for i in range(len(option)):
             pyxel.text(pyxel.width//2 -15, pyxel.height//3 +9*i, option[i], 9)
         
-        pyxel.text(8, self.height - self.height//4, "Mouvement : ZQSD", 8)
-        pyxel.text(16, self.height - self.height//5, "Attaquer : [ Espace ]", 8)#affiche l'aide
-        self.affichage_curseur(pyxel.width//2 -pyxel.width //8 - 18, pyxel.height//3 +9*self.position_curseur, 9)
+        self.afficher_aide()
         
         
         
@@ -294,36 +305,48 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         #une note sur le gameplay, avec un commentaire?
         
         pyxel.cls(0)
-        if self.etape_stat ==0:
-            option = []
+        
+        if self.choix == []:
+            
             for i in range(1,4):
                 choix= random.random()
-                if choix <0.20:
+                self.choix.append(choix)
+            
+        
+        if self.etape_stat ==0:
+            for i in range(1,4):
+                if self.choix[i-1] <0.20:
                     #force
                     pyxel.rect(self.width//8 +20*i, self.height//2, 18, 18, 9)
+                    pyxel.text(self.width//8 +20*i, self.height//2, "Force +", 2)
                     
-                elif choix < 0.40:
+                elif self.choix[i-1] < 0.40:
                     pyxel.rect(self.width//8 +20*i, self.height//2, 18, 18, 9)#defense
-                elif choix <0.60:
+                    pyxel.text(self.width//8 +20*i, self.height//2, "Defense +", 2)
+                elif self.choix[i-1] <0.60:
                     pyxel.rect(self.width//8 +20*i, self.height//2, 18, 18, 9)#regen
-                elif choix < 0.80:
-                    pyxel.rect(self.width//8 +20*i, self.height//2, 18, 18, 9)#vie_max
+                    pyxel.text(self.width//8 +20*i, self.height//2, "Regen +",2)
+                elif self.choix[i-1] < 0.80:
+                    pyxel.rect(self.width//8 +20*i, self.height//2, 18, 18, 9)
+                    pyxel.text(self.width//8 +20*i, self.height//2, "Vie +",2)
+                    #vie_max
                 else:
                     pyxel.rect(self.width//8 +20*i, self.height//2, 18, 18, 9)#degats
+                    pyxel.text(self.width//8 +20*i, self.height//2, "Vitesse +", 2)
                     
-                option.append(choix)
                 
-            choix_option = self.choix_option(option)
+                
+            choix_option = self.choix_option(self.choix)
             
             if choix_option != None:
                 if choix_option == 0:
-                    print('choix 0')
+                    self.choix_stat(self.choix[0])
                     
                 elif choix_option == 1:
-                    print('choix 1')
+                    self.choix_stat(self.choix[1])
                     
                 elif choix_option == 2:
-                    print('choix 2')
+                    self.choix_stat(self.choix[2])
                 self.etape_stat = 1
                 
                 
@@ -359,17 +382,24 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             pyxel.rectb(100, 104, self.width-100, self.height-104, 9)#case pour montrer le skin changé
             
     def choix_stat(self, nb):
+        """ajoute des points de stat en fonction de l'aptitude choisie"""
+        
         if nb <0.20:
-            self.player.ajouter_statistique("attaque", 5)#force            
+            self.player.ajouter_statistique("attaque", 5)#force  
+            print("ajout de force")
             
         elif nb < 0.40:
             self.player.ajouter_statistique("defense", 1)#defense
+            print("ajout de defense")
         elif nb <0.60:
             self.player.ajouter_statistique("regeneration", 1)#regen
+            print("ajout de regen")
         elif nb < 0.80:
             self.player.ajouter_statistique("vie", 5)#vie_max
+            print("ajout de vie")
         else:
-            self.player.ajouter_statistique("vitesse", 1)#degats        
+            self.player.ajouter_statistique("vitesse", 1)#degats
+            print("ajout de vitesse")
             
             
     def draw_menu_fin(self):
@@ -857,7 +887,8 @@ class Explosion:
 
 
 
-    
+
 
 
 jeu = Game(128,128,"JEU")#lance le jeu
+

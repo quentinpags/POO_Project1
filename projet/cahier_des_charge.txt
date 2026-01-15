@@ -1,7 +1,7 @@
 Objectifs:
 
 1. Créer une application
-2. Interactions utilisateur
+2. Interctions utilisaateur
 3. Des acteurs multiples
 4. Gérer des collisions
 5. Utiliser des images
@@ -38,7 +38,7 @@ TODO:
 -> ajouter une difficulté croissante DANS les vagues
 
 -> choisir rapidité des balles, dégats des balles et des mobs et vitesse entre chaque attaque d'une arme
-
+-> rajouter des graphiques pour le menu des stats
 
 
 
@@ -52,7 +52,7 @@ de problèmes en l'implémentant au code principal.
 
 
 Gameplay:
--> cbien d'armes max on peut avoir? 1seule ou plusieurs
+-> cbien d'armes max on peut avoir? 1 seule ou plusieurs
 si une seule arme, les autres sont stockées dans un tableau et inutilisable
 pendant une vague
 
