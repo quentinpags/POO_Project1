@@ -16,11 +16,11 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
         
         
-        self.liste_menu = ["Playing", "GameOver", "Start", "Amelioration"]#liste des menus disponibles
+        self.liste_menu = ["Chute","Playing", "GameOver", "Start", "Amelioration"]#liste des menus disponibles
         self.pause = False#en pause si True et jouable quand False
         
         
-        self.menu_actuel = "Start"
+        self.menu_actuel = "Chute"
         self.fps = 30#nombre de frame que le jeu affiche par seconde
         pyxel.init(self.width, self.height, title= "Potato et Le Royaume Infesté",fps=self.fps) #initialisation du jeu
         
@@ -240,10 +240,28 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             
         elif self.menu_actuel == "GameOver":#si le joueur est mort
             self.draw_menu_fin()
+        
+        elif self.menu_actuel == "Chute":
+            self.draw_menu_chute(19- (pyxel.frame_count//5))
             
+        
         elif self.pause == True:
             self.draw_menu_pause()
-            
+    def draw_menu_chute(self, count):
+        pyxel.cls(0)
+        if count != 0:
+            for j in range(count):
+                s = ""
+                for i in range(18): 
+                    s= s+ str(int((random.random()*100)))
+                
+                # s.replace(".", "", -1)
+                pyxel.text(0, 0+7*j, s, 3)#3 11
+        else:
+            self.changer_menu("Start")
+        
+        
+        
     def draw_menu_start(self):
         """dessine le menu de départ lorsque le menu est 'Start' dans lequel on choisit de jouer on de quitter le jeu"""
         pyxel.cls(0)        
@@ -268,7 +286,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 self.changer_menu("Playing")
             elif option_choisie ==1:
                 print("Hugo, Quentin, Felix, Gaetan")#TODO:a afficher dans la tilemap
-                
+                webbrowser.open_new("https://github.com/quentinpags/POO_Project1")
                 
             elif option_choisie ==2:
                 webbrowser.open_new("https://www.youtube.com/watch?v=xvFZjo5PgG0")
@@ -382,7 +400,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             pyxel.rectb(100, 104, self.width-100, self.height-104, 9)#case pour montrer le skin changé
             
     def choix_stat(self, nb):
-        """ajoute des points de stat en fonction de l'aptitude choisie"""
+        """ajoute des points de stat en fonction de l'aptitude choisie dans la fonction choix_option"""
         
         if nb <0.20:
             self.player.ajouter_statistique("attaque", 5)#force  
@@ -754,10 +772,7 @@ class Bullets:
 
     def draw(self):
         pyxel.rect(self.x,self.y, 2,2,9)
-
-    
-
-        
+       
 
 class Mob:
     def __init__(self, vie:int, damage:int, attack_speed:int, vitesse:int,player:object):
@@ -814,8 +829,6 @@ class Mob:
     def degat(self,nb_degats:int):
         self.vie -= nb_degats
             
-
-        
     
     def update(self, tableau_cible:list):
         """Prend en parametre tableau contenant les coordonnes cibles vers lesquels ils doivent se deplacer 
@@ -853,10 +866,6 @@ class Mob:
             pyxel.rect(self.x-1,self.y-1,7,7,9) #7= taille mob + 2 pour que l'on voie un peu le rectangle
     
     
-        
-
-
-
 class Explosion:
     def __init__(self ,x:int,y:int,taille_max:int= 5):
         self.taille_max = taille_max
@@ -880,15 +889,6 @@ class Explosion:
             self.alive = False
         return self.alive
         
-        
-            
-
-        
-
-
-
-
-
 
 jeu = Game(128,128,"JEU")#lance le jeu
 
