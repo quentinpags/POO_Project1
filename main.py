@@ -50,6 +50,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
         #stat
         self.nb_kill = 0#compte le nb de kill de mob fait au long de tt les vagues
+        self.nb_balles_rates = 0
         
         pyxel.run(self.update, self.draw)
         
@@ -336,7 +337,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         elif self.etape_stat ==1:
             
             opt= ["vie : "+str(self.player.vie_max), "degats / attaques : "+str(self.player.attaque),"defense : "+str(self.player.defense), "vitesse : "+str(self.player.vitesse),
-                  "ennemis tues : "+str(self.nb_kill)]
+                  "ennemis tues : "+str(self.nb_kill),"balles rates : "+str(self.nb_balles_rates)]
             for i in range(len(opt)):
                 pyxel.text(0, 0+8*i, opt[i], 12)
             
@@ -698,15 +699,17 @@ class Armes:
         self.game_instance.liste_balles.append(Bullets(self.player_instance.x,
                                                         self.player_instance.y,
                                                         self.player_instance.cote,
+                                                        self.game_instance,
                                                         self.vitesse))
 
 class Bullets:
-    def __init__(self,x:int,y:int,direction:str,vitesse:int = 1):
+    def __init__(self,x:int,y:int,direction:str,game_instance:object,vitesse:int = 1,):
         self.x = x
         self.y = y
         self.direction = direction #"g"gauche,"d"droite,"b"bas,"h"haut
         self.vitesse = vitesse
         self.is_alive = True
+        self.game_instance = game_instance
 
     def move(self):
         if self.direction == "g":
@@ -723,6 +726,7 @@ class Bullets:
 
         if ((self.x<0 or self.x > pyxel.width) or (self.y<0 or self.y > pyxel.height)):
             self.is_alive = False
+            self.game_instance.nb_balles_rates +=1
             
 
     def draw(self):
