@@ -87,8 +87,10 @@ Fragmentation du projet en plusieurs parties :
         -Creation systeme mobs suivent le joueur en retard comme des zombies (partie-faits)(les mobs se stackent)
         -Creation animation de degat, mort(fait)
         -Creation de balles
+        -Création collisions
+        -dégat des balles
 
         TODO
         -Création des vagues (ennemis arrivent de + en + puissant)
-        -Création collisions
+        
 
