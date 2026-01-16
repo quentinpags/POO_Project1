@@ -16,11 +16,11 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
         
         
-        self.liste_menu = ["Chute","Playing", "GameOver", "Start", "Amelioration"]#liste des menus disponibles
+        self.liste_menu = ["Playing", "GameOver", "Start", "Amelioration"]#liste des menus disponibles
         self.pause = False#en pause si True et jouable quand False
         
         
-        self.menu_actuel = "Chute"
+        self.menu_actuel = "Start"
         self.fps = 30#nombre de frame que le jeu affiche par seconde
         pyxel.init(self.width, self.height, title= "Potato et Le Royaume Infesté",fps=self.fps) #initialisation du jeu
         
@@ -124,6 +124,10 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
     def update(self):     
         """Fonction qui est appelée par pyxel pour mettre a jour le jeu"""
         
+        
+        
+        
+        
         if self.menu_actuel == "Playing":#menu de combat contre les mobs
             if pyxel.btnp(pyxel.KEY_P):#pour mettre une pause
                 if self.pause == False:
@@ -221,6 +225,8 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         """permet d'afficher tout les éléments du jeu"""
         if self.menu_actuel =="Playing" and self.pause== False:
             pyxel.cls(0)
+            
+            
             if self.hitbox:
                 self.player.draw_hitbox()
     
@@ -247,16 +253,19 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             
         elif self.menu_actuel == "GameOver":#si le joueur est mort
             self.draw_menu_fin()
-        
-        elif self.menu_actuel == "Chute":
-            self.draw_menu_chute(19- (pyxel.frame_count//5))
             
         
-        elif self.pause == True:
+        self.draw_chute_nb(19- (pyxel.frame_count//7))
+        
+        
+            
+        
+        if self.pause == True:
             self.draw_menu_pause()
-    def draw_menu_chute(self, count):
-        pyxel.cls(0)
+    def draw_chute_nb(self, count):
+        #(19- (pyxel.frame_count//7))
         if count != 0:
+            pyxel.rect(0, 0, 128, 131-(7*(19-count)), 0)
             for j in range(count):
                 s = ""
                 for i in range(18): 
@@ -264,8 +273,8 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 
                 # s.replace(".", "", -1)
                 pyxel.text(0, 0+7*j, s, 3)#3 11
-        else:
-            self.changer_menu("Start")
+            
+
         
         
         
