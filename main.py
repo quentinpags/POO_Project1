@@ -53,8 +53,13 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
         
         self.choix = []
+
+        #Load la timelape nommé "res.pyrex"
         pyxel.run(self.update, self.draw)
-        
+
+        #Postion de la camera
+        self.cam_x = 0
+        self.cam_y = 0    
     
     def afficher_aide(self):
         """affiche une aide sur les touches pouvant etre utilisées"""
@@ -152,6 +157,8 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 
         if self.player.is_alive(): # boucle du jeu qui verifie si le joueur est mort
                 #ici si le player est vivant
+                self.cam_x = max(0, self.player.x - self.width // 2 + 2) #On evite qu'il puisse sortir de la tilemap
+                self.cam_y = max(0, self.player.y - self.height // 2 + 2) #On evite aussi qu'il puisse sortir de la tilemap
                 self.player.update()
                 
                 if self.player.i %int((self.num_vague+1)*(70 - self.liste_difficulte[int(self.difficulte_choisie)])) ==0:
@@ -223,14 +230,16 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
     def draw(self):
         """permet d'afficher tout les éléments du jeu"""
         if self.menu_actuel =="Playing" and self.pause== False:
+            #On règle la camera
+            pyxel.camera(self.cam_x, self.cam_y)
             pyxel.cls(0)
             
+            #On dessine la tilemap
+            pyxel.bltm(0,0,0, self.cam_x, self.cam_y, 1000, 1000)
             
             if self.hitbox:
                 self.player.draw_hitbox()
     
-            
-
             for mob in self.liste_mob:
                     if self.hitbox:
                         mob.draw_hitbox()
@@ -238,9 +247,11 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             for balle in self.liste_balles:
                 balle.draw()
 
-
             self.player.draw()
             
+            #On remet la camera à 0,0 pour garder l'UI fixe
+            pyxel.camera()
+
             pyxel.text(self.width-15, 5, str(self.temps_vague), 7)#affiche le temps restant avant la fin de la vague
             pyxel.text(self.width//2, 5,str(self.num_vague), 7)#affiche num de vague
         
@@ -590,23 +601,23 @@ class Player: #classe qui cree le joueur
         """Fonction qui permet de gérer la fonctions des touches"""
 
         if self.is_alive():
-            if pyxel.btn(pyxel.KEY_D):
-                # self.cote = "d"
-                if (self.x < pyxel.width-5) :#eviter de sortir de l'écran
+            if pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_D):
+                self.cote = "d"
+                if (self.x < 348) :#eviter de sortir de l'écran
                     self.x = self.x + self.vitesse
 
-            if pyxel.btn(pyxel.KEY_Q):
-                # self.cote = "g"
+            if pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.KEY_Q):
+                self.cote = "g"
                 if (self.x > 0) :
                     self.x = self.x - self.vitesse
                     
 
-            if pyxel.btn(pyxel.KEY_S):
-                # self.cote = 'b'
-                if (self.y < pyxel.height-5) :
+            if pyxel.btn(pyxel.KEY_DOWN) or pyxel.btn(pyxel.KEY_S):
+                self.cote = 'b'
+                if (self.y <380) : #eviter de sortir de l'écran
                     self.y = self.y + self.vitesse
-            if pyxel.btn(pyxel.KEY_Z):
-                # self.cote = 'h'
+            if pyxel.btn(pyxel.KEY_UP) or pyxel.btn(pyxel.KEY_Z):
+                self.cote = 'h'
                 if (self.y > 0) : 
                     self.y = self.y - self.vitesse
                     
