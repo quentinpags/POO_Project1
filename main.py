@@ -13,7 +13,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.nom = nom_jeu #nom du jeu en str
         self.hitbox = False#affiche hitbox avec True et
         self.pos_cible = [0,0]#position vers lequel les mobs se dirigent
-        
+        self.chute = True
         
         
         self.liste_menu = ["Playing", "GameOver", "Start", "Amelioration"]#liste des menus disponibles
@@ -38,12 +38,11 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
         
         self.difficulte_max = 100
-        self.liste_difficulte = [0.75]#liste des difficultés possible
-        self.difficulte_choisie = 1
+        
         
         self.liste_difficulte = [1.3, 1.5 ,2]#liste des difficultés possible
         #facile difficile et infernale
-        self.difficulte_choisie = 0
+        self.difficulte_choisie = 0#indice du niveau de difficulté prenant ses valeurs dans liste_difficulte
         self.num_vague = 0
         self.temps_vague_initiale = 5#variable qui ne change pas#temps par défaut de la vague
         self.temps_vague = 5#temps avant fin de la vague en frame
@@ -98,7 +97,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
     def reset_partie(self):
         """méthode qui permet de relancer une partie après une défaite, tt reset au niveau de départ"""
-        self.difficulte_choisie = 0
+        
         self.changer_menu("Playing")
         self.position_curseur = 0
         self.player = Player("JOUEUR1",self)
@@ -155,7 +154,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 #ici si le player est vivant
                 self.player.update()
                 
-                if self.player.i %(self.difficulte_max - self.difficulte_choisie) ==0:
+                if self.player.i %int((self.num_vague+1)*(70 - self.liste_difficulte[int(self.difficulte_choisie)])) ==0:
                     self.liste_mob.append(Mob(10,10,10,10,self.player))
                     # faire apparaitre les mobs dans une liste
 
@@ -255,7 +254,9 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             self.draw_menu_fin()
             
         
-        self.draw_chute_nb(19- (pyxel.frame_count//7))
+        if self.chute:
+            #ligne a modifier si on veut le réutiliser
+            self.draw_chute_nb(19- (pyxel.frame_count//7))
         
         
             
@@ -273,6 +274,8 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 
                 # s.replace(".", "", -1)
                 pyxel.text(0, 0+7*j, s, 3)#3 11
+        else:
+            self.chute = False
             
 
         
@@ -375,15 +378,15 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             if choix_option != None:
                 if choix_option == 0:
                     self.choix_stat(self.choix[0])
-                    self.difficulte_choisie +=1
+                    
                     
                 elif choix_option == 1:
                     self.choix_stat(self.choix[1])
-                    self.difficulte_choisie +=1
+                    
                     
                 elif choix_option == 2:
                     self.choix_stat(self.choix[2])
-                    self.difficulte_choisie +=1
+                    
                 self.etape_stat = 1
                 
                 
@@ -403,8 +406,10 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             
             choix_option = self.choix_option(option)
             if choix_option == 0:
+                self.player.vie = self.player.vie_max
                 self.changer_menu("Playing")
                 self.creer_nouv_vague()
+                self.choix = []
             
             elif choix_option == 1:
                 print('In Development...')#TODO
@@ -426,10 +431,10 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             print("ajout de force")
             
         elif nb < 0.40:
-            self.player.ajouter_statistique("defense", 1)#defense
+            self.player.ajouter_statistique("defense", 0.05)#defense#5% de dégats en -
             print("ajout de defense")
         elif nb <0.60:
-            self.player.ajouter_statistique("regeneration", 1)#regen
+            self.player.ajouter_statistique("regeneration", 5)#regen
             print("ajout de regen")
         elif nb < 0.80:
             self.player.ajouter_statistique("vie", 5)#vie_max
@@ -507,7 +512,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         if self.position_curseur > len(liste_option)-1:
             self.position_curseur = 0
             
-        if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.KEY_KP_ENTER):
+        if  self.chute == False and (pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.KEY_KP_ENTER)):
             return self.position_curseur
         
         elif pyxel.btn(pyxel.KEY_A):#pour choisir aléatoirement un menu
@@ -655,7 +660,10 @@ class Player: #classe qui cree le joueur
         Fonction qui prend en parametre le nb de degats a enlever au joueur
         et lui enlève
         """
-        self.vie -= nb_degats
+        if self.defense <70:
+            self.vie -= (1-self.defense) *nb_degats
+        elif self.defense >=70:
+            self.vie -= 0.30 *nb_degats
         if self.vie <0:
             self.vie =0
         if self.is_alive():
