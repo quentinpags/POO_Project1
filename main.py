@@ -31,9 +31,9 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         #Creation de liste qui garderont les valeurs de leurs classes respectives
         self.liste_mob = []
         self.liste_balles = []
-        self.liste_armes = [Armes("Pistolet",10,1,self,self.player,5),
+        self.liste_armes = [Armes("Pistolet",3,1,self,self.player,5),
                             Armes("Sniper",50,5,self,self.player,20),
-                              Armes("Mitraillette",5,2,self,self.player,2)]
+                              Armes("Mitraillette",2,2,self,self.player,2)]
 
         self.arme_principale = 0#arme utilisé à un temps t
         self.counter = self.fps*3 #decompte avant fin du jeu pour que l'explosion marche bien 30 est le nb de frame par seconde
@@ -117,7 +117,6 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.temps_vague = self.temps_vague_initiale#on reprend la valeur par défaut
         
         self.etape_stat = 0 #après chauqe fin de vague 0 -> choix des stat 1-> reprendre la partie
-        self.liste_armes = [Armes("Principale",10,1,self,self.player),Armes("Principale",10,10,self,self.player)]
         self.arme_principale = 0
         self.num_vague =0
         self.nb_kill = 0
@@ -170,16 +169,15 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 if self.player.i % (30 *3) ==0:
                     if self.num_vague < 10:
                         for i in range(self.num_vague+1):
-                            self.liste_mob.append(Mob(10,10,10,10,self.player,self))
+                            self.liste_mob.append(Mob(10,10,10,self.player,self))
                             # faire apparaitre les mobs dans une liste
 
                     else: #pour les vagues après la vague 10
                         for i in range(self.num_vague):
                             vie =random.randint(self.num_vague-5,self.num_vague)
                             damage = random.randint(self.num_vague-5,self.num_vague)
-                            vitesse = random.randint(self.num_vague-5,self.num_vague)
 
-                            self.liste_mob.append(Mob(vie,damage,vitesse,10,self.player,self))
+                            self.liste_mob.append(Mob(vie,damage,10,self.player,self))
 
 
 
@@ -191,7 +189,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 
                     for mob in self.liste_mob:
                         if self.collisions(mob,balle):
-                            mob.degat(self.player.attaque*balle.balle_instance.degats) #degats au mob selon les points d'attaque du joueur
+                            mob.degat(self.player.attaque*balle.arme_instance.degats) #degats au mob selon les points d'attaque du joueur
                             balle.is_alive = False
                         if not mob.is_alive():
                             self.nb_kill +=1#augmente le nb de kill de la partie
@@ -779,7 +777,12 @@ class Player: #classe qui cree le joueur
         # pyxel.rectb(0, 0, 3.2*(i+1), 8, 2)
 class Armes:
     def __init__(self,nom:str,degats:int,vitesse:int, game_instance:object,player_instance:object,frequence:int):
-        """ Frequence : + c'est bas plus les balles sont rapprochées"""
+        """ 
+        nom: nom de l'arme
+        vitesse: vitesse des balles
+        Frequence : + c'est bas plus les balles sont rapprochées
+        """
+
         self.nom = nom
         self.degats = degats #ajouter degats aux balles
         self.vitesse = vitesse
@@ -816,7 +819,7 @@ class Bullets:
         self.vitesse = vitesse
         self.is_alive = True
         self.game_instance = game_instance
-        self.balle_instance = instance
+        self.arme_instance = instance
 
     def move(self):
         if self.direction == "g":
@@ -841,13 +844,12 @@ class Bullets:
        
 
 class Mob:
-    def __init__(self, vie:int, damage:int, attack_speed:int, vitesse:int,player:object,game_instance:object):
+    def __init__(self, vie:int, damage:int, attack_speed:int, player:object,game_instance:object):
         """initialisation de la creation de mob
         Player est la l'instance du joueur """
         self.vie = vie
         self.damage = damage
         self.attack_speed = attack_speed
-        self.vitesse = vitesse
         self.vitesse = 1
         self.taille = 5
         self.game_instance = game_instance
