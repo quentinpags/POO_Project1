@@ -164,9 +164,9 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 
                 # if self.player.i %int((self.num_vague+1)*(70 - self.liste_difficulte[int(self.difficulte_choisie)])) ==0:
                 
-                if self.player.i % 3:
+                if self.player.i % (30 *3) ==0:
                     if self.num_vague < 10:
-                        for i in range(self.num_vague):
+                        for i in range(self.num_vague+1):
                             self.liste_mob.append(Mob(10,10,10,10,self.player,self))
                             # faire apparaitre les mobs dans une liste
 
@@ -610,19 +610,19 @@ class Player: #classe qui cree le joueur
         """Fonction qui permet de gérer la fonctions des touches"""
 
         if self.is_alive():
-            if pyxel.btn(pyxel.KEY_D):
+            if pyxel.btn(pyxel.KEY_D): # aller a droite
                 if (self.x < 500) :#eviter de sortir de l'écran
                     self.x = self.x + self.vitesse
 
-            if pyxel.btn(pyxel.KEY_Q):
+            if pyxel.btn(pyxel.KEY_Q):#aller a gauche
                 if (self.x > 0) :
                     self.x = self.x - self.vitesse
                     
 
-            if pyxel.btn(pyxel.KEY_S):
+            if pyxel.btn(pyxel.KEY_S): #descendre
                 if (self.y <500) : #eviter de sortir de l'écran
                     self.y = self.y + self.vitesse
-            if pyxel.btn(pyxel.KEY_Z):
+            if pyxel.btn(pyxel.KEY_Z): #monter
                 if (self.y > 0) : 
                     self.y = self.y - self.vitesse
                     
@@ -851,19 +851,19 @@ class Mob:
         positionnement = random.randint(1,4)
         if positionnement == 1: #fait spawn les mobs en haut 
             self.x= random.randint(self.game_instance.cam_x + 2,self.game_instance.cam_x+pyxel.width-7)
-            self.y = 0
+            self.y = -5
 
         elif positionnement == 2: #fait spawn les mobs en gauche
-            self.x = self.game_instance.cam_x
+            self.x = self.game_instance.cam_x -5
             self.y = random.randint(self.game_instance.cam_y + 2,self.game_instance.cam_y + pyxel.height-7)
 
         elif positionnement == 3:#fait spawn les mobs en droite
-            self.x = self.game_instance.cam_x +pyxel.width-7
+            self.x = self.game_instance.cam_x +pyxel.width
             self.y = random.randint(self.game_instance.cam_y + 2, self.game_instance.cam_y +pyxel.height-7)
 
         elif positionnement == 4: #fais spawn les mobs en bas
             self.x = random.randint(self.game_instance.cam_x + 2, self.game_instance.cam_x +pyxel.width-7)
-            self.y = self.game_instance.cam_y + pyxel.width-7
+            self.y = self.game_instance.cam_y + pyxel.width
 
 
         self.cooldown_state = 3
@@ -901,24 +901,27 @@ class Mob:
 
 
         if self.peut_bouger():
-            """verifie si le mob peut jouer -> verifie son cooldown est ok;
-            permet que le mob avance de maniere plus 'zombie' """
-            player_x = tableau_cible[0]
-            player_y = tableau_cible[1]
-            mob_x = self.x
-            mob_y = self.y
+            #verifie si le mob peut jouer -> verifie son cooldown est ok;permet que le mob avance de maniere plus 'zombie' 
+            self.move(tableau_cible)
             
-            if player_y-5 >= mob_y:
-                self.y += self.vitesse
+    def move(self, tableau_cible:list):
+        """Deplace le mob vers le joueur """
+        player_x = tableau_cible[0]
+        player_y = tableau_cible[1]
+        mob_x = self.x
+        mob_y = self.y
+        
+        if player_y-5 >= mob_y:
+            self.y += self.vitesse
 
-            elif player_y+5 <= mob_y:
-                self.y -= self.vitesse
+        elif player_y+5 <= mob_y:
+            self.y -= self.vitesse
 
-            if player_x+5 <= mob_x:
-                self.x -= self.vitesse
+        if player_x+5 <= mob_x:
+            self.x -= self.vitesse
 
-            elif player_x-5 >= mob_x:
-                self.x += self.vitesse
+        elif player_x-5 >= mob_x:
+            self.x += self.vitesse
 
     def draw(self):
         """Dessine le Mob"""
