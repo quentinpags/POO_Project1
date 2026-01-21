@@ -61,6 +61,9 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.cam_x = 0
         self.cam_y = 0    
     
+    
+    
+    
     def afficher_aide(self):
         """affiche une aide sur les touches pouvant etre utilisées"""
         pyxel.text(16, self.height - self.height//4, "Mouvement : ZQSD", 8)
@@ -161,7 +164,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 self.cam_y = max(0, self.player.y - self.height // 2 + 2) #On evite aussi qu'il puisse sortir de la tilemap
                 self.player.update()
                 
-                if self.player.i %int((self.num_vague+1)*(70 - self.liste_difficulte[int(self.difficulte_choisie)])) ==0:
+                if self.player.i %int((60*self.liste_difficulte[int(self.difficulte_choisie)])//(self.num_vague+1)) ==0:
                     self.liste_mob.append(Mob(10,10,10,10,self.player))
                     # faire apparaitre les mobs dans une liste
 
@@ -267,7 +270,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
         if self.chute:
             #ligne a modifier si on veut le réutiliser
-            self.draw_chute_nb(19- (pyxel.frame_count//7))
+            self.draw_chute_nb(19- (pyxel.frame_count//3))
         
         
             
@@ -750,6 +753,7 @@ class Player: #classe qui cree le joueur
         
         
         if self.vie >=1:
+            
             pyxel.rect(1, 1, length*(self.vie/self.vie_max), height, col)
             pyxel.rect(1+length*(self.vie/self.vie_max), 1, length - length*(self.vie/self.vie_max), height, 0)
             
