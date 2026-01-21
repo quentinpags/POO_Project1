@@ -67,7 +67,7 @@ Les Objectifs dans ce jeu sont:
 
 Fragmentation du projet en plusieurs parties :
     Gaetan:
-        - Création des textures: ennemis, pv
+        - Création des textures: ennemis, pv, balles, player, sol ( à finir player, graphismes pratiquement finis)
 
         TODO:
         -Creation des textures : player,sol,balles
