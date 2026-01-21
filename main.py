@@ -176,7 +176,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 
                     for mob in self.liste_mob:
                         if self.collisions(mob,balle):
-                            mob.degat(self.player.attaque) #degats au mob selon les points d'attaque du joueur
+                            mob.degat(self.player.attaque*balle.balle_instance.degats) #degats au mob selon les points d'attaque du joueur
                             balle.is_alive = False
                         if not mob.is_alive():
                             self.nb_kill +=1#augmente le nb de kill de la partie
@@ -771,7 +771,7 @@ class Armes:
     def __init__(self,nom:str,degats:int,vitesse:int, game_instance:object,player_instance:object,frequence:int):
         """ Frequence : + c'est bas plus les balles sont rapprochées"""
         self.nom = nom
-        self.dagats = degats #ajouter degats aux balles
+        self.degats = degats #ajouter degats aux balles
         self.vitesse = vitesse
         self.game_instance = game_instance
         self.player_instance = player_instance
@@ -794,16 +794,19 @@ class Armes:
                                                         self.player_instance.y,
                                                         self.player_instance.cote,
                                                         self.game_instance,
-                                                        self.vitesse))
+                                                        self,
+                                                        self.vitesse
+                                                        ))
 
 class Bullets:
-    def __init__(self,x:int,y:int,direction:str,game_instance:object,vitesse:int = 1,):
+    def __init__(self,x:int,y:int,direction:str,game_instance:object,instance,vitesse:int = 1,):
         self.x = x
         self.y = y
         self.direction = direction #"g"gauche,"d"droite,"b"bas,"h"haut
         self.vitesse = vitesse
         self.is_alive = True
         self.game_instance = game_instance
+        self.balle_instance = instance
 
     def move(self):
         if self.direction == "g":
