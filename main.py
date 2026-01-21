@@ -63,6 +63,9 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.cam_x = 0
         self.cam_y = 0    
     
+    
+    
+    
     def afficher_aide(self):
         """affiche une aide sur les touches pouvant etre utilisées"""
         pyxel.text(16, self.height - self.height//4, "Mouvement : ZQSD", 8)
@@ -281,7 +284,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
         if self.chute:
             #ligne a modifier si on veut le réutiliser
-            self.draw_chute_nb(19- (pyxel.frame_count//7))
+            self.draw_chute_nb(19- (pyxel.frame_count//3))
         
         
             
@@ -758,6 +761,7 @@ class Player: #classe qui cree le joueur
         
         
         if self.vie >=1:
+            
             pyxel.rect(1, 1, length*(self.vie/self.vie_max), height, col)
             pyxel.rect(1+length*(self.vie/self.vie_max), 1, length - length*(self.vie/self.vie_max), height, 0)
             
