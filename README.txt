@@ -89,8 +89,9 @@ Fragmentation du projet en plusieurs parties :
         -Creation de balles
         -Création collisions
         -dégat des balles
-
-        TODO
         -Création des vagues (ennemis arrivent de + en + puissant)
+
+        TODO:
+        
         
 
