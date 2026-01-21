@@ -821,7 +821,7 @@ class Bullets:
         elif self.direction == "h":
             self.y -=self.vitesse
 
-        if ((self.x<0 or self.x > pyxel.width) or (self.y<0 or self.y > pyxel.height)):
+        if ((self.x<0 or self.x > 500) or (self.y<0 or self.y > 500)):
             self.is_alive = False
             self.game_instance.nb_balles_rates +=1
             
