@@ -41,7 +41,7 @@ TODO:
 -> rajouter la défense(fait), la probabilité d'esquiver une attaque et la régénération progressive de la vie dans le temps(a voir si on rajoute)
 
 -> ajouter une limite à l'augmentation de certaines statistique(par exemple la défense(on ne veut pas gagner de la vie en se faisant frapper))
-
+-> ajout d'un pompe
 
 
 
