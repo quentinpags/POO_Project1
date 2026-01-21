@@ -33,7 +33,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.liste_balles = []
         self.liste_armes = [Armes("Pistolet",10,1,self,self.player,5),
                             Armes("Sniper",50,5,self,self.player,20),
-                              Armes("Mitraillette",5,0.5,self,self.player,2)]
+                              Armes("Mitraillette",5,2,self,self.player,2)]
 
         self.arme_principale = 0#arme utilisé à un temps t
         self.counter = self.fps*3 #decompte avant fin du jeu pour que l'explosion marche bien 30 est le nb de frame par seconde
@@ -129,7 +129,6 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
 
     def update(self):     
         """Fonction qui est appelée par pyxel pour mettre a jour le jeu"""
-        print(len(self.liste_mob))
         
         
         
@@ -164,8 +163,21 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 self.player.update()
                 
                 # if self.player.i %int((self.num_vague+1)*(70 - self.liste_difficulte[int(self.difficulte_choisie)])) ==0:
-                self.liste_mob.append(Mob(10,10,10,10,self.player,self))
-                    # faire apparaitre les mobs dans une liste
+                
+                if self.player.i % 3:
+                    if self.num_vague < 10:
+                        for i in range(self.num_vague):
+                            self.liste_mob.append(Mob(10,10,10,10,self.player,self))
+                            # faire apparaitre les mobs dans une liste
+
+                    else: #pour les vagues après la vague 10
+                        for i in range(self.num_vague):
+                            vie =random.randint(self.num_vague-5,self.num_vague)
+                            damage = random.randint(self.num_vague-5,self.num_vague)
+                            vitesse = random.randint(self.num_vague-5,self.num_vague)
+
+                            self.liste_mob.append(Mob(vie,damage,vitesse,10,self.player,self))
+
 
 
                 for balle in self.liste_balles:#fais bouger les balles et gère la suppression de celles -ci si on va trop loin
