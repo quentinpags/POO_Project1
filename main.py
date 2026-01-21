@@ -604,7 +604,7 @@ class Player: #classe qui cree le joueur
 
         if self.is_alive():
             if pyxel.btn(pyxel.KEY_D):
-                if (self.x < 348) :#eviter de sortir de l'écran
+                if (self.x < 500) :#eviter de sortir de l'écran
                     self.x = self.x + self.vitesse
 
             if pyxel.btn(pyxel.KEY_Q):
@@ -613,7 +613,7 @@ class Player: #classe qui cree le joueur
                     
 
             if pyxel.btn(pyxel.KEY_S):
-                if (self.y <380) : #eviter de sortir de l'écran
+                if (self.y <500) : #eviter de sortir de l'écran
                     self.y = self.y + self.vitesse
             if pyxel.btn(pyxel.KEY_Z):
                 if (self.y > 0) : 
@@ -821,7 +821,7 @@ class Bullets:
         elif self.direction == "h":
             self.y -=self.vitesse
 
-        if ((self.x<0 or self.x > 500) or (self.y<0 or self.y > 500)):
+        if ((self.x<0 or self.x > 550) or (self.y<0 or self.y > 550)):
             self.is_alive = False
             self.game_instance.nb_balles_rates +=1
             
