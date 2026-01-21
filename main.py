@@ -11,7 +11,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.width = width#largeur ecran
         self.height = height#hauteur ecran
         self.nom = nom_jeu #nom du jeu en str
-        self.hitbox = False#affiche hitbox avec True et
+        self.hitbox = False #affiche hitbox avec True
         self.pos_cible = [0,0]#position vers lequel les mobs se dirigent
         self.chute = True
         
@@ -31,7 +31,9 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         #Creation de liste qui garderont les valeurs de leurs classes respectives
         self.liste_mob = []
         self.liste_balles = []
-        self.liste_armes = [Armes("Principale",10,1,self,self.player),Armes("Principale",10,10,self,self.player)]
+        self.liste_armes = [Armes("Pistolet",10,1,self,self.player,5),
+                            Armes("Sniper",50,5,self,self.player,20),
+                              Armes("Mitraillette",5,0.5,self,self.player,2)]
 
         self.arme_principale = 0#arme utilisé à un temps t
         self.counter = self.fps*3 #decompte avant fin du jeu pour que l'explosion marche bien 30 est le nb de frame par seconde
@@ -177,7 +179,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 
                     for mob in self.liste_mob:
                         if self.collisions(mob,balle):
-                            mob.degat(self.player.attaque) #degats au mob selon les points d'attaque du joueur
+                            mob.degat(self.player.attaque*balle.balle_instance.degats) #degats au mob selon les points d'attaque du joueur
                             balle.is_alive = False
                         if not mob.is_alive():
                             self.nb_kill +=1#augmente le nb de kill de la partie
@@ -605,7 +607,7 @@ class Player: #classe qui cree le joueur
 
         if self.is_alive():
             if pyxel.btn(pyxel.KEY_D):
-                if (self.x < 348) :#eviter de sortir de l'écran
+                if (self.x < 500) :#eviter de sortir de l'écran
                     self.x = self.x + self.vitesse
 
             if pyxel.btn(pyxel.KEY_Q):
@@ -614,14 +616,14 @@ class Player: #classe qui cree le joueur
                     
 
             if pyxel.btn(pyxel.KEY_S):
-                if (self.y <380) : #eviter de sortir de l'écran
+                if (self.y <500) : #eviter de sortir de l'écran
                     self.y = self.y + self.vitesse
             if pyxel.btn(pyxel.KEY_Z):
                 if (self.y > 0) : 
                     self.y = self.y - self.vitesse
                     
             if self.autoshoot == True:
-                if  self.i%20 == 0:
+                if self.game_instance.liste_armes[self.game_instance.arme_principale].peut_tirer():
                     self.game_instance.liste_armes[self.game_instance.arme_principale].creer_balle()
             
             elif self.autoshoot == False: 
@@ -770,28 +772,45 @@ class Player: #classe qui cree le joueur
         pyxel.rectb(0, 0, 32, 8, 6)#contour de la barre de vie
         # pyxel.rectb(0, 0, 3.2*(i+1), 8, 2)
 class Armes:
-    def __init__(self,nom:str,degats:int,vitesse:int, game_instance:object,player_instance:object):
+    def __init__(self,nom:str,degats:int,vitesse:int, game_instance:object,player_instance:object,frequence:int):
+        """ Frequence : + c'est bas plus les balles sont rapprochées"""
         self.nom = nom
-        self.dagats = degats #ajouter degats aux balles
+        self.degats = degats #ajouter degats aux balles
         self.vitesse = vitesse
         self.game_instance = game_instance
         self.player_instance = player_instance
+        self.frequence = frequence
+        self.frequence_i = 0
+
+    def peut_tirer(self):
+        """Renvoie True si la balle peut etre tiree"""
+        self.frequence_i +=1
+        if self.frequence == self.frequence_i:
+            self.frequence_i = 0
+            return True
+        
+        else:
+            return False
+        
 
     def creer_balle(self):
         self.game_instance.liste_balles.append(Bullets(self.player_instance.x,
                                                         self.player_instance.y,
                                                         self.player_instance.cote,
                                                         self.game_instance,
-                                                        self.vitesse))
+                                                        self,
+                                                        self.vitesse
+                                                        ))
 
 class Bullets:
-    def __init__(self,x:int,y:int,direction:str,game_instance:object,vitesse:int = 1,):
+    def __init__(self,x:int,y:int,direction:str,game_instance:object,instance,vitesse:int = 1,):
         self.x = x
         self.y = y
         self.direction = direction #"g"gauche,"d"droite,"b"bas,"h"haut
         self.vitesse = vitesse
         self.is_alive = True
         self.game_instance = game_instance
+        self.balle_instance = instance
 
     def move(self):
         if self.direction == "g":
@@ -806,7 +825,7 @@ class Bullets:
         elif self.direction == "h":
             self.y -=self.vitesse
 
-        if ((self.x<0 or self.x > pyxel.width) or (self.y<0 or self.y > pyxel.height)):
+        if ((self.x<0 or self.x > 550) or (self.y<0 or self.y > 550)):
             self.is_alive = False
             self.game_instance.nb_balles_rates +=1
             
