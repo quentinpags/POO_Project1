@@ -582,16 +582,11 @@ class Player: #classe qui cree le joueur
         self.i =0# variable qui permet de compter chaque iteration de la fonction update et permet d'enlever dépendance a pyxel.frame_count, se met a jour quand le player est update donc quand le jeu est en train de tourner (evite les bugs avec les pauses) 
         
         self.autoshoot = True
-        self.tir_possible = True#permet de fluidifier le tir
+        # self.tir_possible = True#permet de fluidifier le tir
         # TODO: changer de skin à la fin de chaque vague
         # self.num_skin ={0:[[x, y, img, u, v, w, h],[x, y, img, u, v, w, h]]}#comporte l'id du skin et les différentes animations
         
-        
-    def ajouter_arme(self, num):
-        """ajoute une arme aux armes possédées par le joueur"""
-        self.liste_arme_joueur.append(jeu.liste_arme[num])
-        print("ajout de l'arme", jeu.liste_arme[num])
-    
+
                 
     def ajouter_statistique(self, type_statistique, montant):
         """ajoute des le type de statistique au joueur"""
@@ -636,12 +631,11 @@ class Player: #classe qui cree le joueur
                     self.game_instance.liste_armes[self.game_instance.arme_principale].creer_balle()
             
             elif self.autoshoot == False: 
-                if self.i%20 == 0 or self.tir_possible ==True:
-                    if pyxel.btn(pyxel.KEY_SPACE):
+            
+                if pyxel.btn(pyxel.KEY_SPACE):
+                    if self.game_instance.liste_armes[self.game_instance.arme_principale].peut_tirer():
                         self.game_instance.liste_armes[self.game_instance.arme_principale].creer_balle()
-                        self.tir_possible = False
-                    else:
-                       self.tir_possible = True 
+                    
             if pyxel.btnr(pyxel.KEY_M):
                 if self.autoshoot == True:
                     self.autoshoot = False
