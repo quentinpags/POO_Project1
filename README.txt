@@ -67,10 +67,10 @@ Les Objectifs dans ce jeu sont:
 
 Fragmentation du projet en plusieurs parties :
     Gaetan:
-        - Création des textures: ennemis, pv
+        - Création des textures: ennemis, pv, sol, balles, player (pas entièrement fini pour le player)
+        (graphismes quasi finis)
 
         TODO:
-        -Creation des textures : player,sol,balles
         -Implémentation de cette partie dans le python
         
     Felix:
