@@ -129,7 +129,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
 
     def update(self):     
         """Fonction qui est appelée par pyxel pour mettre a jour le jeu"""
-        
+        print(len(self.liste_mob))
         
         
         
@@ -163,8 +163,8 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 self.cam_y = max(0, self.player.y - self.height // 2 + 2) #On evite aussi qu'il puisse sortir de la tilemap
                 self.player.update()
                 
-                if self.player.i %int((self.num_vague+1)*(70 - self.liste_difficulte[int(self.difficulte_choisie)])) ==0:
-                    self.liste_mob.append(Mob(10,10,10,10,self.player))
+                # if self.player.i %int((self.num_vague+1)*(70 - self.liste_difficulte[int(self.difficulte_choisie)])) ==0:
+                self.liste_mob.append(Mob(10,10,10,10,self.player,self))
                     # faire apparaitre les mobs dans une liste
 
 
@@ -831,7 +831,7 @@ class Bullets:
        
 
 class Mob:
-    def __init__(self, vie:int, damage:int, attack_speed:int, vitesse:int,player:object):
+    def __init__(self, vie:int, damage:int, attack_speed:int, vitesse:int,player:object,game_instance:object):
         """initialisation de la creation de mob
         Player est la l'instance du joueur """
         self.vie = vie
@@ -840,23 +840,24 @@ class Mob:
         self.vitesse = vitesse
         self.vitesse = 1
         self.taille = 5
+        self.game_instance = game_instance
         
-        tmp = random.randint(1,4)
-        if tmp == 1: #fait spawn les mobs en haut 
-            self.x= random.randint(2,pyxel.width-7)
+        positionnement = random.randint(1,4)
+        if positionnement == 1: #fait spawn les mobs en haut 
+            self.x= random.randint(self.game_instance.cam_x + 2,self.game_instance.cam_x+pyxel.width-7)
             self.y = 0
 
-        elif tmp == 2: #fait spawn les mobs en gauche
-            self.x = 0
-            self.y = random.randint(2,pyxel.width-7)
+        elif positionnement == 2: #fait spawn les mobs en gauche
+            self.x = self.game_instance.cam_x
+            self.y = random.randint(self.game_instance.cam_y + 2,self.game_instance.cam_y + pyxel.height-7)
 
-        elif tmp == 3:#fait spawn les mobs en droite
-            self.x = pyxel.width-7
-            self.y = random.randint(2,pyxel.width-7)
+        elif positionnement == 3:#fait spawn les mobs en droite
+            self.x = self.game_instance.cam_x +pyxel.width-7
+            self.y = random.randint(self.game_instance.cam_y + 2, self.game_instance.cam_y +pyxel.height-7)
 
-        elif tmp == 4:
-            self.x = random.randint(2,pyxel.width-7)
-            self.y = pyxel.width-7
+        elif positionnement == 4: #fais spawn les mobs en bas
+            self.x = random.randint(self.game_instance.cam_x + 2, self.game_instance.cam_x +pyxel.width-7)
+            self.y = self.game_instance.cam_y + pyxel.width-7
 
 
         self.cooldown_state = 3
