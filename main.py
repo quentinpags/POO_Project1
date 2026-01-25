@@ -721,7 +721,7 @@ class Player: #classe qui cree le joueur
         if self.is_alive():
             pyxel.rect(self.x,self.y,5,5,6)
             self.draw_health()
-            
+        pyxel.blt(self.x, self.y, 0, 0, 24, 8, 8)
 
 
     def draw_hitbox(self):
