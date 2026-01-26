@@ -55,9 +55,10 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
         
         self.choix = []
-
+        pyxel.load("res.pyxres")
         #Load la timelape nommé "res.pyrex"
         pyxel.run(self.update, self.draw)
+        
 
         #Postion de la camera
         self.cam_x = 0
