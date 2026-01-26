@@ -15,7 +15,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.pos_cible = [0,0]#position vers lequel les mobs se dirigent
         self.chute = True
         
-        
+        self.debug = False
         self.liste_menu = ["Playing", "GameOver", "Start", "Amelioration"]#liste des menus disponibles
         self.pause = False#en pause si True et jouable quand False
         
@@ -23,6 +23,8 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.menu_actuel = "Start"
         self.fps = 30#nombre de frame que le jeu affiche par seconde
         pyxel.init(self.width, self.height, title= "Potato et Le Royaume Infesté",fps=self.fps) #initialisation du jeu
+        pyxel.load("res.pyxres")
+        
         
         self.etape_stat = 0 #après chaque fin de vague 0 -> choix des stat 1-> reprendre la partie
         self.position_curseur = 0#position du curseur qui permet de choisir quel option on choisit dans les menus
@@ -380,25 +382,40 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             for i in range(1,4):
                 if self.choix[i-1] <0.20:
                     #force
-                    pyxel.rect(self.width//8 +20*i, self.height//2, 18, 18, 9)
-                    pyxel.text(self.width//8 +20*i, self.height//2, "Force +", 2)
+                    pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 64, 1280, 64, 64, scale=0.5)
+                    if self.debug:
+                        pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)
+                        pyxel.text(self.width//4-90 +45*i, self.height//2, "Force +", 2)
+                    
+                    
+                    #affichage de la tilemap
                     
                 elif self.choix[i-1] < 0.40:
-                    pyxel.rect(self.width//8 +20*i, self.height//2, 18, 18, 9)#defense
-                    pyxel.text(self.width//8 +20*i, self.height//2, "Defense +", 2)
+                    pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 64, 1216, 64, 64, scale=0.5)
+                    if self.debug:
+                        pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)#defense
+                        pyxel.text(self.width//4-90 +45*i, self.height//2, "Defense +", 2)
                 elif self.choix[i-1] <0.60:
-                    pyxel.rect(self.width//8 +20*i, self.height//2, 18, 18, 9)#regen
-                    pyxel.text(self.width//8 +20*i, self.height//2, "Regen +",2)
+                    pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 0, 1216, 64, 64, scale=0.5)
+                    if self.debug:
+                        pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)#regen
+                        pyxel.text(self.width//4-90 +45*i, self.height//2, "Regen +",2)
+                
                 elif self.choix[i-1] < 0.80:
-                    pyxel.rect(self.width//8 +20*i, self.height//2, 18, 18, 9)
-                    pyxel.text(self.width//8 +20*i, self.height//2, "Vie +",2)
+                    pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 0, 1216, 64, 64, scale=0.5)
+                    if self.debug:
+                        pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)
+                        pyxel.text(self.width//4-90 +45*i, self.height//2, "Vie +",2)
                     #vie_max
                 else:
-                    pyxel.rect(self.width//8 +20*i, self.height//2, 18, 18, 9)#degats
-                    pyxel.text(self.width//8 +20*i, self.height//2, "Vitesse +", 2)
+                    pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 0, 1280, 64, 64, scale=0.5)
+                    if self.debug:
+                        pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)#degats
+                        pyxel.text(self.width//4-90 +45*i, self.height//2, "Vitesse +", 2)
+                
                     
-                
-                
+                 
+         
             choix_option = self.choix_option(self.choix)
             
             if choix_option != None:
@@ -416,7 +433,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 self.etape_stat = 1
                 
                 
-            self.affichage_curseur(self.width//8+23 +20*self.position_curseur, self.height//2 +20, 7)
+            self.affichage_curseur(self.width//4-20 +47*self.position_curseur, self.height - 20, 7)
                 
                 
         elif self.etape_stat ==1:
@@ -538,7 +555,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         if self.position_curseur > len(liste_option)-1:
             self.position_curseur = 0
             
-        if  self.chute == False and (pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.KEY_KP_ENTER)):
+        if  self.chute == False and (pyxel.btnr(pyxel.KEY_RETURN) or pyxel.btnr(pyxel.KEY_KP_ENTER)):
             return self.position_curseur
         
         elif pyxel.btn(pyxel.KEY_A):#pour choisir aléatoirement un menu
