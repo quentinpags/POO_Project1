@@ -11,7 +11,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.width = width#largeur ecran
         self.height = height#hauteur ecran
         self.nom = nom_jeu #nom du jeu en str
-        self.hitbox = False#affiche hitbox avec True et
+        self.hitbox = False #affiche hitbox avec True
         self.pos_cible = [0,0]#position vers lequel les mobs se dirigent
         self.chute = True
         
@@ -31,7 +31,9 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         #Creation de liste qui garderont les valeurs de leurs classes respectives
         self.liste_mob = []
         self.liste_balles = []
-        self.liste_armes = [Armes("Principale",10,1,self,self.player),Armes("Principale",10,10,self,self.player)]
+        self.liste_armes = [Armes("Pistolet",3,1,self,self.player,5),
+                            Armes("Sniper",50,5,self,self.player,20),
+                              Armes("Mitraillette",2,2,self,self.player,2)]
 
         self.arme_principale = 0#arme utilisé à un temps t
         self.counter = self.fps*3 #decompte avant fin du jeu pour que l'explosion marche bien 30 est le nb de frame par seconde
@@ -115,7 +117,6 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.temps_vague = self.temps_vague_initiale#on reprend la valeur par défaut
         
         self.etape_stat = 0 #après chauqe fin de vague 0 -> choix des stat 1-> reprendre la partie
-        self.liste_armes = [Armes("Principale",10,1,self,self.player),Armes("Principale",10,10,self,self.player)]
         self.arme_principale = 0
         self.num_vague =0
         self.nb_kill = 0
@@ -130,7 +131,6 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
 
     def update(self):     
         """Fonction qui est appelée par pyxel pour mettre a jour le jeu"""
-        
         
         
         
@@ -164,9 +164,21 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 self.cam_y = max(0, self.player.y - self.height // 2 + 2) #On evite aussi qu'il puisse sortir de la tilemap
                 self.player.update()
                 
-                if self.player.i %int((60*self.liste_difficulte[int(self.difficulte_choisie)])//(self.num_vague+1)) ==0:
-                    self.liste_mob.append(Mob(10,10,10,10,self.player))
-                    # faire apparaitre les mobs dans une liste
+                # if self.player.i %int((self.num_vague+1)*(70 - self.liste_difficulte[int(self.difficulte_choisie)])) ==0:
+                
+                if self.player.i % (30 *3) ==0:
+                    if self.num_vague < 10:
+                        for i in range(self.num_vague+1):
+                            self.liste_mob.append(Mob(10,10,10,self.player,self))
+                            # faire apparaitre les mobs dans une liste
+
+                    else: #pour les vagues après la vague 10
+                        for i in range(self.num_vague):
+                            vie =random.randint(self.num_vague-5,self.num_vague)
+                            damage = random.randint(self.num_vague-5,self.num_vague)
+
+                            self.liste_mob.append(Mob(vie,damage,10,self.player,self))
+
 
 
                 for balle in self.liste_balles:#fais bouger les balles et gère la suppression de celles -ci si on va trop loin
@@ -177,7 +189,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 
                     for mob in self.liste_mob:
                         if self.collisions(mob,balle):
-                            mob.degat(self.player.attaque) #degats au mob selon les points d'attaque du joueur
+                            mob.degat(self.player.attaque*balle.arme_instance.degats) #degats au mob selon les points d'attaque du joueur
                             balle.is_alive = False
                         if not mob.is_alive():
                             self.nb_kill +=1#augmente le nb de kill de la partie
@@ -571,16 +583,11 @@ class Player: #classe qui cree le joueur
         self.i =0# variable qui permet de compter chaque iteration de la fonction update et permet d'enlever dépendance a pyxel.frame_count, se met a jour quand le player est update donc quand le jeu est en train de tourner (evite les bugs avec les pauses) 
         
         self.autoshoot = True
-        self.tir_possible = True#permet de fluidifier le tir
+        # self.tir_possible = True#permet de fluidifier le tir
         # TODO: changer de skin à la fin de chaque vague
         # self.num_skin ={0:[[x, y, img, u, v, w, h],[x, y, img, u, v, w, h]]}#comporte l'id du skin et les différentes animations
         
-        
-    def ajouter_arme(self, num):
-        """ajoute une arme aux armes possédées par le joueur"""
-        self.liste_arme_joueur.append(jeu.liste_arme[num])
-        print("ajout de l'arme", jeu.liste_arme[num])
-    
+
                 
     def ajouter_statistique(self, type_statistique, montant):
         """ajoute des le type de statistique au joueur"""
@@ -604,33 +611,32 @@ class Player: #classe qui cree le joueur
         """Fonction qui permet de gérer la fonctions des touches"""
 
         if self.is_alive():
-            if pyxel.btn(pyxel.KEY_D):
-                if (self.x < 348) :#eviter de sortir de l'écran
+            if pyxel.btn(pyxel.KEY_D): # aller a droite
+                if (self.x < 500) :#eviter de sortir de l'écran
                     self.x = self.x + self.vitesse
 
-            if pyxel.btn(pyxel.KEY_Q):
+            if pyxel.btn(pyxel.KEY_Q):#aller a gauche
                 if (self.x > 0) :
                     self.x = self.x - self.vitesse
                     
 
-            if pyxel.btn(pyxel.KEY_S):
-                if (self.y <380) : #eviter de sortir de l'écran
+            if pyxel.btn(pyxel.KEY_S): #descendre
+                if (self.y <500) : #eviter de sortir de l'écran
                     self.y = self.y + self.vitesse
-            if pyxel.btn(pyxel.KEY_Z):
+            if pyxel.btn(pyxel.KEY_Z): #monter
                 if (self.y > 0) : 
                     self.y = self.y - self.vitesse
                     
             if self.autoshoot == True:
-                if  self.i%20 == 0:
+                if self.game_instance.liste_armes[self.game_instance.arme_principale].peut_tirer():
                     self.game_instance.liste_armes[self.game_instance.arme_principale].creer_balle()
             
             elif self.autoshoot == False: 
-                if self.i%20 == 0 or self.tir_possible ==True:
-                    if pyxel.btn(pyxel.KEY_SPACE):
+            
+                if pyxel.btn(pyxel.KEY_SPACE):
+                    if self.game_instance.liste_armes[self.game_instance.arme_principale].peut_tirer():
                         self.game_instance.liste_armes[self.game_instance.arme_principale].creer_balle()
-                        self.tir_possible = False
-                    else:
-                       self.tir_possible = True 
+                    
             if pyxel.btnr(pyxel.KEY_M):
                 if self.autoshoot == True:
                     self.autoshoot = False
@@ -770,28 +776,50 @@ class Player: #classe qui cree le joueur
         pyxel.rectb(0, 0, 32, 8, 6)#contour de la barre de vie
         # pyxel.rectb(0, 0, 3.2*(i+1), 8, 2)
 class Armes:
-    def __init__(self,nom:str,degats:int,vitesse:int, game_instance:object,player_instance:object):
+    def __init__(self,nom:str,degats:int,vitesse:int, game_instance:object,player_instance:object,frequence:int):
+        """ 
+        nom: nom de l'arme
+        vitesse: vitesse des balles
+        Frequence : + c'est bas plus les balles sont rapprochées
+        """
+
         self.nom = nom
-        self.dagats = degats #ajouter degats aux balles
+        self.degats = degats #ajouter degats aux balles
         self.vitesse = vitesse
         self.game_instance = game_instance
         self.player_instance = player_instance
+        self.frequence = frequence
+        self.frequence_i = 0
+
+    def peut_tirer(self):
+        """Renvoie True si la balle peut etre tiree"""
+        self.frequence_i +=1
+        if self.frequence == self.frequence_i:
+            self.frequence_i = 0
+            return True
+        
+        else:
+            return False
+        
 
     def creer_balle(self):
         self.game_instance.liste_balles.append(Bullets(self.player_instance.x,
                                                         self.player_instance.y,
                                                         self.player_instance.cote,
                                                         self.game_instance,
-                                                        self.vitesse))
+                                                        self,
+                                                        self.vitesse
+                                                        ))
 
 class Bullets:
-    def __init__(self,x:int,y:int,direction:str,game_instance:object,vitesse:int = 1,):
+    def __init__(self,x:int,y:int,direction:str,game_instance:object,instance,vitesse:int = 1,):
         self.x = x
         self.y = y
         self.direction = direction #"g"gauche,"d"droite,"b"bas,"h"haut
         self.vitesse = vitesse
         self.is_alive = True
         self.game_instance = game_instance
+        self.arme_instance = instance
 
     def move(self):
         if self.direction == "g":
@@ -806,7 +834,7 @@ class Bullets:
         elif self.direction == "h":
             self.y -=self.vitesse
 
-        if ((self.x<0 or self.x > pyxel.width) or (self.y<0 or self.y > pyxel.height)):
+        if ((self.x<0 or self.x > 550) or (self.y<0 or self.y > 550)):
             self.is_alive = False
             self.game_instance.nb_balles_rates +=1
             
@@ -816,32 +844,32 @@ class Bullets:
        
 
 class Mob:
-    def __init__(self, vie:int, damage:int, attack_speed:int, vitesse:int,player:object):
+    def __init__(self, vie:int, damage:int, attack_speed:int, player:object,game_instance:object):
         """initialisation de la creation de mob
         Player est la l'instance du joueur """
         self.vie = vie
         self.damage = damage
         self.attack_speed = attack_speed
-        self.vitesse = vitesse
         self.vitesse = 1
         self.taille = 5
+        self.game_instance = game_instance
         
-        tmp = random.randint(1,4)
-        if tmp == 1: #fait spawn les mobs en haut 
-            self.x= random.randint(2,pyxel.width-7)
-            self.y = 0
+        positionnement = random.randint(1,4)
+        if positionnement == 1: #fait spawn les mobs en haut 
+            self.x= random.randint(self.game_instance.cam_x + 2,self.game_instance.cam_x+pyxel.width-7)
+            self.y = -5
 
-        elif tmp == 2: #fait spawn les mobs en gauche
-            self.x = 0
-            self.y = random.randint(2,pyxel.width-7)
+        elif positionnement == 2: #fait spawn les mobs en gauche
+            self.x = self.game_instance.cam_x -5
+            self.y = random.randint(self.game_instance.cam_y + 2,self.game_instance.cam_y + pyxel.height-7)
 
-        elif tmp == 3:#fait spawn les mobs en droite
-            self.x = pyxel.width-7
-            self.y = random.randint(2,pyxel.width-7)
+        elif positionnement == 3:#fait spawn les mobs en droite
+            self.x = self.game_instance.cam_x +pyxel.width
+            self.y = random.randint(self.game_instance.cam_y + 2, self.game_instance.cam_y +pyxel.height-7)
 
-        elif tmp == 4:
-            self.x = random.randint(2,pyxel.width-7)
-            self.y = pyxel.width-7
+        elif positionnement == 4: #fais spawn les mobs en bas
+            self.x = random.randint(self.game_instance.cam_x + 2, self.game_instance.cam_x +pyxel.width-7)
+            self.y = self.game_instance.cam_y + pyxel.width
 
 
         self.cooldown_state = 3
@@ -879,24 +907,27 @@ class Mob:
 
 
         if self.peut_bouger():
-            """verifie si le mob peut jouer -> verifie son cooldown est ok;
-            permet que le mob avance de maniere plus 'zombie' """
-            player_x = tableau_cible[0]
-            player_y = tableau_cible[1]
-            mob_x = self.x
-            mob_y = self.y
+            #verifie si le mob peut jouer -> verifie son cooldown est ok;permet que le mob avance de maniere plus 'zombie' 
+            self.move(tableau_cible)
             
-            if player_y-5 >= mob_y:
-                self.y += self.vitesse
+    def move(self, tableau_cible:list):
+        """Deplace le mob vers le joueur """
+        player_x = tableau_cible[0]
+        player_y = tableau_cible[1]
+        mob_x = self.x
+        mob_y = self.y
+        
+        if player_y-5 >= mob_y:
+            self.y += self.vitesse
 
-            elif player_y+5 <= mob_y:
-                self.y -= self.vitesse
+        elif player_y+5 <= mob_y:
+            self.y -= self.vitesse
 
-            if player_x+5 <= mob_x:
-                self.x -= self.vitesse
+        if player_x+5 <= mob_x:
+            self.x -= self.vitesse
 
-            elif player_x-5 >= mob_x:
-                self.x += self.vitesse
+        elif player_x-5 >= mob_x:
+            self.x += self.vitesse
 
     def draw(self):
         """Dessine le Mob"""
