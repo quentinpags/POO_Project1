@@ -42,9 +42,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.difficulte_max = 100
         
         
-        self.liste_difficulte = [1.3, 1.5 ,2]#liste des difficultés possible
-        #facile difficile et infernale
-        self.difficulte_choisie = 0#indice du niveau de difficulté prenant ses valeurs dans liste_difficulte
+
         self.num_vague = 0
         self.temps_vague_initiale = 5#variable qui ne change pas#temps par défaut de la vague
         self.temps_vague = 5#temps avant fin de la vague en frame
@@ -553,7 +551,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.liste_mob = []
         self.num_vague +=1
         self.changer_menu("Playing")
-        self.temps_vague = int(self.temps_vague_initiale* ((self.num_vague+1) *self.liste_difficulte[int(self.difficulte_choisie)]))#cycle de vague/amelioration voir ligne44
+        self.temps_vague = int(self.temps_vague_initiale* ((self.num_vague+1) *1.5))#cycle de vague/amelioration voir ligne44
         self.etape_stat = 0
         
         
