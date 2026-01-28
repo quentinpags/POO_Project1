@@ -370,7 +370,6 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         #une note sur le gameplay, avec un commentaire?
         
         pyxel.cls(0)
-        
         if self.choix == []:
             
             for i in range(1,4):
@@ -382,7 +381,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             for i in range(1,4):
                 if self.choix[i-1] <0.20:
                     #force
-                    pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 64, 1280, 64, 64, scale=0.5)
+                    pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 64, 1280, 64, 64, scale=1)
                     if self.debug:
                         pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)
                         pyxel.text(self.width//4-90 +45*i, self.height//2, "Force +", 2)
@@ -391,27 +390,27 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                     #affichage de la tilemap
                     
                 elif self.choix[i-1] < 0.40:
-                    pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 64, 1216, 64, 64, scale=0.5)
+                    pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 64, 1216, 64, 64, scale=1)
                     if self.debug:
                         pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)#defense
                         pyxel.text(self.width//4-90 +45*i, self.height//2, "Defense +", 2)
                 elif self.choix[i-1] <0.60:
-                    pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 0, 1216, 64, 64, scale=0.5)
+                    pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 0, 1216, 64, 64, scale=1)
                     if self.debug:
                         pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)#regen
                         pyxel.text(self.width//4-90 +45*i, self.height//2, "Regen +",2)
                 
                 elif self.choix[i-1] < 0.80:
-                    pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 0, 1216, 64, 64, scale=0.5)
+                    pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 0, 1216, 64, 64, scale=1)
                     if self.debug:
                         pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)
                         pyxel.text(self.width//4-90 +45*i, self.height//2, "Vie +",2)
                     #vie_max
                 else:
-                    pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 0, 1280, 64, 64, scale=0.5)
+                    pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 0, 1280, 64, 64, scale=1)
                     if self.debug:
                         pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)#degats
-                        pyxel.text(self.width//4-90 +45*i, self.height//2, "Vitesse +", 2)
+                        pyxel.text(self.width//4-90 +45*i, self.height//2, "Vitesse +", 2) 
                 
                     
                  
