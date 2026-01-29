@@ -57,9 +57,10 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
         
         self.choix = []
-
+        pyxel.load("res.pyxres")
         #Load la timelape nommé "res.pyrex"
         pyxel.run(self.update, self.draw)
+        
 
         #Postion de la camera
         self.cam_x = 0
@@ -738,7 +739,14 @@ class Player: #classe qui cree le joueur
         if self.is_alive():
             pyxel.rect(self.x,self.y,5,5,6)
             self.draw_health()
-            
+        if pyxel.btn(pyxel.KEY_DOWN):
+            pyxel.blt(self.x, self.y, 0, 8, 48, 8, 8)
+        if pyxel.btn(pyxel.KEY_UP):
+            pyxel.blt(self.x, self.y, 0, 0, 48, 8, 8)
+        if pyxel.btn(pyxel.KEY_LEFT):
+            pyxel.blt(self.x, self.y, 0, 8, 56, 8, 8)
+        if pyxel.btn(pyxel.KEY_RIGHT):
+            pyxel.blt(self.x, self.y, 0, 0, 56, 8, 8)
 
 
     def draw_hitbox(self):
