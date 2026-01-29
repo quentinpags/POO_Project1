@@ -167,7 +167,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 if self.player.i % (30 *3) ==0:
                     if self.num_vague < 10:
                         for i in range(self.num_vague+1):
-                            self.liste_mob.append(Mob(10,10,10,self.player,self))
+                            self.liste_mob.append(Mob(10,10,self.player,self))
                             # faire apparaitre les mobs dans une liste
 
                     else: #pour les vagues après la vague 10
@@ -175,7 +175,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                             vie =random.randint(self.num_vague-5,self.num_vague)
                             damage = random.randint(self.num_vague-5,self.num_vague)
 
-                            self.liste_mob.append(Mob(vie,damage,10,self.player,self))
+                            self.liste_mob.append(Mob(vie,damage,self.player,self))
 
 
 
@@ -842,12 +842,11 @@ class Bullets:
        
 
 class Mob:
-    def __init__(self, vie:int, damage:int, attack_speed:int, player:object,game_instance:object):
+    def __init__(self, vie:int, damage:int,  player:object,game_instance:object):
         """initialisation de la creation de mob
         Player est la l'instance du joueur """
         self.vie = vie
         self.damage = damage
-        self.attack_speed = attack_speed
         self.vitesse = 1
         self.taille = 5
         self.game_instance = game_instance
