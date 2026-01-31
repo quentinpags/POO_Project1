@@ -739,15 +739,21 @@ class Player: #classe qui cree le joueur
         if self.is_alive():
             pyxel.rect(self.x,self.y,5,5,6)
             self.draw_health()
-        if pyxel.btn(pyxel.KEY_DOWN):
-            pyxel.blt(self.x, self.y, 0, 8, 48, 8, 8)
-        if pyxel.btn(pyxel.KEY_UP):
-            pyxel.blt(self.x, self.y, 0, 0, 48, 8, 8)
-        if pyxel.btn(pyxel.KEY_LEFT):
-            pyxel.blt(self.x, self.y, 0, 8, 56, 8, 8)
-        if pyxel.btn(pyxel.KEY_RIGHT):
-            pyxel.blt(self.x, self.y, 0, 0, 56, 8, 8)
+        if self.is_alive():
 
+            if self.cote == "b": 
+                pyxel.blt(self.x, self.y, 0, 8, 48, 8, 8)
+
+            elif self.cote == "h": 
+                pyxel.blt(self.x, self.y, 0, 0, 48, 8, 8)
+
+            elif self.cote == "g":  
+                pyxel.blt(self.x, self.y, 0, 8, 56, 8, 8)
+
+            elif self.cote == "d":  
+                pyxel.blt(self.x, self.y, 0, 0, 56, 8, 8)
+
+        self.draw_health()
 
     def draw_hitbox(self):
         """Permet de dessiner la hitbox du joueur
