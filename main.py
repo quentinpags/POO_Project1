@@ -872,7 +872,14 @@ class Bullets:
 
     def draw(self):
         pyxel.rect(self.x,self.y, 2,2,9)
-       
+        if self.direction == "h":
+            pyxel.blt(self.x, self.y, 0, 32, 32, 8, 8)
+        if self.direction == "b":
+             pyxel.blt(self.x, self.y, 0, 32, 40, 8, 8)
+        if self.direction == "g":
+             pyxel.blt(self.x, self.y, 0, 40, 40, 8, 8)
+        if self.direction == "d":
+             pyxel.blt(self.x, self.y, 0, 40, 32, 8, 8)
 
 class Mob:
     def __init__(self, vie:int, damage:int, attack_speed:int, player:object,game_instance:object):
