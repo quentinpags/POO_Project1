@@ -597,7 +597,7 @@ class Player: #classe qui cree le joueur
         self.regeneration = 1#% de vie par secondes
         self.cote = "g"#va a gauche
         self.liste_explosions = []
-        self.taille = 5
+        self.taille = 8
         self.i =0# variable qui permet de compter chaque iteration de la fonction update et permet d'enlever dépendance a pyxel.frame_count, se met a jour quand le player est update donc quand le jeu est en train de tourner (evite les bugs avec les pauses) 
         
         self.autoshoot = True
@@ -873,13 +873,13 @@ class Bullets:
     def draw(self):
         pyxel.rect(self.x,self.y, 2,2,9)
         if self.direction == "h":
-            pyxel.blt(self.x, self.y, 0, 32, 32, 8, 8)
+            pyxel.blt(self.x, self.y, 0, 32, 32, 8, 8,colkey=2)
         if self.direction == "b":
-             pyxel.blt(self.x, self.y, 0, 32, 40, 8, 8)
+             pyxel.blt(self.x, self.y, 0, 32, 40, 8, 8,colkey=2)
         if self.direction == "g":
-             pyxel.blt(self.x, self.y, 0, 40, 40, 8, 8)
+             pyxel.blt(self.x, self.y, 0, 40, 40, 8, 8,colkey=2)
         if self.direction == "d":
-             pyxel.blt(self.x, self.y, 0, 40, 32, 8, 8)
+             pyxel.blt(self.x, self.y, 0, 40, 32, 8, 8,colkey=2)
 
 class Mob:
     def __init__(self, vie:int, damage:int, attack_speed:int, player:object,game_instance:object):
