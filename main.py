@@ -739,18 +739,18 @@ class Player: #classe qui cree le joueur
         if self.is_alive():
             pyxel.rect(self.x,self.y,5,5,6)
             self.draw_health()
-        if self.is_alive():
+        
 
-            if self.cote == "b": 
+            if self.cote == "b": #le player tire vers le bas 
                 pyxel.blt(self.x, self.y, 0, 8, 48, 8, 8)
 
-            elif self.cote == "h": 
+            elif self.cote == "h": #le player tire vers le haut 
                 pyxel.blt(self.x, self.y, 0, 0, 48, 8, 8)
 
-            elif self.cote == "g":  
+            elif self.cote == "g":  #le player tire vers la gauche 
                 pyxel.blt(self.x, self.y, 0, 8, 56, 8, 8)
 
-            elif self.cote == "d":  
+            elif self.cote == "d":  #le player tire vers la droite 
                 pyxel.blt(self.x, self.y, 0, 0, 56, 8, 8)
 
         self.draw_health()
