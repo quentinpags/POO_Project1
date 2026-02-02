@@ -31,6 +31,7 @@ Commandes utilisables:
     ZQSD pour se déplacer 
     Barre espace pour attaquer (visee attaque dans le sens ou on va)
     U pour changer d'arme
+    M pour attaquer avec la barre espace
     touche directionnelles pour viser avec les armes
 
 
