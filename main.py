@@ -407,10 +407,14 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                         pyxel.text(self.width//4-90 +45*i, self.height//2, "Vie +",2)
                     #vie_max
                 else:
-                    pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 0, 1280, 64, 64)
+                    # pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 0, 1280, 64, 64)
+                    # if self.debug:
+                    #     pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)#degats
+                    #     pyxel.text(self.width//4-90 +45*i, self.height//2, "Vitesse +", 2) 
+                    pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 64, 1280, 64, 64, scale=1)
                     if self.debug:
-                        pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)#degats
-                        pyxel.text(self.width//4-90 +45*i, self.height//2, "Vitesse +", 2) 
+                        pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)
+                        pyxel.text(self.width//4-90 +45*i, self.height//2, "Force +", 2)
                 
                     
                  
@@ -482,8 +486,8 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             self.player.ajouter_statistique("vie", 5)#vie_max
             print("ajout de vie")
         else:
-            self.player.ajouter_statistique("vitesse", 1)#degats
-            print("ajout de vitesse")
+            self.player.ajouter_statistique("attaque", 1)#degats
+            print("ajout dde force")
             
             
     def draw_menu_fin(self):
