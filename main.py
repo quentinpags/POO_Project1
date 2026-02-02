@@ -33,9 +33,9 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         #Creation de liste qui garderont les valeurs de leurs classes respectives
         self.liste_mob = []
         self.liste_balles = []
-        self.liste_armes = [Armes("Pistolet",3,1,self,self.player,5),
+        self.liste_armes = [Armes("Pistolet",3,1,self,self.player,10),
                             Armes("Sniper",50,5,self,self.player,20),
-                              Armes("Mitraillette",2,2,self,self.player,2)]
+                              Armes("Mitraillette",2,2,self,self.player,7)]
 
         self.arme_principale = 0#arme utilisé à un temps t
         self.counter = self.fps*3 #decompte avant fin du jeu pour que l'explosion marche bien 30 est le nb de frame par seconde
@@ -742,16 +742,16 @@ class Player: #classe qui cree le joueur
         
 
             if self.cote == "b": #le player tire vers le bas 
-                pyxel.blt(self.x, self.y, 0, 8, 48, 8, 8)
+                pyxel.blt(self.x, self.y, 0, 8, 48, 8, 8, colkey=2)
 
             elif self.cote == "h": #le player tire vers le haut 
-                pyxel.blt(self.x, self.y, 0, 0, 48, 8, 8)
+                pyxel.blt(self.x, self.y, 0, 0, 48, 8, 8,colkey=2)
 
             elif self.cote == "g":  #le player tire vers la gauche 
-                pyxel.blt(self.x, self.y, 0, 8, 56, 8, 8)
+                pyxel.blt(self.x, self.y, 0, 8, 56, 8, 8,colkey=2)
 
             elif self.cote == "d":  #le player tire vers la droite 
-                pyxel.blt(self.x, self.y, 0, 0, 56, 8, 8)
+                pyxel.blt(self.x, self.y, 0, 0, 56, 8, 8,colkey=2)
 
         self.draw_health()
 
@@ -871,7 +871,7 @@ class Bullets:
             
 
     def draw(self):
-        pyxel.rect(self.x,self.y, 2,2,9)
+        #pyxel.rect(self.x,self.y, 2,2,9)
         if self.direction == "h":
             pyxel.blt(self.x, self.y, 0, 32, 32, 8, 8,colkey=2)
         if self.direction == "b":
