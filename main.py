@@ -57,7 +57,6 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
         
         self.choix = []
-        pyxel.load("res.pyxres")
         #Load la timelape nommé "res.pyrex"
         pyxel.run(self.update, self.draw)
         
@@ -783,7 +782,7 @@ class Player: #classe qui cree le joueur
         
         
         if self.vie >=1:
-            
+            pyxel.camera(0,0)
             pyxel.rect(1, 1, length*(self.vie/self.vie_max), height, col)
             pyxel.rect(1+length*(self.vie/self.vie_max), 1, length - length*(self.vie/self.vie_max), height, 0)
             
