@@ -482,8 +482,8 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             self.player.ajouter_statistique("vie", 5)#vie_max
             print("ajout de vie")
         else:
-            self.player.ajouter_statistique("vitesse", 1)#degats
-            print("ajout de vitesse")
+            self.player.ajouter_statistique("esquive", 1)#degats
+            print("ajout d'esquive")
             
             
     def draw_menu_fin(self):
@@ -591,7 +591,7 @@ class Player: #classe qui cree le joueur
         self.vie = 200
         self.game_instance = game_instance
         self.vitesse = 1 #vitesse de deplacement
-        
+        self.esquive = 0 #pourcentage de chance qu'il esquive des dégats
         self.regeneration = 1#% de vie par secondes
         self.cote = "g"#va a gauche
         self.liste_explosions = []
@@ -608,8 +608,8 @@ class Player: #classe qui cree le joueur
     def ajouter_statistique(self, type_statistique, montant):
         """ajoute des le type de statistique au joueur"""
 
-        if type_statistique == "vitesse":
-            self.vitesse += montant
+        if type_statistique == "esquive":
+            self.esquive += montant
         elif type_statistique == "attaque":
             self.attaque += montant
         
@@ -692,10 +692,18 @@ class Player: #classe qui cree le joueur
         Fonction qui prend en parametre le nb de degats a enlever au joueur
         et lui enlève
         """
+        chance = random.randint(0,100)
+        esquive = 1
+        if self.esquive < 60:
+            if chance < self.esquive: #si le joueur arrive a esquiver
+                esquive = 0
+        elif self.esquive >=60:
+            if chance <= 60:
+                esquive = 0
         if self.defense <70:
-            self.vie -= (1-self.defense) *nb_degats
+            self.vie -= (1-self.defense) *nb_degats * esquive
         elif self.defense >=70:
-            self.vie -= 0.30 *nb_degats
+            self.vie -= 0.30 *nb_degats * esquive
         if self.vie <0:
             self.vie =0
         if self.is_alive():
