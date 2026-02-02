@@ -11,7 +11,6 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.width = width#largeur ecran
         self.height = height#hauteur ecran
         self.nom = nom_jeu #nom du jeu en str
-        self.hitbox = False #affiche hitbox avec True
         self.pos_cible = [0,0]#position vers lequel les mobs se dirigent
         self.chute = True
         
@@ -255,11 +254,11 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             #On dessine la tilemap
             pyxel.bltm(0,0,0, self.cam_x, self.cam_y, 1000, 1000)
             
-            if self.hitbox:
+            if self.debug:
                 self.player.draw_hitbox()
     
             for mob in self.liste_mob:
-                    if self.hitbox:
+                    if self.debug:
                         mob.draw_hitbox()
                     mob.draw()
             for balle in self.liste_balles:
