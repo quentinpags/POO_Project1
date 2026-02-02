@@ -62,35 +62,7 @@ Les Objectifs dans ce jeu sont:
     -une aide dans le jeu afin d'expliquer le role de chaque touches
 
 
-----------------------------------------------
 
-
-Fragmentation du projet en plusieurs parties :
-    Gaetan:
-        - Création des textures: ennemis, pv
-
-        TODO:
-        -Creation des textures : player,sol,balles
-        -Implémentation de cette partie dans le python
         
-    Felix:
-        TODO
-        -Créations des sons
-
-
-    Hugo:
-        -Création ennemis
-        -Création menus
-
-    Quentin:
-
-        -Creation systeme mobs suivent le joueur en retard comme des zombies (partie-faits)(les mobs se stackent)
-        -Creation animation de degat, mort(fait)
-        -Creation de balles
-        -Création collisions
-        -dégat des balles
-
-        TODO
-        -Création des vagues (ennemis arrivent de + en + puissant)
         
 
