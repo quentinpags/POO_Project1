@@ -7,6 +7,7 @@ import random
 
         
 class Game: #classe qui cree le jeu et qui possede la boucle de jeu
+    """classe principale gérant l'ensemble du jeu"""
     def __init__(self,width:int,height:int,nom_jeu:str):
         self.width = width#largeur ecran
         self.height = height#hauteur ecran
@@ -15,7 +16,12 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.chute = True
         
         self.debug = False
-        self.liste_menu = ["Playing", "GameOver", "Start", "Amelioration"]#liste des menus disponibles
+        self.liste_menu = ["Playing", "GameOver", "Start", "Amelioration"]#liste des menus utilisables dans le jeu
+        #Playing: etat de jeu d'attaque contre les mobs
+        #GameOver: fin du jeu
+        #Start: menu de départ avnt le lancement du jeu
+        #Amelioration: choix de la statistique à améliorer        
+        
         self.pause = False#en pause si True et jouable quand False
         
         
@@ -25,6 +31,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         pyxel.load("res.pyxres")
         
         
+        #Etape d'amélioration en 2etapes: 0: choix stat a gagner 1: affichage des stats de la game
         self.etape_stat = 0 #après chaque fin de vague 0 -> choix des stat 1-> reprendre la partie
         self.position_curseur = 0#position du curseur qui permet de choisir quel option on choisit dans les menus
         self.player = Player("JOUEUR1",self)#initialisation joueur
@@ -131,10 +138,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         
 
     def update(self):     
-        """Fonction qui est appelée par pyxel pour mettre a jour le jeu"""
-        
-        
-        
+        """Met à jour le jeu"""
         
         if self.menu_actuel == "Playing":#menu de combat contre les mobs
             if pyxel.btnp(pyxel.KEY_P):#pour mettre une pause
@@ -167,7 +171,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 
                 # if self.player.i %int((self.num_vague+1)*(70 - self.liste_difficulte[int(self.difficulte_choisie)])) ==0:
                 
-                if self.player.i % (30 *3) ==0:
+                if self.player.i % (30 *3) ==0:#gère la frequence de pop de mobs au jeu
                     if self.num_vague < 10:
                         for i in range(self.num_vague+1):
                             self.liste_mob.append(Mob(10,10,10,self.player,self))
@@ -331,19 +335,19 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             if option_choisie ==0:
                 self.changer_menu("Playing")
             elif option_choisie ==1:
-                print("Hugo, Quentin, Felix, Gaetan")#TODO:a afficher dans la tilemap
+                print("Redirection vers le Github")#TODO:a afficher dans la tilemap
                 webbrowser.open_new("https://github.com/quentinpags/POO_Project1")
                 
             elif option_choisie ==2:
                 webbrowser.open_new("https://www.youtube.com/watch?v=xvFZjo5PgG0")
-                pyxel.quit()
+                pyxel.quit()#on quitte le jeu
                 
     def draw_menu_pause(self):
         """dessine le menu Pause lors de l'appuie sur la touche P"""
         pyxel.cls(0)
         pyxel.text(self.width//2-10, 1, "Pause", 6)
         option = {0: "Continuer",
-                  1: "Sortie"}#tableau des options possible
+                  1: "Sortie"}#tableau des options possible lors dans le menu pause
         
         for i in range(len(option)):
             pyxel.text(pyxel.width//2 -15, pyxel.height//3 +9*i, option[i], 9)
