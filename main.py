@@ -234,7 +234,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             if len(self.player.liste_explosions) !=0 or (len(self.player.liste_explosions) ==1 and self.player.liste_explosions[0].taille_max == self.player.liste_explosions[0].etape-1):
                 
                     self.player.update()
-                    self.player.draw_explosions
+                    self.player.draw_explosions()
                 
             
             
@@ -803,7 +803,6 @@ class Player: #classe qui cree le joueur
         
         
         if self.vie >=1:
-            pyxel.camera(0,0)
             pyxel.rect(1, 1, length*(self.vie/self.vie_max), height, col)
             pyxel.rect(1+length*(self.vie/self.vie_max), 1, length - length*(self.vie/self.vie_max), height, 0)
             
