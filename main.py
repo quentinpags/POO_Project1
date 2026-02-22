@@ -851,18 +851,25 @@ class Armes:
                                                         self.player_instance.cote,
                                                         self.game_instance,
                                                         self,
-                                                        self.vitesse
+                                                        self.vitesse,
+                                                        self.game_instance.arme_principale
                                                         ))
+    
 
 class Bullets:
-    def __init__(self,x:int,y:int,direction:str,game_instance:object,instance,vitesse:int = 1,):
+    def __init__(self,x:int,y:int,direction:str,game_instance:object,instance,vitesse:int = 1,type_arme = 0):
         self.x = x
         self.y = y
         self.direction = direction #"g"gauche,"d"droite,"b"bas,"h"haut
         self.vitesse = vitesse
+        self.type_arme = type_arme
         self.is_alive = True
         self.game_instance = game_instance
         self.arme_instance = instance
+        self.player = Player("JOUEUR1",self)
+        self.liste_armes = [Armes("Pistolet",3,1,self,self.player,10),
+                            Armes("Sniper",50,5,self,self.player,20),
+                              Armes("Mitraillette",2,2,self,self.player,7)]
 
     def move(self):
         if self.direction == "g":
@@ -884,14 +891,28 @@ class Bullets:
 
     def draw(self):
         #pyxel.rect(self.x,self.y, 2,2,9)
-        if self.direction == "h":
-            pyxel.blt(self.x, self.y, 0, 32, 32, 8, 8,colkey=2)
-        if self.direction == "b":
-             pyxel.blt(self.x, self.y, 0, 32, 40, 8, 8,colkey=2)
-        if self.direction == "g":
-             pyxel.blt(self.x, self.y, 0, 40, 40, 8, 8,colkey=2)
-        if self.direction == "d":
-             pyxel.blt(self.x, self.y, 0, 40, 32, 8, 8,colkey=2)
+        #Cette fonction permettra d'avoir différents types de munitions en fonction de l'arme
+        arme = self.type_arme
+        if arme == 0 or 2: # 0 correspond au Pistolet et 2 à la Mitrailleuse   
+            if self.direction == "h":
+                pyxel.blt(self.x, self.y, 0, 32, 32, 8, 8,colkey=2)
+            if self.direction == "b":
+                pyxel.blt(self.x, self.y, 0, 32, 40, 8, 8,colkey=2)
+            if self.direction == "g":
+                pyxel.blt(self.x, self.y, 0, 40, 40, 8, 8,colkey=2)
+            if self.direction == "d":
+                pyxel.blt(self.x, self.y, 0, 40, 32, 8, 8,colkey=2)
+
+        if arme == 1:
+            if self.direction == "h":
+                pyxel.blt(self.x, self.y, 0, 48, 32, 8, 8,colkey=2)
+            if self.direction == "b":
+                pyxel.blt(self.x, self.y, 0, 48, 40, 8, 8,colkey=2)
+            if self.direction == "g":
+                pyxel.blt(self.x, self.y, 0, 56, 40, 8, 8,colkey=2)
+            if self.direction == "d":
+                pyxel.blt(self.x, self.y, 0, 56, 32, 8, 8,colkey=2)
+
 
 class Mob:
     def __init__(self, vie:int, damage:int, attack_speed:int, player:object,game_instance:object):
