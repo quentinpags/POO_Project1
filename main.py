@@ -851,25 +851,18 @@ class Armes:
                                                         self.player_instance.cote,
                                                         self.game_instance,
                                                         self,
-                                                        self.vitesse,
-                                                        self.game_instance.arme_principale
+                                                        self.vitesse
                                                         ))
-    
 
 class Bullets:
-    def __init__(self,x:int,y:int,direction:str,game_instance:object,instance,vitesse:int = 1,type_arme = 0):
+    def __init__(self,x:int,y:int,direction:str,game_instance:object,instance,vitesse:int = 1,):
         self.x = x
         self.y = y
         self.direction = direction #"g"gauche,"d"droite,"b"bas,"h"haut
         self.vitesse = vitesse
-        self.type_arme = type_arme
         self.is_alive = True
         self.game_instance = game_instance
         self.arme_instance = instance
-        self.player = Player("JOUEUR1",self)
-        self.liste_armes = [Armes("Pistolet",3,1,self,self.player,10),
-                            Armes("Sniper",50,5,self,self.player,20),
-                              Armes("Mitraillette",2,2,self,self.player,7)]
 
     def move(self):
         if self.direction == "g":
@@ -891,28 +884,14 @@ class Bullets:
 
     def draw(self):
         #pyxel.rect(self.x,self.y, 2,2,9)
-        #Cette fonction permettra d'avoir différents types de munitions en fonction de l'arme
-        arme = self.type_arme
-        if arme == 0 or 2: # 0 correspond au Pistolet et 2 à la Mitrailleuse   
-            if self.direction == "h":
-                pyxel.blt(self.x, self.y, 0, 32, 32, 8, 8,colkey=2)
-            if self.direction == "b":
-                pyxel.blt(self.x, self.y, 0, 32, 40, 8, 8,colkey=2)
-            if self.direction == "g":
-                pyxel.blt(self.x, self.y, 0, 40, 40, 8, 8,colkey=2)
-            if self.direction == "d":
-                pyxel.blt(self.x, self.y, 0, 40, 32, 8, 8,colkey=2)
-
-        if arme == 1:
-            if self.direction == "h":
-                pyxel.blt(self.x, self.y, 0, 48, 32, 8, 8,colkey=2)
-            if self.direction == "b":
-                pyxel.blt(self.x, self.y, 0, 48, 40, 8, 8,colkey=2)
-            if self.direction == "g":
-                pyxel.blt(self.x, self.y, 0, 56, 40, 8, 8,colkey=2)
-            if self.direction == "d":
-                pyxel.blt(self.x, self.y, 0, 56, 32, 8, 8,colkey=2)
-
+        if self.direction == "h":
+            pyxel.blt(self.x, self.y, 0, 32, 32, 8, 8,colkey=2)
+        if self.direction == "b":
+             pyxel.blt(self.x, self.y, 0, 32, 40, 8, 8,colkey=2)
+        if self.direction == "g":
+             pyxel.blt(self.x, self.y, 0, 40, 40, 8, 8,colkey=2)
+        if self.direction == "d":
+             pyxel.blt(self.x, self.y, 0, 40, 32, 8, 8,colkey=2)
 
 class Mob:
     def __init__(self, vie:int, damage:int, attack_speed:int, player:object,game_instance:object):
@@ -924,23 +903,24 @@ class Mob:
         self.vitesse = 1
         self.taille = 5
         self.game_instance = game_instance
+        self.cote_Mob = "b"#Le Mob va vers le bas
         
         positionnement = random.randint(1,4)
         if positionnement == 1: #fait spawn les mobs en haut 
             self.x= random.randint(self.game_instance.cam_x + 2,self.game_instance.cam_x+pyxel.width-7)
             self.y = -5
 
-        elif positionnement == 2: #fait spawn les mobs en gauche
+        elif positionnement == 2: #fait spawn les mobs à gauche
             self.x = self.game_instance.cam_x -5
             self.y = random.randint(self.game_instance.cam_y + 2,self.game_instance.cam_y + pyxel.height-7)
 
-        elif positionnement == 3:#fait spawn les mobs en droite
+        elif positionnement == 3:#fait spawn les mobs à droite
             self.x = self.game_instance.cam_x +pyxel.width
             self.y = random.randint(self.game_instance.cam_y + 2, self.game_instance.cam_y +pyxel.height-7)
 
         elif positionnement == 4: #fais spawn les mobs en bas
             self.x = random.randint(self.game_instance.cam_x + 2, self.game_instance.cam_x +pyxel.width-7)
-            self.y = self.game_instance.cam_y + pyxel.width
+            self.y = self.game_instance.cam_y + pyxel.height
 
 
         self.cooldown_state = 3
@@ -999,11 +979,23 @@ class Mob:
 
         elif player_x-5 >= mob_x:
             self.x += self.vitesse
+        
 
     def draw(self):
         """Dessine le Mob"""
         if self.player.is_alive():
-            pyxel.rect(self.x,self.y,self.taille,self.taille,11)
+            #pyxel.rect(self.x,self.y,self.taille,self.taille,11)
+
+            #Permet d'avoir les mobs dans le monde "visible" de l'écran
+            sx = self.x - self.game_instance.cam_x
+            sy = self.y - self.game_instance.cam_y
+
+            if self.cote_Mob == "b": #vision du Mob vers le bas 
+                pyxel.blt(sx, sy, 0, 0, 64, 8, 8, colkey=2)
+
+            elif self.cote_Mob == "h": #vision du Mob vers le haut 
+                pyxel.blt(sx, sy, 0, 8, 64, 8, 8, colkey=2)
+                
 
     def draw_hitbox(self):
             """Dessine hitbox Mob"""
