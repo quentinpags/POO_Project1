@@ -962,7 +962,7 @@ class Mob:
             self.move(tableau_cible)
             
     def move(self, tableau_cible:list):
-        """Deplace le mob vers le joueur """
+        """Deplace le mob vers le joueur et met à jour sa direction"""
         player_x = tableau_cible[0]
         player_y = tableau_cible[1]
         mob_x = self.x
@@ -970,9 +970,11 @@ class Mob:
         
         if player_y-5 >= mob_y:
             self.y += self.vitesse
+            self.cote_Mob = "b" #permet au mob de regarder vers le bas si le joueur est plus bas que lui
 
         elif player_y+5 <= mob_y:
             self.y -= self.vitesse
+            self.cote_Mob = "h" #permet au mob de regarder vers le haut si le joueur est plus haut que lui
 
         if player_x+5 <= mob_x:
             self.x -= self.vitesse
