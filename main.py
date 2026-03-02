@@ -1005,8 +1005,7 @@ class Mob:
 
     def draw(self):
         if self.player.is_alive():
-            sx = self.x - self.game_instance.cam_x
-            sy = self.y - self.game_instance.cam_y
+            
 
             # On calcule quel sprite utiliser (0 ou 1) et on divise par 10 pour changer de sprite toutes les 10 frames (vitesse de l'animation)
             animation_frame = (self.frame_count // 10) % 2 
@@ -1016,13 +1015,13 @@ class Mob:
             # Si l'animation_frame est 1, l'offset est 8 (largeur du sprite)
             u_offset = animation_frame * 8
 
-            if self.cote_Mob == "b": # quand le mob regarde vers le bas
+            if self.cote_Mob == "b": 
                 # le sprite 1 est en (0, 64), le sprite 2 est en (8, 64)
-                pyxel.blt(sx, sy, 0, 0 + u_offset, 64, 8, 8, colkey=2)
+                pyxel.blt(self.x, self.y, 0, 0 + u_offset, 64, 8, 8, colkey=2)
 
-            elif self.cote_Mob == "h": # quand le mob regarde vers le haut
+            elif self.cote_Mob == "h": 
                 # le sprite 1 est en (0, 72), le sprite 2 est en (8, 72) 
-                pyxel.blt(sx, sy, 0, 0 + u_offset, 72, 8, 8, colkey=2)
+                pyxel.blt(self.x, self.y, 0, 0 + u_offset, 72, 8, 8, colkey=2)
                 
 
     def draw_hitbox(self):
