@@ -378,10 +378,37 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             for i in range(1,4):
                 choix= random.random()
                 self.choix.append(choix)
-            
+        
         
         if self.etape_stat ==0:
             for i in range(1,4):
+                
+                ''' Affichage des noms des boosts '''
+                #1. Couleur des textes
+                x_boost = self.width // 4 - 90 + 45 * i
+                y_boost = self.height // 2
+
+                if self.choix[i-1] < 0.40:
+                    pyxel.bltm(x_boost, y_boost, 0, 64, 1216, 64, 64)
+                    nom_boost = "DEFENSE"
+                    couleur = 12 
+                    
+                elif self.choix[i-1] < 0.80:
+                    pyxel.bltm(x_boost, y_boost, 0, 0, 1216, 64, 64)
+                    nom_boost = "VIE +"
+                    couleur = 8 
+                    
+                else:
+                    pyxel.bltm(x_boost, y_boost, 0, 64, 1280, 64, 64)
+                    nom_boost = "FORCE"
+                    couleur = 10 
+
+                # 2. Affichage du texte
+                x_texte = x_boost + (32 - len(nom_boost) * 4 // 2)
+                pyxel.text(x_texte, y_boost - 10, nom_boost, couleur)
+                        
+                '''Affichage des sprites des boosts'''
+
                 if self.choix[i-1] <0.20:
                     #force
                     pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 64, 1280, 64, 64, scale=1)
@@ -389,19 +416,16 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                         pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)
                         pyxel.text(self.width//4-90 +45*i, self.height//2, "Force +", 2)
                     
-                    
-                    #affichage de la tilemap
-                    
                 elif self.choix[i-1] < 0.40:
                     pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 64, 1216, 64, 64, scale=1)
                     if self.debug:
                         pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)#defense
                         pyxel.text(self.width//4-90 +45*i, self.height//2, "Defense +", 2)
-                elif self.choix[i-1] <0.60:
-                    pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 0, 1216, 64, 64, scale=1)
-                    if self.debug:
-                        pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)#regen
-                        pyxel.text(self.width//4-90 +45*i, self.height//2, "Regen +",2)
+                # elif self.choix[i-1] <0.60:
+                #     pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 0, 1216, 64, 64, scale=1)
+                #     if self.debug:
+                #         pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)#regen
+                #         pyxel.text(self.width//4-90 +45*i, self.height//2, "Regen +",2)
                 
                 elif self.choix[i-1] < 0.80:
                     pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 0, 1216, 64, 64, scale=1)
@@ -409,15 +433,15 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                         pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)
                         pyxel.text(self.width//4-90 +45*i, self.height//2, "Vie +",2)
                     #vie_max
-                else:
-                    # pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 0, 1280, 64, 64)
-                    # if self.debug:
-                    #     pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)#degats
-                    #     pyxel.text(self.width//4-90 +45*i, self.height//2, "Vitesse +", 2) 
-                    pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 64, 1280, 64, 64, scale=1)
-                    if self.debug:
-                        pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)
-                        pyxel.text(self.width//4-90 +45*i, self.height//2, "Force +", 2)
+                # else:
+                #      pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 0, 1280, 64, 64)
+                #      if self.debug:
+                #          pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)#degats
+                #          pyxel.text(self.width//4-90 +45*i, self.height//2, "Vitesse +", 2) 
+                #      pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 64, 1280, 64, 64, scale=1)
+                #      if self.debug:
+                #         pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)
+                #         pyxel.text(self.width//4-90 +45*i, self.height//2, "Force +", 2)
                 
                     
                  
@@ -440,7 +464,19 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 
                 
             self.affichage_curseur(self.width//4-20 +47*self.position_curseur, self.height - 20, 7)
-                
+
+            '''Caractéristiques du titre affiché dans l'étape 0 des stats'''
+
+            message = "CHOISISSEZ VOTRE BOOST"# Affiche le titre du choix de stat
+
+            # (Largeur écran / 2) - (Longueur du texte * 4 / 2) 
+            x_texte = (pyxel.width // 2) - (len(message) * 4 // 2)
+
+            pyxel.text(x_texte, 35 , message, 7) 
+            pyxel.rect(0, 5, pyxel.width, 15, 1)  # rectangle de fond du titre
+            pyxel.line(0, 5, pyxel.width, 5, 7) 
+            pyxel.line(0, 20, pyxel.width, 20, 7) #lignes séparant le texte
+            pyxel.text(x_texte, 10, "AMELIORATION DISPONIBLE !", 7) 
                 
         elif self.etape_stat ==1:
             
@@ -451,7 +487,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             
             
             option = {0:"Vague Suivante",
-                      1:"Changer skin"}
+                      1:"Changer de perso"}
             
             choix_option = self.choix_option(option)
             if choix_option == 0:
@@ -470,7 +506,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 pyxel.text(self.width//8 +25, self.height//2+30+8*j, option[j], 9)
                 
                 
-            pyxel.rectb(100, 104, self.width-100, self.height-104, 9)#case pour montrer le skin changé
+            pyxel.rectb(100, 104, self.width-100, self.height-104, 9)#case pour montrer le perso changé
             
     def choix_stat(self, nb):
         """ajoute des points de stat en fonction de l'aptitude choisie dans la fonction choix_option"""
@@ -482,15 +518,15 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         elif nb < 0.40:
             self.player.ajouter_statistique("defense", 0.05)#defense#5% de dégats en -
             print("ajout de defense")
-        elif nb <0.60:
-            self.player.ajouter_statistique("regeneration", 5)#regen
-            print("ajout de regen")
+        # elif nb <0.60:
+        #     self.player.ajouter_statistique("regeneration", 5)#regen
+        #     print("ajout de regen")
         elif nb < 0.80:
             self.player.ajouter_statistique("vie", 5)#vie_max
             print("ajout de vie")
-        else:
-            self.player.ajouter_statistique("esquive", 1)#degats
-            print("ajout d'esquive")
+        # else:
+        #     self.player.ajouter_statistique("esquive", 1)#degats
+        #     print("ajout d'esquive")
             
             
     def draw_menu_fin(self):
