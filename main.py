@@ -174,7 +174,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 if self.player.i % (30 *3) ==0:#gère la frequence de pop de mobs au jeu
                     if self.num_vague < 10:
                         for i in range(self.num_vague+1):
-                            self.liste_mob.append(Mob(10,10,10,self.player,self, random.randint (1, 2)))
+                            self.liste_mob.append(Mob(10,10,10,self.player,self, random.randint (1, 4)))
                             # faire apparaitre les mobs dans une liste
 
                     else: #pour les vagues après la vague 10
@@ -182,7 +182,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                             vie =random.randint(self.num_vague-5,self.num_vague)
                             damage = random.randint(self.num_vague-5,self.num_vague)
 
-                            self.liste_mob.append(Mob(vie,damage,10,self.player,self, random.randint(1, 2)))
+                            self.liste_mob.append(Mob(vie,damage,10,self.player,self, random.randint(1, 4)))
 
 
 
@@ -1071,17 +1071,28 @@ class Mob:
                 elif self.cote_Mob == "h": 
                     # le sprite 1 est en (0, 88), le sprite 2 est en (8, 88) 
                     pyxel.blt(self.x, self.y, 0, 0 + u_offset, 88, 8, 8, colkey=2)
+
+            elif self.type_mob == 3:
+
+                if self.cote_Mob == "b": 
+                    # le sprite 1 est en (0, 128), le sprite 2 est en (8, 128)
+                    pyxel.blt(self.x, self.y, 0, 0 + u_offset, 128, 8, 8, colkey=2)
+
+                elif self.cote_Mob == "h": 
+                    # mêmes sprites car ce mob n'a pas de sprite de lui regardant le joueur vers le haut 
+                    pyxel.blt(self.x, self.y, 0, 0 + u_offset, 128, 8, 8, colkey=2)
+
+            elif self.type_mob == 4:
+
+                if self.cote_Mob == "b": 
+                    # le sprite 1 est en (32, 128), le sprite 2 est en (40, 128)
+                    pyxel.blt(self.x, self.y, 0, 32 + u_offset, 128, 8, 8, colkey=2)
+
+                elif self.cote_Mob == "h":  
+                    pyxel.blt(self.x, self.y, 0, 32 + u_offset, 128, 8, 8, colkey=2)
+
                 
-            # On choisit la ligne de départ (v_base) selon le type
-            # if self.type_mob == 1:
-            #     v_base = 64 if self.cote == "b" else 72
-            # elif self.type_mob == 2:
-            #     v_base = 80 if self.cote == "b" else 88
-
-            # UN SEUL affichage : Pyxel dessine soit le 1, soit le 2
-            # pyxel.blt(self.x, self.y, 0, 0 + u_offset, v_base, 8, 8, colkey=2)
-
-
+        
 
 
     def draw_hitbox(self):
