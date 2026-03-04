@@ -174,7 +174,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 if self.player.i % (30 *3) ==0:#gère la frequence de pop de mobs au jeu
                     if self.num_vague < 10:
                         for i in range(self.num_vague+1):
-                            self.liste_mob.append(Mob(10,10,10,self.player,self))
+                            self.liste_mob.append(Mob(10,10,10,self.player,self, random.randint (1, 2)))
                             # faire apparaitre les mobs dans une liste
 
                     else: #pour les vagues après la vague 10
@@ -182,7 +182,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                             vie =random.randint(self.num_vague-5,self.num_vague)
                             damage = random.randint(self.num_vague-5,self.num_vague)
 
-                            self.liste_mob.append(Mob(vie,damage,10,self.player,self))
+                            self.liste_mob.append(Mob(vie,damage,10,self.player,self, random.randint(1, 2)))
 
 
 
@@ -388,20 +388,21 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 x_boost = self.width // 4 - 90 + 45 * i
                 y_boost = self.height // 2
 
-                if self.choix[i-1] < 0.40:
+                if self.choix[i-1] < 0.20:
+                    pyxel.bltm(x_boost, y_boost, 0, 64, 1280, 64, 64)
+                    nom_boost = "FORCE"
+                    couleur = 10 
+                
+                elif self.choix[i-1] < 0.40:
                     pyxel.bltm(x_boost, y_boost, 0, 64, 1216, 64, 64)
                     nom_boost = "DEFENSE"
                     couleur = 12 
                     
-                elif self.choix[i-1] < 0.80:
+                else:
                     pyxel.bltm(x_boost, y_boost, 0, 0, 1216, 64, 64)
                     nom_boost = "VIE +"
                     couleur = 8 
                     
-                else:
-                    pyxel.bltm(x_boost, y_boost, 0, 64, 1280, 64, 64)
-                    nom_boost = "FORCE"
-                    couleur = 10 
 
                 # 2. Affichage du texte
                 x_texte = x_boost + (32 - len(nom_boost) * 4 // 2)
@@ -427,7 +428,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 #         pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)#regen
                 #         pyxel.text(self.width//4-90 +45*i, self.height//2, "Regen +",2)
                 
-                elif self.choix[i-1] < 0.80:
+                else:
                     pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 0, 1216, 64, 64, scale=1)
                     if self.debug:
                         pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)
@@ -521,7 +522,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         # elif nb <0.60:
         #     self.player.ajouter_statistique("regeneration", 5)#regen
         #     print("ajout de regen")
-        elif nb < 0.80:
+        else:
             self.player.ajouter_statistique("vie", 5)#vie_max
             print("ajout de vie")
         # else:
@@ -949,7 +950,7 @@ class Bullets:
                 pyxel.blt(self.x, self.y, 0, 56, 32, 8, 8,colkey=2)
 
 class Mob:
-    def __init__(self, vie:int, damage:int, attack_speed:int, player:object,game_instance:object):
+    def __init__(self, vie:int, damage:int, attack_speed:int, player:object,game_instance:object, type_mob):
         """initialisation de la creation de mob
         Player est la l'instance du joueur """
         self.vie = vie
@@ -958,6 +959,7 @@ class Mob:
         self.vitesse = 1
         self.taille = 5
         self.game_instance = game_instance
+        self.type_mob = type_mob
         self.cote_Mob = "b"#Le Mob va vers le bas
         self.frame_count = 0
         
@@ -1050,15 +1052,37 @@ class Mob:
             # Si l'animation_frame est 0, l'offset est 0
             # Si l'animation_frame est 1, l'offset est 8 (largeur du sprite)
             u_offset = animation_frame * 8
+            if self.type_mob == 1:
 
-            if self.cote_Mob == "b": 
-                # le sprite 1 est en (0, 64), le sprite 2 est en (8, 64)
-                pyxel.blt(self.x, self.y, 0, 0 + u_offset, 64, 8, 8, colkey=2)
+                if self.cote_Mob == "b": 
+                    # le sprite 1 est en (0, 64), le sprite 2 est en (8, 64)
+                    pyxel.blt(self.x, self.y, 0, 0 + u_offset, 64, 8, 8, colkey=2)
 
-            elif self.cote_Mob == "h": 
-                # le sprite 1 est en (0, 72), le sprite 2 est en (8, 72) 
-                pyxel.blt(self.x, self.y, 0, 0 + u_offset, 72, 8, 8, colkey=2)
+                elif self.cote_Mob == "h": 
+                    # le sprite 1 est en (0, 72), le sprite 2 est en (8, 72) 
+                    pyxel.blt(self.x, self.y, 0, 0 + u_offset, 72, 8, 8, colkey=2)
+
+            elif self.type_mob == 2:
+
+                if self.cote_Mob == "b": 
+                    # le sprite 1 est en (0, 80), le sprite 2 est en (8, 80)
+                    pyxel.blt(self.x, self.y, 0, 0 + u_offset, 80, 8, 8, colkey=2)
+
+                elif self.cote_Mob == "h": 
+                    # le sprite 1 est en (0, 88), le sprite 2 est en (8, 88) 
+                    pyxel.blt(self.x, self.y, 0, 0 + u_offset, 88, 8, 8, colkey=2)
                 
+            # On choisit la ligne de départ (v_base) selon le type
+            # if self.type_mob == 1:
+            #     v_base = 64 if self.cote == "b" else 72
+            # elif self.type_mob == 2:
+            #     v_base = 80 if self.cote == "b" else 88
+
+            # UN SEUL affichage : Pyxel dessine soit le 1, soit le 2
+            # pyxel.blt(self.x, self.y, 0, 0 + u_offset, v_base, 8, 8, colkey=2)
+
+
+
 
     def draw_hitbox(self):
             """Dessine hitbox Mob"""
