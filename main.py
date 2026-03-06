@@ -174,7 +174,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 if self.player.i % (30 *3) ==0:#gère la frequence de pop de mobs au jeu
                     if self.num_vague < 10:
                         for i in range(self.num_vague+1):
-                            self.liste_mob.append(Mob(10,10,10,self.player,self))
+                            self.liste_mob.append(Mob(10,10,10,self.player,self, random.randint (1, 4)))
                             # faire apparaitre les mobs dans une liste
 
                     else: #pour les vagues après la vague 10
@@ -182,7 +182,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                             vie =random.randint(self.num_vague-5,self.num_vague)
                             damage = random.randint(self.num_vague-5,self.num_vague)
 
-                            self.liste_mob.append(Mob(vie,damage,10,self.player,self))
+                            self.liste_mob.append(Mob(vie,damage,10,self.player,self, random.randint(1, 4)))
 
 
 
@@ -309,9 +309,6 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             self.chute = False
             
 
-        
-        
-        
     def draw_menu_start(self):
         """dessine le menu de départ lorsque le menu est 'Start' dans lequel on choisit de jouer on de quitter le jeu"""
         pyxel.cls(0)        
@@ -378,10 +375,38 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             for i in range(1,4):
                 choix= random.random()
                 self.choix.append(choix)
-            
+        
         
         if self.etape_stat ==0:
             for i in range(1,4):
+                
+                #Affichage des noms des boosts
+                #1. Couleur des textes
+                x_boost = self.width // 4 - 90 + 45 * i
+                y_boost = self.height // 2
+
+                if self.choix[i-1] < 0.20:
+                    pyxel.bltm(x_boost, y_boost, 0, 64, 1280, 64, 64)
+                    nom_boost = "FORCE"
+                    couleur = 10 
+                
+                elif self.choix[i-1] < 0.40:
+                    pyxel.bltm(x_boost, y_boost, 0, 64, 1216, 64, 64)
+                    nom_boost = "DEFENSE"
+                    couleur = 12 
+                    
+                else:
+                    pyxel.bltm(x_boost, y_boost, 0, 0, 1216, 64, 64)
+                    nom_boost = "VIE +"
+                    couleur = 8 
+                    
+
+                # 2. Affichage du texte
+                x_texte = x_boost + (32 - len(nom_boost) * 4 // 2)
+                pyxel.text(x_texte, y_boost - 10, nom_boost, couleur)
+                        
+                #Affichage des sprites des boosts
+
                 if self.choix[i-1] <0.20:
                     #force
                     pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 64, 1280, 64, 64, scale=1)
@@ -389,35 +414,32 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                         pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)
                         pyxel.text(self.width//4-90 +45*i, self.height//2, "Force +", 2)
                     
-                    
-                    #affichage de la tilemap
-                    
                 elif self.choix[i-1] < 0.40:
                     pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 64, 1216, 64, 64, scale=1)
                     if self.debug:
                         pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)#defense
                         pyxel.text(self.width//4-90 +45*i, self.height//2, "Defense +", 2)
-                elif self.choix[i-1] <0.60:
-                    pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 0, 1216, 64, 64, scale=1)
-                    if self.debug:
-                        pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)#regen
-                        pyxel.text(self.width//4-90 +45*i, self.height//2, "Regen +",2)
+                # elif self.choix[i-1] <0.60:
+                #     pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 0, 1216, 64, 64, scale=1)
+                #     if self.debug:
+                #         pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)#regen
+                #         pyxel.text(self.width//4-90 +45*i, self.height//2, "Regen +",2)
                 
-                elif self.choix[i-1] < 0.80:
+                else:
                     pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 0, 1216, 64, 64, scale=1)
                     if self.debug:
                         pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)
                         pyxel.text(self.width//4-90 +45*i, self.height//2, "Vie +",2)
                     #vie_max
-                else:
-                    # pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 0, 1280, 64, 64)
-                    # if self.debug:
-                    #     pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)#degats
-                    #     pyxel.text(self.width//4-90 +45*i, self.height//2, "Vitesse +", 2) 
-                    pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 64, 1280, 64, 64, scale=1)
-                    if self.debug:
-                        pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)
-                        pyxel.text(self.width//4-90 +45*i, self.height//2, "Force +", 2)
+                # else:
+                #      pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 0, 1280, 64, 64)
+                #      if self.debug:
+                #          pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)#degats
+                #          pyxel.text(self.width//4-90 +45*i, self.height//2, "Vitesse +", 2) 
+                #      pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 64, 1280, 64, 64, scale=1)
+                #      if self.debug:
+                #         pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)
+                #         pyxel.text(self.width//4-90 +45*i, self.height//2, "Force +", 2)
                 
                     
                  
@@ -440,7 +462,19 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 
                 
             self.affichage_curseur(self.width//4-20 +47*self.position_curseur, self.height - 20, 7)
-                
+
+            #Caractéristiques du titre affiché dans l'étape 0 des stats
+
+            message = "CHOISISSEZ VOTRE BOOST"# Affiche le titre du choix de stat
+
+            # (Largeur écran / 2) - (Longueur du texte * 4 / 2) 
+            x_texte = (pyxel.width // 2) - (len(message) * 4 // 2)
+
+            pyxel.text(x_texte, 35 , message, 7) 
+            pyxel.rect(0, 5, pyxel.width, 15, 1)  # rectangle de fond du titre
+            pyxel.line(0, 5, pyxel.width, 5, 7) 
+            pyxel.line(0, 20, pyxel.width, 20, 7) #lignes séparant le texte
+            pyxel.text(x_texte, 10, "AMELIORATION DISPONIBLE !", 7) 
                 
         elif self.etape_stat ==1:
             
@@ -451,7 +485,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             
             
             option = {0:"Vague Suivante",
-                      1:"Changer skin"}
+                      1:"Changer de perso"}
             
             choix_option = self.choix_option(option)
             if choix_option == 0:
@@ -470,7 +504,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 pyxel.text(self.width//8 +25, self.height//2+30+8*j, option[j], 9)
                 
                 
-            pyxel.rectb(100, 104, self.width-100, self.height-104, 9)#case pour montrer le skin changé
+            pyxel.rectb(100, 104, self.width-100, self.height-104, 9)#case pour montrer le perso changé
             
     def choix_stat(self, nb):
         """ajoute des points de stat en fonction de l'aptitude choisie dans la fonction choix_option"""
@@ -482,15 +516,15 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         elif nb < 0.40:
             self.player.ajouter_statistique("defense", 0.05)#defense#5% de dégats en -
             print("ajout de defense")
-        elif nb <0.60:
-            self.player.ajouter_statistique("regeneration", 5)#regen
-            print("ajout de regen")
-        elif nb < 0.80:
+        # elif nb <0.60:
+        #     self.player.ajouter_statistique("regeneration", 5)#regen
+        #     print("ajout de regen")
+        else:
             self.player.ajouter_statistique("vie", 5)#vie_max
             print("ajout de vie")
-        else:
-            self.player.ajouter_statistique("esquive", 1)#degats
-            print("ajout d'esquive")
+        # else:
+        #     self.player.ajouter_statistique("esquive", 1)#degats
+        #     print("ajout d'esquive")
             
             
     def draw_menu_fin(self):
@@ -851,18 +885,24 @@ class Armes:
                                                         self.player_instance.cote,
                                                         self.game_instance,
                                                         self,
-                                                        self.vitesse
+                                                        self.vitesse,
+                                                        self.game_instance.arme_principale
                                                         ))
 
 class Bullets:
-    def __init__(self,x:int,y:int,direction:str,game_instance:object,instance,vitesse:int = 1,):
+    def __init__(self,x:int,y:int,direction:str,game_instance:object,instance,vitesse:int = 1,type_arme = 0):
         self.x = x
         self.y = y
         self.direction = direction #"g"gauche,"d"droite,"b"bas,"h"haut
         self.vitesse = vitesse
+        self.type_arme = type_arme
         self.is_alive = True
         self.game_instance = game_instance
         self.arme_instance = instance
+        self.player = Player("JOUEUR1",self)
+        self.liste_armes = [Armes("Pistolet",3,1,self,self.player,10),
+                            Armes("Sniper",50,5,self,self.player,20),
+                              Armes("Mitraillette",2,2,self,self.player,7)]
 
     def move(self):
         if self.direction == "g":
@@ -884,17 +924,30 @@ class Bullets:
 
     def draw(self):
         #pyxel.rect(self.x,self.y, 2,2,9)
-        if self.direction == "h":
-            pyxel.blt(self.x, self.y, 0, 32, 32, 8, 8,colkey=2)
-        if self.direction == "b":
-             pyxel.blt(self.x, self.y, 0, 32, 40, 8, 8,colkey=2)
-        if self.direction == "g":
-             pyxel.blt(self.x, self.y, 0, 40, 40, 8, 8,colkey=2)
-        if self.direction == "d":
-             pyxel.blt(self.x, self.y, 0, 40, 32, 8, 8,colkey=2)
+        #Cette fonction permettra d'avoir différents types de munitions en fonction de l'arme
+        arme = self.type_arme
+        if arme == 0 or 2: # 0 correspond au Pistolet et 2 à la Mitrailleuse   
+            if self.direction == "h":
+                pyxel.blt(self.x, self.y, 0, 32, 32, 8, 8,colkey=2)
+            if self.direction == "b":
+                pyxel.blt(self.x, self.y, 0, 32, 40, 8, 8,colkey=2)
+            if self.direction == "g":
+                pyxel.blt(self.x, self.y, 0, 40, 40, 8, 8,colkey=2)
+            if self.direction == "d":
+                pyxel.blt(self.x, self.y, 0, 40, 32, 8, 8,colkey=2)
+        
+        if arme == 1:
+            if self.direction == "h":
+                pyxel.blt(self.x, self.y, 0, 48, 32, 8, 8,colkey=2)
+            if self.direction == "b":
+                pyxel.blt(self.x, self.y, 0, 48, 40, 8, 8,colkey=2)
+            if self.direction == "g":
+                pyxel.blt(self.x, self.y, 0, 56, 40, 8, 8,colkey=2)
+            if self.direction == "d":
+                pyxel.blt(self.x, self.y, 0, 56, 32, 8, 8,colkey=2)
 
 class Mob:
-    def __init__(self, vie:int, damage:int, attack_speed:int, player:object,game_instance:object):
+    def __init__(self, vie:int, damage:int, attack_speed:int, player:object,game_instance:object, type_mob):
         """initialisation de la creation de mob
         Player est la l'instance du joueur """
         self.vie = vie
@@ -903,23 +956,26 @@ class Mob:
         self.vitesse = 1
         self.taille = 5
         self.game_instance = game_instance
+        self.type_mob = type_mob
+        self.cote_Mob = "b"#Le Mob va vers le bas
+        self.frame_count = 0
         
         positionnement = random.randint(1,4)
         if positionnement == 1: #fait spawn les mobs en haut 
             self.x= random.randint(self.game_instance.cam_x + 2,self.game_instance.cam_x+pyxel.width-7)
             self.y = -5
 
-        elif positionnement == 2: #fait spawn les mobs en gauche
+        elif positionnement == 2: #fait spawn les mobs à gauche
             self.x = self.game_instance.cam_x -5
             self.y = random.randint(self.game_instance.cam_y + 2,self.game_instance.cam_y + pyxel.height-7)
 
-        elif positionnement == 3:#fait spawn les mobs en droite
+        elif positionnement == 3:#fait spawn les mobs à droite
             self.x = self.game_instance.cam_x +pyxel.width
             self.y = random.randint(self.game_instance.cam_y + 2, self.game_instance.cam_y +pyxel.height-7)
 
         elif positionnement == 4: #fais spawn les mobs en bas
             self.x = random.randint(self.game_instance.cam_x + 2, self.game_instance.cam_x +pyxel.width-7)
-            self.y = self.game_instance.cam_y + pyxel.width
+            self.y = self.game_instance.cam_y + pyxel.height
 
 
         self.cooldown_state = 3
@@ -955,13 +1011,13 @@ class Mob:
         tableau sous forme [x,y]
         la variable cooldown existe pour que les mobs se deplacent de facon plus saccadees"""
 
-
+        self.frame_count += 1 #le compteur de frame augmente de 1 à chaque frame
         if self.peut_bouger():
             #verifie si le mob peut jouer -> verifie son cooldown est ok;permet que le mob avance de maniere plus 'zombie' 
             self.move(tableau_cible)
             
     def move(self, tableau_cible:list):
-        """Deplace le mob vers le joueur """
+        """Deplace le mob vers le joueur et met à jour sa direction"""
         player_x = tableau_cible[0]
         player_y = tableau_cible[1]
         mob_x = self.x
@@ -969,20 +1025,72 @@ class Mob:
         
         if player_y-5 >= mob_y:
             self.y += self.vitesse
+            self.cote_Mob = "b" #permet au mob de regarder vers le bas si le joueur est plus bas que lui
 
         elif player_y+5 <= mob_y:
             self.y -= self.vitesse
+            self.cote_Mob = "h" #permet au mob de regarder vers le haut si le joueur est plus haut que lui
 
         if player_x+5 <= mob_x:
             self.x -= self.vitesse
 
         elif player_x-5 >= mob_x:
             self.x += self.vitesse
+        
 
     def draw(self):
-        """Dessine le Mob"""
         if self.player.is_alive():
-            pyxel.rect(self.x,self.y,self.taille,self.taille,11)
+            
+
+            # On calcule quel sprite utiliser (0 ou 1) et on divise par 10 pour changer de sprite toutes les 10 frames (vitesse de l'animation)
+            animation_frame = (self.frame_count // 10) % 2 
+        
+            # Calcul de l'offset X sur la planche de sprites
+            # Si l'animation_frame est 0, l'offset est 0
+            # Si l'animation_frame est 1, l'offset est 8 (largeur du sprite)
+            u_offset = animation_frame * 8
+            if self.type_mob == 1:
+
+                if self.cote_Mob == "b": 
+                    # le sprite 1 est en (0, 64), le sprite 2 est en (8, 64)
+                    pyxel.blt(self.x, self.y, 0, 0 + u_offset, 64, 8, 8, colkey=2)
+
+                elif self.cote_Mob == "h": 
+                    # le sprite 1 est en (0, 72), le sprite 2 est en (8, 72) 
+                    pyxel.blt(self.x, self.y, 0, 0 + u_offset, 72, 8, 8, colkey=2)
+
+            elif self.type_mob == 2:
+
+                if self.cote_Mob == "b": 
+                    # le sprite 1 est en (0, 80), le sprite 2 est en (8, 80)
+                    pyxel.blt(self.x, self.y, 0, 0 + u_offset, 80, 8, 8, colkey=2)
+
+                elif self.cote_Mob == "h": 
+                    # le sprite 1 est en (0, 88), le sprite 2 est en (8, 88) 
+                    pyxel.blt(self.x, self.y, 0, 0 + u_offset, 88, 8, 8, colkey=2)
+
+            elif self.type_mob == 3:
+
+                if self.cote_Mob == "b": 
+                    # le sprite 1 est en (0, 128), le sprite 2 est en (8, 128)
+                    pyxel.blt(self.x, self.y, 0, 0 + u_offset, 128, 8, 8, colkey=2)
+
+                elif self.cote_Mob == "h": 
+                    # mêmes sprites car ce mob n'a pas de sprite de lui regardant le joueur vers le haut 
+                    pyxel.blt(self.x, self.y, 0, 0 + u_offset, 128, 8, 8, colkey=2)
+
+            elif self.type_mob == 4:
+
+                if self.cote_Mob == "b": 
+                    # le sprite 1 est en (32, 128), le sprite 2 est en (40, 128)
+                    pyxel.blt(self.x, self.y, 0, 32 + u_offset, 128, 8, 8, colkey=2)
+
+                elif self.cote_Mob == "h":  
+                    pyxel.blt(self.x, self.y, 0, 32 + u_offset, 128, 8, 8, colkey=2)
+
+                
+        
+
 
     def draw_hitbox(self):
             """Dessine hitbox Mob"""
