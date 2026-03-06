@@ -463,7 +463,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 
             self.affichage_curseur(self.width//4-20 +47*self.position_curseur, self.height - 20, 7)
 
-            '''Caractéristiques du titre affiché dans l'étape 0 des stats'''
+            #Caractéristiques du titre affiché dans l'étape 0 des stats
 
             message = "CHOISISSEZ VOTRE BOOST"# Affiche le titre du choix de stat
 
