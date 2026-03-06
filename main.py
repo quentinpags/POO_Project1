@@ -601,26 +601,41 @@ class Player: #classe qui cree le joueur
         """Fonction qui permet de gérer la fonctions des touches"""
 
         if self.is_alive():
-            if pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_D):
-                self.cote = "d"
+            if pyxel.btn(pyxel.KEY_D) and pyxel.btn(pyxel.KEY_Z):
+                if (self.x < 348) and (self.y > 0) :#eviter de sortir de l'écran
+                    self.x = self.x + self.vitesse*0.7 #pour que la vitesse soit la même que pour les déplacements horizontaux et verticaux
+                    self.y = self.y - self.vitesse*0.7 #meme raison que pour la ligne du dessus
+            
+            if pyxel.btn(pyxel.KEY_D) and pyxel.btn(pyxel.KEY_S):
+                if (self.x < 348) and (self.y <380) :#eviter de sortir de l'écran
+                    self.x = self.x + self.vitesse*0.7  #pour que la vitesse soit la même que pour les déplacements horizontaux et verticaux
+                    self.y = self.y + self.vitesse*0.7 #meme raison que pour la ligne du dessus
+            
+            if pyxel.btn(pyxel.KEY_Q) and pyxel.btn(pyxel.KEY_Z):
+                if (self.x > 0) and (self.y > 0) :#eviter de sortir de l'écran
+                    self.x = self.x - self.vitesse*0.7 #pour que la vitesse soit la même que pour les déplacements horizontaux et verticaux
+                    self.y = self.y - self.vitesse*0.7 #meme raison que pour la ligne du dessus
+            
+            if pyxel.btn(pyxel.KEY_Q) and pyxel.btn(pyxel.KEY_S):
+                if (self.x > 0) and (self.y <380) :#eviter de sortir de l'écran
+                    self.x = self.x - self.vitesse*0.7  #pour que la vitesse soit la même que pour les déplacements horizontaux et verticaux
+                    self.y = self.y + self.vitesse*0.7 #meme raison que pour la ligne du dessus
+                        
+            if pyxel.btn(pyxel.KEY_D) and not pyxel.btn(pyxel.KEY_Z) and not pyxel.btn(pyxel.KEY_S): # On evite que ce deplacement soit pris en compte si on appuie sur d'autres touches de déplacement pour éviter les bugs de déplacement en diagonale
                 if (self.x < 348) :#eviter de sortir de l'écran
                     self.x = self.x + self.vitesse
 
-            if pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.KEY_Q):
-                self.cote = "g"
+            if pyxel.btn(pyxel.KEY_Q) and not pyxel.btn(pyxel.KEY_Z) and not pyxel.btn(pyxel.KEY_S): # pareil que pour la ligne du dessus
                 if (self.x > 0) :
                     self.x = self.x - self.vitesse
                     
-
-            if pyxel.btn(pyxel.KEY_DOWN) or pyxel.btn(pyxel.KEY_S):
-                self.cote = 'b'
+            if pyxel.btn(pyxel.KEY_S) and not pyxel.btn(pyxel.KEY_D) and not pyxel.btn(pyxel.KEY_Q): # pareil que pour la ligne du dessus
                 if (self.y <380) : #eviter de sortir de l'écran
                     self.y = self.y + self.vitesse
-            if pyxel.btn(pyxel.KEY_UP) or pyxel.btn(pyxel.KEY_Z):
-                self.cote = 'h'
+            if pyxel.btn(pyxel.KEY_Z) and not pyxel.btn(pyxel.KEY_D) and not pyxel.btn(pyxel.KEY_Q): # pareil que pour la ligne du dessus
                 if (self.y > 0) : 
                     self.y = self.y - self.vitesse
-                    
+
             if self.autoshoot == True:
                 if  self.i%20 == 0:
                     self.game_instance.liste_armes[self.game_instance.arme_principale].creer_balle()
