@@ -309,9 +309,6 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             self.chute = False
             
 
-        
-        
-        
     def draw_menu_start(self):
         """dessine le menu de départ lorsque le menu est 'Start' dans lequel on choisit de jouer on de quitter le jeu"""
         pyxel.cls(0)        
