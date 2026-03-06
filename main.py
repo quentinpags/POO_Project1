@@ -405,7 +405,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 x_texte = x_boost + (32 - len(nom_boost) * 4 // 2)
                 pyxel.text(x_texte, y_boost - 10, nom_boost, couleur)
                         
-                '''Affichage des sprites des boosts'''
+                #Affichage des sprites des boosts
 
                 if self.choix[i-1] <0.20:
                     #force
