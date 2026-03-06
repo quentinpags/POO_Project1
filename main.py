@@ -380,7 +380,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         if self.etape_stat ==0:
             for i in range(1,4):
                 
-                ''' Affichage des noms des boosts '''
+                #Affichage des noms des boosts
                 #1. Couleur des textes
                 x_boost = self.width // 4 - 90 + 45 * i
                 y_boost = self.height // 2
