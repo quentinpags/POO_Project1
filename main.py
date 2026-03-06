@@ -651,8 +651,8 @@ class Player: #classe qui cree le joueur
             
             if pyxel.btn(pyxel.KEY_Q) and pyxel.btn(pyxel.KEY_S):
                 if (self.x > 0) and (self.y <380) :#eviter de sortir de l'écran
-                    self.x = self.x - self.vitesse*0.7  #pour que la vitesse soit la même que pour les déplacements horizontaux et verticaux
-                    self.y = self.y + self.vitesse*0.7 #meme raison que pour la ligne du dessus
+                    self.x = self.x - self.vitesse*0.7 #pour que la vitesse soit la même que pour les déplacements horizontaux et verticaux
+                    self.y = self.y + self.vitesse*0.7#meme raison que pour la ligne du dessus
                         
             if pyxel.btn(pyxel.KEY_D) and not pyxel.btn(pyxel.KEY_Z) and not pyxel.btn(pyxel.KEY_S): # On evite que ce deplacement soit pris en compte si on appuie sur d'autres touches de déplacement pour éviter les bugs de déplacement en diagonale
                 if (self.x < 348) :#eviter de sortir de l'écran
@@ -697,21 +697,10 @@ class Player: #classe qui cree le joueur
             if pyxel.btn(pyxel.KEY_DOWN):
                 self.cote = "b"
                 
-            
-            
-
-
-
-
-
         if pyxel.btnp(pyxel.KEY_U) : #pour le debug
   
             self.game_instance.changer_arme_principale()
-
-
-
-            
-     
+    
         
     def degats(self,nb_degats:int=1):
         """
@@ -737,14 +726,6 @@ class Player: #classe qui cree le joueur
         else:
             self.liste_explosions.append(Explosion(self.x,self.y,150))
             
-
-
-        
-            
-
-        
-
-
     def is_alive(self):
         """
         Fonction qui renvoie True si le joueur est vivant (vie>0)
@@ -774,16 +755,16 @@ class Player: #classe qui cree le joueur
         
 
             if self.cote == "b": #le player tire vers le bas 
-                pyxel.blt(self.x, self.y, 0, 8, 48, 8, 8, colkey=2)
+                pyxel.blt(int(self.x), int(self.y), 0, 8, 48, 8, 8, colkey=2)
 
             elif self.cote == "h": #le player tire vers le haut 
-                pyxel.blt(self.x, self.y, 0, 0, 48, 8, 8,colkey=2)
+                pyxel.blt(int(self.x), int(self.y), 0, 0, 48, 8, 8,colkey=2)
 
             elif self.cote == "g":  #le player tire vers la gauche 
-                pyxel.blt(self.x, self.y, 0, 8, 56, 8, 8,colkey=2)
+                pyxel.blt(int(self.x), int(self.y), 0, 8, 56, 8, 8,colkey=2)
 
             elif self.cote == "d":  #le player tire vers la droite 
-                pyxel.blt(self.x, self.y, 0, 0, 56, 8, 8,colkey=2)
+                pyxel.blt(int(self.x), int(self.y), 0, 0, 56, 8, 8,colkey=2)
 
         self.draw_health()
 
