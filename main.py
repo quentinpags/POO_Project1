@@ -803,8 +803,8 @@ class Player: #classe qui cree le joueur
         
         
         if self.vie >=1:
-            pyxel.rect(1, 1, length*(self.vie/self.vie_max), height, col)
-            pyxel.rect(1+length*(self.vie/self.vie_max), 1, length - length*(self.vie/self.vie_max), height, 0)
+            pyxel.rect(1+self.game_instance.cam_x, 1+self.game_instance.cam_y, length*(self.vie/self.vie_max), height, col)
+            pyxel.rect(1+length*(self.vie/self.vie_max)+ self.game_instance.cam_x, 1+self.game_instance.cam_y, length - length*(self.vie/self.vie_max), height, 0)
             
         
         
@@ -816,7 +816,7 @@ class Player: #classe qui cree le joueur
             
             
             
-        pyxel.rectb(0, 0, 32, 8, 6)#contour de la barre de vie
+        pyxel.rectb(0+self.game_instance.cam_x, 0+self.game_instance.cam_y, 32, 8, 6)#contour de la barre de vie
         # pyxel.rectb(0, 0, 3.2*(i+1), 8, 2)
 class Armes:
     def __init__(self,nom:str,degats:int,vitesse:int, game_instance:object,player_instance:object,frequence:int):
