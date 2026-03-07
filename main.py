@@ -4,7 +4,7 @@ import random
 #obj à atteindre pour avoir skin
 #faire un fond transparent pour le menu pause
 
-# TODO: verifier que l'esquive marche
+
         
 class Game: #classe qui cree le jeu et qui possede la boucle de jeu
     """classe principale gérant l'ensemble du jeu"""
@@ -633,12 +633,12 @@ class Player: #classe qui cree le joueur
         self.defense = 0
         self.attaque = 1
         self.vie_max = 200 #vie initiale
-        self.vie = 10
+        self.vie = 200
         self.game_instance = game_instance
         self.vitesse = 1 #vitesse de deplacement
         self.esquive = 0 #pourcentage de chance qu'il esquive des dégats
         self.regeneration = 1#% de vie par secondes
-        self.cote = "g"#va a gauche
+        self.cote = "g"#va a gauche possible g d h b
         self.liste_explosions = []
         self.taille = 8
         self.i =0# variable qui permet de compter chaque iteration de la fonction update et permet d'enlever dépendance a pyxel.frame_count, se met a jour quand le player est update donc quand le jeu est en train de tourner (evite les bugs avec les pauses) 
@@ -649,7 +649,6 @@ class Player: #classe qui cree le joueur
         self.last_shot = 0
         
         
-        
         self.skin1 = {"b":[8, 48, 8, 8], "h":[0, 48, 8, 8],"g":[8, 56, 8, 8],"d":[8, 56, -8, 8]}#définition des coordonées de chaque coté du skin
         self.skin2 = {"b":[72, 64, 8, 8], "h":[64, 64, 8, 8],"g":[72, 72, 8, 8],"d":[72, 72, -8, 8]}
         
@@ -657,7 +656,7 @@ class Player: #classe qui cree le joueur
         
         # self.tir_possible = True#permet de fluidifier le tir
         
-        # self.num_skin ={0:[[x, y, img, u, v, w, h],[x, y, img, u, v, w, h]]}#comporte l'id du skin et les différentes animations
+        
     
         
     
