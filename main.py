@@ -634,7 +634,7 @@ class Player: #classe qui cree le joueur
         self.defense = 0
         self.attaque = 1
         self.vie_max = 200 #vie initiale
-        self.vie = 200
+        self.vie = 10
         self.game_instance = game_instance
         self.vitesse = 1 #vitesse de deplacement
         self.esquive = 0 #pourcentage de chance qu'il esquive des dégats
@@ -646,6 +646,9 @@ class Player: #classe qui cree le joueur
         
         self.autoshoot = True
         
+        self.last_damage = 0
+        self.last_shot = 0
+        
         
         
         self.skin1 = {"b":[8, 48, 8, 8], "h":[0, 48, 8, 8],"g":[8, 56, 8, 8],"d":[8, 56, -8, 8]}#définition des coordonées de chaque coté du skin
@@ -656,7 +659,17 @@ class Player: #classe qui cree le joueur
         # self.tir_possible = True#permet de fluidifier le tir
         # TODO: pouvoir changer de skin à la fin de chaque vague
         # self.num_skin ={0:[[x, y, img, u, v, w, h],[x, y, img, u, v, w, h]]}#comporte l'id du skin et les différentes animations
+    
         
+    
+    def regen(self):
+        if self.vie < self.vie_max:
+            if self.last_damage > 30 and self.last_shot > 30 and self.i % 15 == 0:
+                self.vie += 3
+        else:
+            self.vie = self.vie_max
+            
+            
 
                 
     def ajouter_statistique(self, type_statistique, montant):
@@ -700,12 +713,17 @@ class Player: #classe qui cree le joueur
             if self.autoshoot == True:
                 if self.game_instance.liste_armes[self.game_instance.arme_principale].peut_tirer():
                     self.game_instance.liste_armes[self.game_instance.arme_principale].creer_balle()
-            
+                    self.last_shot = 0
+                    
             elif self.autoshoot == False: 
             
                 if pyxel.btn(pyxel.KEY_SPACE):
                     if self.game_instance.liste_armes[self.game_instance.arme_principale].peut_tirer():
                         self.game_instance.liste_armes[self.game_instance.arme_principale].creer_balle()
+                        self.last_shot = 0
+            
+            
+                
                     
             if pyxel.btnr(pyxel.KEY_M):
                 if self.autoshoot == True:
@@ -726,15 +744,9 @@ class Player: #classe qui cree le joueur
                 self.cote = "b"
                 
             
-            
-
-
-
-
-
-        if pyxel.btnp(pyxel.KEY_U) : #pour le debug
+            if pyxel.btnp(pyxel.KEY_U) : #pour le debug
   
-            self.game_instance.changer_arme_principale()
+                self.game_instance.changer_arme_principale()
 
 
 
@@ -750,7 +762,7 @@ class Player: #classe qui cree le joueur
         esquive = 1
         if self.esquive < 60:
             if chance < self.esquive: #si le joueur arrive a esquiver
-                esquive = 0
+                esquive = 0#esquive = 0 si player arrive à  et 1 si arrive pas
         elif self.esquive >=60:
             if chance <= 60:
                 esquive = 0
@@ -758,6 +770,9 @@ class Player: #classe qui cree le joueur
             self.vie -= (1-self.defense) *nb_degats * esquive
         elif self.defense >=70:
             self.vie -= 0.30 *nb_degats * esquive
+            
+        
+        
         if self.vie <0:
             self.vie =0
         if self.is_alive():
@@ -765,6 +780,9 @@ class Player: #classe qui cree le joueur
         else:
             self.liste_explosions.append(Explosion(self.x,self.y,150))
             
+            
+        if esquive == 1:#si on arrive pas à esquiver l'attaque
+            self.last_damage = 0
 
 
         
@@ -791,6 +809,8 @@ class Player: #classe qui cree le joueur
 
         self.boutons() #verifie appui de boutons
         self.i+=1
+        self.last_damage, self.last_shot = self.last_damage + 1, self.last_shot + 1
+        self.regen()#gère l'ajout de vie si inactivité de la part du joueur
 
 
     def draw(self):
