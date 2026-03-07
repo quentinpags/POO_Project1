@@ -380,8 +380,6 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         if self.etape_stat ==0:
             for i in range(1,4):
                 
-                ''' Affichage des noms en couleurs des boost et leurs sprites '''
-                #1. Noms en couleur des boosts
                 x_boost = self.width // 4 - 90 + 45 * i
                 y_boost = self.height // 2
 
@@ -405,7 +403,6 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 x_texte = x_boost + (32 - len(nom_boost) * 4 // 2)
                 pyxel.text(x_texte, y_boost - 10, nom_boost, couleur)
                         
-                #Sprites des boosts
 
                 if self.choix[i-1] <0.20:
                     #force
@@ -463,7 +460,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 
             self.affichage_curseur(self.width//4-20 +47*self.position_curseur, self.height - 20, 7)
 
-            #Caractéristiques du titre de l'écran 0 des stats
+
 
             message = "CHOISISSEZ VOTRE BOOST"# Affiche le titre du choix de stat
 
