@@ -4,7 +4,7 @@ import random
 #obj à atteindre pour avoir skin
 #faire un fond transparent pour le menu pause
 
-
+# TODO: verifier que l'esquive marche
         
 class Game: #classe qui cree le jeu et qui possede la boucle de jeu
     """classe principale gérant l'ensemble du jeu"""
@@ -332,7 +332,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             if option_choisie ==0:
                 self.changer_menu("Playing")
             elif option_choisie ==1:
-                print("Redirection vers le Github")#TODO:a afficher dans la tilemap
+                print("Redirection vers le Github")
                 webbrowser.open_new("https://github.com/quentinpags/POO_Project1")
                 
             elif option_choisie ==2:
@@ -366,8 +366,6 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                
     def draw_menu_stat(self):
         """menu après une vague pour choisir une statistique"""
-        #TODO: ajouter des infos pour les nerds, choisir stat pui re entré pour commencer, num de la vague, ration kill dégats
-        #une note sur le gameplay, avec un commentaire?
         
         pyxel.cls(0)
         if self.choix == []:
@@ -495,11 +493,12 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 self.choix = []
             
             elif choix_option == 1:
+                #change l'etat de skin
                 if self.player.ensemble_skin_actuel == self.player.skin2:
                     self.player.ensemble_skin_actuel = self.player.skin1
                 else:
                     self.player.ensemble_skin_actuel = self.player.skin2
-                #TODO: draw aperçu en bas à droite
+                
             pyxel.blt(self.width-20, self.height-20, 0, self.player.ensemble_skin_actuel["h"][0], self.player.ensemble_skin_actuel["h"][1], 16,16, colkey=2)
             #le skin à la hauteur h a des coordonnées qui sont dans l'angle en haut à gauche de la plaquette de sprite, on fait un carré à partir de ça et cela marche
             pyxel.text(0, 90, "-------------------------------------------------------------", 9)
@@ -657,12 +656,13 @@ class Player: #classe qui cree le joueur
         self.ensemble_skin_actuel = self.skin1 #montre quel skin est le utilisé actuellement
         
         # self.tir_possible = True#permet de fluidifier le tir
-        # TODO: pouvoir changer de skin à la fin de chaque vague
+        
         # self.num_skin ={0:[[x, y, img, u, v, w, h],[x, y, img, u, v, w, h]]}#comporte l'id du skin et les différentes animations
     
         
     
     def regen(self):
+        """redonne de la vie au player """
         if self.vie < self.vie_max:
             if self.last_damage > 30 and self.last_shot > 30 and self.i % 15 == 0:
                 self.vie += 3
