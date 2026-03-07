@@ -495,8 +495,13 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 self.choix = []
             
             elif choix_option == 1:
-                print('In Development...')#TODO
-            
+                if self.player.ensemble_skin_actuel == self.player.skin2:
+                    self.player.ensemble_skin_actuel = self.player.skin1
+                else:
+                    self.player.ensemble_skin_actuel = self.player.skin2
+                #TODO: draw aperçu en bas à droite
+            pyxel.blt(self.width-20, self.height-20, 0, self.player.ensemble_skin_actuel["h"][0], self.player.ensemble_skin_actuel["h"][1], 16,16, colkey=2)
+            #le skin à la hauteur h a des coordonnées qui sont dans l'angle en haut à gauche de la plaquette de sprite, on fait un carré à partir de ça et cela marche
             pyxel.text(0, 90, "-------------------------------------------------------------", 9)
             
             self.affichage_curseur(self.width//8 +3, self.height//2+30+self.position_curseur*8, 9)
@@ -504,7 +509,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 pyxel.text(self.width//8 +25, self.height//2+30+8*j, option[j], 9)
                 
                 
-            pyxel.rectb(100, 104, self.width-100, self.height-104, 9)#case pour montrer le perso changé
+            
             
     def choix_stat(self, nb):
         """ajoute des points de stat en fonction de l'aptitude choisie dans la fonction choix_option"""
@@ -640,8 +645,16 @@ class Player: #classe qui cree le joueur
         self.i =0# variable qui permet de compter chaque iteration de la fonction update et permet d'enlever dépendance a pyxel.frame_count, se met a jour quand le player est update donc quand le jeu est en train de tourner (evite les bugs avec les pauses) 
         
         self.autoshoot = True
+        
+        
+        
+        self.skin1 = {"b":[8, 48, 8, 8], "h":[0, 48, 8, 8],"g":[8, 56, 8, 8],"d":[8, 56, -8, 8]}#définition des coordonées de chaque coté du skin
+        self.skin2 = {"b":[72, 64, 8, 8], "h":[64, 64, 8, 8],"g":[72, 72, 8, 8],"d":[72, 72, -8, 8]}
+        
+        self.ensemble_skin_actuel = self.skin1 #montre quel skin est le utilisé actuellement
+        
         # self.tir_possible = True#permet de fluidifier le tir
-        # TODO: changer de skin à la fin de chaque vague
+        # TODO: pouvoir changer de skin à la fin de chaque vague
         # self.num_skin ={0:[[x, y, img, u, v, w, h],[x, y, img, u, v, w, h]]}#comporte l'id du skin et les différentes animations
         
 
@@ -784,21 +797,23 @@ class Player: #classe qui cree le joueur
         """Permet de dessiner le joueur"""
         self.draw_explosions()
         if self.is_alive():
-            pyxel.rect(self.x,self.y,5,5,6)
+            
+            # pyxel.rect(self.x,self.y,5,5,6) debug player
             self.draw_health()
-        
+            
+            # if self.cote == "b": #le player tire vers le bas 
+            #     pyxel.blt(self.x, self.y, 0, 8, 48, 8, 8, colkey=2)
 
-            if self.cote == "b": #le player tire vers le bas 
-                pyxel.blt(self.x, self.y, 0, 8, 48, 8, 8, colkey=2)
+            # elif self.cote == "h": #le player tire vers le haut 
+            #     pyxel.blt(self.x, self.y, 0, 0, 48, 8, 8,colkey=2)
 
-            elif self.cote == "h": #le player tire vers le haut 
-                pyxel.blt(self.x, self.y, 0, 0, 48, 8, 8,colkey=2)
+            # elif self.cote == "g":  #le player tire vers la gauche 
+            #     pyxel.blt(self.x, self.y, 0, 8, 56, 8, 8,colkey=2)
 
-            elif self.cote == "g":  #le player tire vers la gauche 
-                pyxel.blt(self.x, self.y, 0, 8, 56, 8, 8,colkey=2)
-
-            elif self.cote == "d":  #le player tire vers la droite 
-                pyxel.blt(self.x, self.y, 0, 0, 56, 8, 8,colkey=2)
+            # elif self.cote == "d":  #le player tire vers la droite 
+            #     pyxel.blt(self.x, self.y, 0, 0, 56, 8, 8,colkey=2)
+            
+            pyxel.blt(self.x, self.y, 0, self.ensemble_skin_actuel[self.cote][0], self.ensemble_skin_actuel[self.cote][1], self.ensemble_skin_actuel[self.cote][2], self.ensemble_skin_actuel[self.cote][3], colkey=2)
 
         self.draw_health()
 
