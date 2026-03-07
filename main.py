@@ -380,8 +380,8 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         if self.etape_stat ==0:
             for i in range(1,4):
                 
-                ''' Affichage des noms des boosts '''
-                #1. Couleur des textes
+                ''' Affichage des noms en couleurs des boost et leurs sprites '''
+                #1. Noms en couleur des boosts
                 x_boost = self.width // 4 - 90 + 45 * i
                 y_boost = self.height // 2
 
@@ -405,7 +405,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 x_texte = x_boost + (32 - len(nom_boost) * 4 // 2)
                 pyxel.text(x_texte, y_boost - 10, nom_boost, couleur)
                         
-                '''Affichage des sprites des boosts'''
+                #Sprites des boosts
 
                 if self.choix[i-1] <0.20:
                     #force
@@ -463,7 +463,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 
             self.affichage_curseur(self.width//4-20 +47*self.position_curseur, self.height - 20, 7)
 
-            '''Caractéristiques du titre affiché dans l'étape 0 des stats'''
+            #Caractéristiques du titre de l'écran 0 des stats
 
             message = "CHOISISSEZ VOTRE BOOST"# Affiche le titre du choix de stat
 
@@ -950,7 +950,8 @@ class Mob:
     def __init__(self, vie:int, damage:int, attack_speed:int, player:object,game_instance:object, type_mob):
         """initialisation de la creation de mob
         Player est la l'instance du joueur """
-        self.vie = vie
+        self.vie = 50
+        self.vie_max = 50 #vie initiale
         self.damage = damage
         self.attack_speed = attack_speed
         self.vitesse = 1
@@ -1049,46 +1050,140 @@ class Mob:
             # Si l'animation_frame est 0, l'offset est 0
             # Si l'animation_frame est 1, l'offset est 8 (largeur du sprite)
             u_offset = animation_frame * 8
-            if self.type_mob == 1:
+            if self.vie <= 12.5: #rend le mob rouge 
+                if self.type_mob == 1:
 
-                if self.cote_Mob == "b": 
-                    # le sprite 1 est en (0, 64), le sprite 2 est en (8, 64)
-                    pyxel.blt(self.x, self.y, 0, 0 + u_offset, 64, 8, 8, colkey=2)
+                    if self.cote_Mob == "b": 
+                        # le sprite 1 est en (48, 64), le sprite 2 est en (56, 64)
+                        pyxel.blt(self.x, self.y, 0, 48 + u_offset, 64, 8, 8, colkey=2)
 
-                elif self.cote_Mob == "h": 
-                    # le sprite 1 est en (0, 72), le sprite 2 est en (8, 72) 
-                    pyxel.blt(self.x, self.y, 0, 0 + u_offset, 72, 8, 8, colkey=2)
+                    elif self.cote_Mob == "h": 
+                        pyxel.blt(self.x, self.y, 0, 48 + u_offset, 72, 8, 8, colkey=2)
 
-            elif self.type_mob == 2:
+                elif self.type_mob == 2:
 
-                if self.cote_Mob == "b": 
-                    # le sprite 1 est en (0, 80), le sprite 2 est en (8, 80)
-                    pyxel.blt(self.x, self.y, 0, 0 + u_offset, 80, 8, 8, colkey=2)
+                    if self.cote_Mob == "b":
+                        pyxel.blt(self.x, self.y, 0, 48 + u_offset, 80, 8, 8, colkey=2)
 
-                elif self.cote_Mob == "h": 
-                    # le sprite 1 est en (0, 88), le sprite 2 est en (8, 88) 
-                    pyxel.blt(self.x, self.y, 0, 0 + u_offset, 88, 8, 8, colkey=2)
+                    elif self.cote_Mob == "h":  
+                        pyxel.blt(self.x, self.y, 0, 48 + u_offset, 88, 8, 8, colkey=2)
 
-            elif self.type_mob == 3:
+                elif self.type_mob == 3:
 
-                if self.cote_Mob == "b": 
-                    # le sprite 1 est en (0, 128), le sprite 2 est en (8, 128)
-                    pyxel.blt(self.x, self.y, 0, 0 + u_offset, 128, 8, 8, colkey=2)
+                    if self.cote_Mob == "b": 
+                        pyxel.blt(self.x, self.y, 0, 16 + u_offset, 136, 8, 8, colkey=2)
 
-                elif self.cote_Mob == "h": 
-                    # mêmes sprites car ce mob n'a pas de sprite de lui regardant le joueur vers le haut 
-                    pyxel.blt(self.x, self.y, 0, 0 + u_offset, 128, 8, 8, colkey=2)
+                    elif self.cote_Mob == "h": 
+                        # mêmes sprites car ce mob n'a pas de sprite de lui regardant le joueur vers le haut 
+                        pyxel.blt(self.x, self.y, 0, 16 + u_offset, 136, 8, 8, colkey=2)
 
-            elif self.type_mob == 4:
+                elif self.type_mob == 4:
 
-                if self.cote_Mob == "b": 
-                    # le sprite 1 est en (32, 128), le sprite 2 est en (40, 128)
-                    pyxel.blt(self.x, self.y, 0, 32 + u_offset, 128, 8, 8, colkey=2)
+                    if self.cote_Mob == "b": 
+                        pyxel.blt(self.x, self.y, 0, 48 + u_offset, 136, 8, 8, colkey=2)
 
-                elif self.cote_Mob == "h":  
-                    pyxel.blt(self.x, self.y, 0, 32 + u_offset, 128, 8, 8, colkey=2)
+                    elif self.cote_Mob == "h":
+                        pyxel.blt(self.x, self.y, 0, 48 + u_offset, 136, 8, 8, colkey=2)
+            
+            if self.vie <= 25 and self.vie > 12.5: #rend le mob orange 
+                if self.type_mob == 1:
 
-                
+                    if self.cote_Mob == "b": 
+                        pyxel.blt(self.x, self.y, 0, 32 + u_offset, 64, 8, 8, colkey=2)
+
+                    elif self.cote_Mob == "h": 
+                        pyxel.blt(self.x, self.y, 0, 32 + u_offset, 72, 8, 8, colkey=2)
+
+                elif self.type_mob == 2:
+
+                    if self.cote_Mob == "b": 
+                        pyxel.blt(self.x, self.y, 0, 32 + u_offset, 80, 8, 8, colkey=2)
+
+                    elif self.cote_Mob == "h":  
+                        pyxel.blt(self.x, self.y, 0, 32 + u_offset, 88, 8, 8, colkey=2)
+
+                elif self.type_mob == 3:
+
+                    if self.cote_Mob == "b": 
+                        pyxel.blt(self.x, self.y, 0, 16 + u_offset, 128, 8, 8, colkey=2)
+
+                    elif self.cote_Mob == "h":  
+                        pyxel.blt(self.x, self.y, 0, 16 + u_offset, 128, 8, 8, colkey=2)
+
+                elif self.type_mob == 4:
+
+                    if self.cote_Mob == "b": 
+                        pyxel.blt(self.x, self.y, 0, 48 + u_offset, 128, 8, 8, colkey=2)
+
+                    elif self.cote_Mob == "h":  
+                        pyxel.blt(self.x, self.y, 0, 48 + u_offset, 128, 8, 8, colkey=2)
+            
+            if self.vie <= 37.5 and self.vie > 25: # rend le mob jaune
+                if self.type_mob == 1:
+
+                    if self.cote_Mob == "b": 
+                        pyxel.blt(self.x, self.y, 0, 16 + u_offset, 64, 8, 8, colkey=2)
+
+                    elif self.cote_Mob == "h":  
+                        pyxel.blt(self.x, self.y, 0, 16 + u_offset, 72, 8, 8, colkey=2)
+
+                elif self.type_mob == 2:
+
+                    if self.cote_Mob == "b": 
+                        pyxel.blt(self.x, self.y, 0, 16 + u_offset, 80, 8, 8, colkey=2)
+
+                    elif self.cote_Mob == "h":
+                        pyxel.blt(self.x, self.y, 0, 16 + u_offset, 88, 8, 8, colkey=2)
+
+                elif self.type_mob == 3:
+
+                    if self.cote_Mob == "b": 
+                        pyxel.blt(self.x, self.y, 0, 0 + u_offset, 136, 8, 8, colkey=2)
+
+                    elif self.cote_Mob == "h":  
+                        pyxel.blt(self.x, self.y, 0, 0 + u_offset, 136, 8, 8, colkey=2)
+
+                elif self.type_mob == 4:
+
+                    if self.cote_Mob == "b": 
+                        pyxel.blt(self.x, self.y, 0, 32 + u_offset, 136, 8, 8, colkey=2)
+
+                    elif self.cote_Mob == "h":  
+                        pyxel.blt(self.x, self.y, 0, 32 + u_offset, 136, 8, 8, colkey=2)
+            
+            if self.vie > 37.5: # rend le mob vert
+                if self.type_mob == 1:
+
+                    if self.cote_Mob == "b": 
+                        pyxel.blt(self.x, self.y, 0, 0 + u_offset, 64, 8, 8, colkey=2)
+
+                    elif self.cote_Mob == "h": 
+                        pyxel.blt(self.x, self.y, 0, 0 + u_offset, 72, 8, 8, colkey=2)
+
+                elif self.type_mob == 2:
+
+                    if self.cote_Mob == "b": 
+                        pyxel.blt(self.x, self.y, 0, 0 + u_offset, 80, 8, 8, colkey=2)
+
+                    elif self.cote_Mob == "h":  
+                        pyxel.blt(self.x, self.y, 0, 0 + u_offset, 88, 8, 8, colkey=2)
+
+                elif self.type_mob == 3:
+
+                    if self.cote_Mob == "b": 
+                        pyxel.blt(self.x, self.y, 0, 0 + u_offset, 128, 8, 8, colkey=2)
+
+                    elif self.cote_Mob == "h": 
+                        pyxel.blt(self.x, self.y, 0, 0 + u_offset, 128, 8, 8, colkey=2)
+
+                elif self.type_mob == 4:
+
+                    if self.cote_Mob == "b": 
+                        pyxel.blt(self.x, self.y, 0, 32 + u_offset, 128, 8, 8, colkey=2)
+
+                    elif self.cote_Mob == "h":  
+                        pyxel.blt(self.x, self.y, 0, 32 + u_offset, 128, 8, 8, colkey=2)
+
         
 
 
