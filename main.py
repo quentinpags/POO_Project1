@@ -668,40 +668,30 @@ class Player: #classe qui cree le joueur
         """Fonction qui permet de gérer la fonctions des touches"""
 
         if self.is_alive():
-            if pyxel.btn(pyxel.KEY_D) and pyxel.btn(pyxel.KEY_Z):
-                if (self.x < 348) and (self.y > 0) :#eviter de sortir de l'écran
-                    self.x = self.x + self.vitesse*0.7 #pour que la vitesse soit la même que pour les déplacements horizontaux et verticaux
-                    self.y = self.y - self.vitesse*0.7 #meme raison que pour la ligne du dessus
-            
-            if pyxel.btn(pyxel.KEY_D) and pyxel.btn(pyxel.KEY_S):
-                if (self.x < 348) and (self.y <380) :#eviter de sortir de l'écran
-                    self.x = self.x + self.vitesse*0.7  #pour que la vitesse soit la même que pour les déplacements horizontaux et verticaux
-                    self.y = self.y + self.vitesse*0.7 #meme raison que pour la ligne du dessus
-            
-            if pyxel.btn(pyxel.KEY_Q) and pyxel.btn(pyxel.KEY_Z):
-                if (self.x > 0) and (self.y > 0) :#eviter de sortir de l'écran
-                    self.x = self.x - self.vitesse*0.7 #pour que la vitesse soit la même que pour les déplacements horizontaux et verticaux
-                    self.y = self.y - self.vitesse*0.7 #meme raison que pour la ligne du dessus
-            
-            if pyxel.btn(pyxel.KEY_Q) and pyxel.btn(pyxel.KEY_S):
-                if (self.x > 0) and (self.y <380) :#eviter de sortir de l'écran
-                    self.x = self.x - self.vitesse*0.7 #pour que la vitesse soit la même que pour les déplacements horizontaux et verticaux
-                    self.y = self.y + self.vitesse*0.7#meme raison que pour la ligne du dessus
-                        
-            if pyxel.btn(pyxel.KEY_D) and not pyxel.btn(pyxel.KEY_Z) and not pyxel.btn(pyxel.KEY_S): # On evite que ce deplacement soit pris en compte si on appuie sur d'autres touches de déplacement pour éviter les bugs de déplacement en diagonale
-                if (self.x < 348) :#eviter de sortir de l'écran
-                    self.x = self.x + self.vitesse
+            # Initilaisation de la variable de déplacement
+            dx, dy = 0, 0
 
-            if pyxel.btn(pyxel.KEY_Q) and not pyxel.btn(pyxel.KEY_Z) and not pyxel.btn(pyxel.KEY_S): # pareil que pour la ligne du dessus
-                if (self.x > 0) :
-                    self.x = self.x - self.vitesse
-                    
-            if pyxel.btn(pyxel.KEY_S) and not pyxel.btn(pyxel.KEY_D) and not pyxel.btn(pyxel.KEY_Q): # pareil que pour la ligne du dessus
-                if (self.y <380) : #eviter de sortir de l'écran
-                    self.y = self.y + self.vitesse
-            if pyxel.btn(pyxel.KEY_Z) and not pyxel.btn(pyxel.KEY_D) and not pyxel.btn(pyxel.KEY_Q): # pareil que pour la ligne du dessus
-                if (self.y > 0) : 
-                    self.y = self.y - self.vitesse
+            # On prend en compte vers ou le joueur veut aller
+            if pyxel.btn(pyxel.KEY_D): dx += 1
+            if pyxel.btn(pyxel.KEY_Q): dx -= 1
+            if pyxel.btn(pyxel.KEY_S): dy += 1
+            if pyxel.btn(pyxel.KEY_Z): dy -= 1
+
+            # Lorsque le joueur se deplacent
+            if dx != 0 or dy != 0:
+                # Lorsque le joueur se deplace en diagonale
+                if dx != 0 and dy != 0:
+                    # On fait en sorte que une fois sur trois on ne prend pas en compte le deplacemnt en diagonale pout éviter les exploits liés au deplacement lus rapide en diagonale
+                    if pyxel.frame_count % 3 == 0:
+                        return 
+        
+                #Application du mouvement
+                new_x = self.x + (dx * self.vitesse)
+                new_y = self.y + (dy * self.vitesse)
+
+                # Limites de l'écran 
+                self.x = max(0, min(new_x, 500))
+                self.y = max(0, min(new_y, 500))
 
             if self.autoshoot == True:
                 if self.game_instance.liste_armes[self.game_instance.arme_principale].peut_tirer():
