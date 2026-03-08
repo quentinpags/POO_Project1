@@ -611,11 +611,8 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.etape_stat = 0
         
         
+
         
-
-    
-    
-
 class Player: #classe qui cree le joueur
     def __init__(self,nom:str,game_instance:object):
         """In: nom -> le nom du joueur"""
