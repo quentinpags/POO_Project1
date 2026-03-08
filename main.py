@@ -1,10 +1,9 @@
 import pyxel
 import webbrowser
 import random
-#obj à atteindre pour avoir skin
-#faire un fond transparent pour le menu pause
 
 
+ 
         
 class Game: #classe qui cree le jeu et qui possede la boucle de jeu
     """classe principale gérant l'ensemble du jeu"""
@@ -28,7 +27,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.menu_actuel = "Start"
         self.fps = 30#nombre de frame que le jeu affiche par seconde
         pyxel.init(self.width, self.height, title= "Potato et Le Royaume Infesté",fps=self.fps) #initialisation du jeu
-        pyxel.load("res.pyxres")
+        pyxel.load("res.pyxres")#chargement des ressources
         
         
         #Etape d'amélioration en 2etapes: 0: choix stat a gagner 1: affichage des stats de la game
@@ -47,26 +46,23 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.counter = self.fps*3 #decompte avant fin du jeu pour que l'explosion marche bien 30 est le nb de frame par seconde
         
         
-        self.difficulte_max = 100
-        
-        
         self.liste_difficulte = [1.3, 1.5 ,2]#liste des difficultés possible
         #facile difficile et infernale
         self.difficulte_choisie = 0#indice du niveau de difficulté prenant ses valeurs dans liste_difficulte
-        self.num_vague = 0
-        self.temps_vague_initiale = 5#variable qui ne change pas#temps par défaut de la vague
+        
+        self.num_vague = 0#numéro de la vague affiché en haut de l'ecran
+        self.temps_vague_initiale = 5#temps par défaut de la vague, ne pas modifier
         self.temps_vague = 5#temps avant fin de la vague en frame
         
-        #stat
+        #statistique pour le menu
         self.nb_kill = 0#compte le nb de kill de mob fait au long de tt les vagues
         self.nb_balles_rates = 0
         
         
-        self.choix = []
-        #Load la timelape nommé "res.pyrex"
+        self.choix = []#lors de la période de choix de statistique, permet de proposer 3 choix d'amelioration
+        
         pyxel.run(self.update, self.draw)
         
-
         #Postion de la camera
         self.cam_x = 0
         self.cam_y = 0    
@@ -79,6 +75,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         pyxel.text(16, self.height - self.height//4, "Mouvement : ZQSD", 8)
         pyxel.text(16, self.height - self.height//5, "Attaquer : [ Espace ]", 8)#affiche l'aide
         pyxel.text(16, self.height - self.height//7, "M: autoshoot on/off", 8)
+        pyxel.text(16, self.height - self.height//7 +8, "Fleches : viser", 8)
         self.affichage_curseur(pyxel.width//2 -pyxel.width //8 - 18, pyxel.height//3 +9*self.position_curseur, 9)#affiche le curseur lors du choix        
         
     
@@ -105,7 +102,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             return True
     
     def changer_arme_principale(self):
-        """change l'arme principale avec la suivante dans la liste des liste_armes possible"""
+        """change l'arme principale avec la suivante dans la liste liste_armes possible"""
         dernier_indice_possible = len(self.liste_armes) -1
         if dernier_indice_possible == self.arme_principale:
             self.arme_principale = 0
@@ -114,16 +111,23 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             self.arme_principale +=1
         
     def reset_partie(self):
-        """méthode qui permet de relancer une partie après une défaite, tt reset au niveau de départ"""
+        """méthode qui permet de relancer une partie après une défaite, tt reset au niveau de départ sans """
         
         self.changer_menu("Playing")
         self.position_curseur = 0
-        self.player = Player("JOUEUR1",self)
+        
+        self.player = Player("JOUEUR1",self)        
+        
         self.liste_mob = []
         self.liste_balles = []
+        self.liste_armes = [Armes("Pistolet",3,1,self,self.player,10),
+                            Armes("Sniper",50,5,self,self.player,20),
+                              Armes("Mitraillette",2,2,self,self.player,7)]
+        
         self.counter = self.fps*3 #decompte avant fin du jeu pour que l'explosion marche bien 30 est le nb de frame par seconde
         self.temps_vague = self.temps_vague_initiale#on reprend la valeur par défaut
         
+        #menu
         self.etape_stat = 0 #après chauqe fin de vague 0 -> choix des stat 1-> reprendre la partie
         self.arme_principale = 0
         self.num_vague =0
@@ -141,7 +145,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         """Met à jour le jeu"""
         
         if self.menu_actuel == "Playing":#menu de combat contre les mobs
-            if pyxel.btnp(pyxel.KEY_P):#pour mettre une pause
+            if pyxel.btnp(pyxel.KEY_P):#menu pause
                 if self.pause == False:
                     self.pause =True
                 else:
@@ -151,7 +155,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 
         #-------------------------------------
         #commande de débug et/ou d'aide au dev
-        if pyxel.btn(pyxel.KEY_O):
+        if pyxel.btn(pyxel.KEY_O):#affichage souris
             pyxel.mouse(False)
             print(pyxel.mouse_x, pyxel.mouse_y)
             
@@ -218,16 +222,11 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 
                 
                 if self.temps_vague <= 0:
-                    print("fin")
+                    print("fin de la vague")
                     self.changer_menu("Amelioration")
                 elif self.player.i % self.fps == 0 :
                     self.temps_vague -= 1
-                    
-
-                        
-
-                
-                        
+        
         else:
             
             self.counter-=1 
@@ -240,13 +239,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             
             if  self.counter <=0 or (len(self.player.liste_explosions) ==1 and self.player.liste_explosions[0].taille_max == self.player.liste_explosions[0].etape+1):
                 self.changer_menu("GameOver")
-            
-       
-            
-
-        
-
-
+    
     def draw(self):
         """permet d'afficher tout les éléments du jeu"""
         if self.menu_actuel =="Playing" and self.pause== False:
@@ -285,17 +278,14 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             self.draw_menu_fin()
             
         
-        if self.chute:
-            #ligne a modifier si on veut le réutiliser
+        if self.chute:#animation chute de chiffre
             self.draw_chute_nb(19- (pyxel.frame_count//3))
         
-        
-            
         
         if self.pause == True:
             self.draw_menu_pause()
     def draw_chute_nb(self, count):
-        #(19- (pyxel.frame_count//7))
+        """gère l'animation de chute de chiffre de début de partie en un temps définit avec count(en frame)"""
         if count != 0:
             pyxel.rect(0, 0, 128, 131-(7*(19-count)), 0)
             for j in range(count):
@@ -332,7 +322,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             if option_choisie ==0:
                 self.changer_menu("Playing")
             elif option_choisie ==1:
-                print("Redirection vers le Github")#TODO:a afficher dans la tilemap
+                print("Redirection vers le Github")
                 webbrowser.open_new("https://github.com/quentinpags/POO_Project1")
                 
             elif option_choisie ==2:
@@ -365,9 +355,8 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
     
                
     def draw_menu_stat(self):
-        """menu après une vague pour choisir une statistique"""
-        #TODO: ajouter des infos pour les nerds, choisir stat pui re entré pour commencer, num de la vague, ration kill dégats
-        #une note sur le gameplay, avec un commentaire?
+        """dessine le menu après une vague dans lequel on peut choisir une statistique
+        entre 3 et ou l'on peut changer son skin ou voir ses statistiques"""
         
         pyxel.cls(0)
         if self.choix == []:
@@ -419,11 +408,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                     if self.debug:
                         pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)#defense
                         pyxel.text(self.width//4-90 +45*i, self.height//2, "Defense +", 2)
-                # elif self.choix[i-1] <0.60:
-                #     pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 0, 1216, 64, 64, scale=1)
-                #     if self.debug:
-                #         pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)#regen
-                #         pyxel.text(self.width//4-90 +45*i, self.height//2, "Regen +",2)
+               
                 
                 else:
                     pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 0, 1216, 64, 64, scale=1)
@@ -431,17 +416,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                         pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)
                         pyxel.text(self.width//4-90 +45*i, self.height//2, "Vie +",2)
                     #vie_max
-                # else:
-                #      pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 0, 1280, 64, 64)
-                #      if self.debug:
-                #          pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)#degats
-                #          pyxel.text(self.width//4-90 +45*i, self.height//2, "Vitesse +", 2) 
-                #      pyxel.bltm(self.width//4-90 +45*i, self.height//2, 0, 64, 1280, 64, 64, scale=1)
-                #      if self.debug:
-                #         pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)
-                #         pyxel.text(self.width//4-90 +45*i, self.height//2, "Force +", 2)
-                
-                    
+                                   
                  
          
             choix_option = self.choix_option(self.choix)
@@ -495,11 +470,12 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 self.choix = []
             
             elif choix_option == 1:
+                #change l'etat de skin
                 if self.player.ensemble_skin_actuel == self.player.skin2:
                     self.player.ensemble_skin_actuel = self.player.skin1
                 else:
                     self.player.ensemble_skin_actuel = self.player.skin2
-                #TODO: draw aperçu en bas à droite
+                
             pyxel.blt(self.width-20, self.height-20, 0, self.player.ensemble_skin_actuel["h"][0], self.player.ensemble_skin_actuel["h"][1], 16,16, colkey=2)
             #le skin à la hauteur h a des coordonnées qui sont dans l'angle en haut à gauche de la plaquette de sprite, on fait un carré à partir de ça et cela marche
             pyxel.text(0, 90, "-------------------------------------------------------------", 9)
@@ -629,8 +605,8 @@ class Player: #classe qui cree le joueur
         """In: nom -> le nom du joueur"""
 
         self.nom = nom
-        self.x = pyxel.width//2 -2 #faire spawn le perso au milieu de l'écran
-        self.y = pyxel.height//2 -2
+        self.x = pyxel.width//2 -4 #faire spawn le perso au milieu de l'écran
+        self.y = pyxel.height//2 -4
         self.defense = 0
         self.attaque = 1
         self.vie_max = 200 #vie initiale
@@ -639,13 +615,15 @@ class Player: #classe qui cree le joueur
         self.vitesse = 1 #vitesse de deplacement
         self.esquive = 0 #pourcentage de chance qu'il esquive des dégats
         self.regeneration = 1#% de vie par secondes
-        self.cote = "g"#va a gauche
+        self.cote = "g"#va a gauche possible g d h b
         self.liste_explosions = []
         self.taille = 8
         self.i =0# variable qui permet de compter chaque iteration de la fonction update et permet d'enlever dépendance a pyxel.frame_count, se met a jour quand le player est update donc quand le jeu est en train de tourner (evite les bugs avec les pauses) 
         
         self.autoshoot = True
         
+        self.last_damage = 0
+        self.last_shot = 0
         
         
         self.skin1 = {"b":[8, 48, 8, 8], "h":[0, 48, 8, 8],"g":[8, 56, 8, 8],"d":[8, 56, -8, 8]}#définition des coordonées de chaque coté du skin
@@ -654,9 +632,20 @@ class Player: #classe qui cree le joueur
         self.ensemble_skin_actuel = self.skin1 #montre quel skin est le utilisé actuellement
         
         # self.tir_possible = True#permet de fluidifier le tir
-        # TODO: pouvoir changer de skin à la fin de chaque vague
-        # self.num_skin ={0:[[x, y, img, u, v, w, h],[x, y, img, u, v, w, h]]}#comporte l'id du skin et les différentes animations
         
+        
+    
+        
+    
+    def regen(self):
+        """redonne de la vie au player """
+        if self.vie < self.vie_max:
+            if self.last_damage > 30 and self.last_shot > 30 and self.i % 15 == 0:
+                self.vie += 3
+        else:
+            self.vie = self.vie_max
+            
+            
 
                 
     def ajouter_statistique(self, type_statistique, montant):
@@ -700,12 +689,17 @@ class Player: #classe qui cree le joueur
             if self.autoshoot == True:
                 if self.game_instance.liste_armes[self.game_instance.arme_principale].peut_tirer():
                     self.game_instance.liste_armes[self.game_instance.arme_principale].creer_balle()
-            
+                    self.last_shot = 0
+                    
             elif self.autoshoot == False: 
             
                 if pyxel.btn(pyxel.KEY_SPACE):
                     if self.game_instance.liste_armes[self.game_instance.arme_principale].peut_tirer():
                         self.game_instance.liste_armes[self.game_instance.arme_principale].creer_balle()
+                        self.last_shot = 0
+            
+            
+                
                     
             if pyxel.btnr(pyxel.KEY_M):
                 if self.autoshoot == True:
@@ -726,15 +720,9 @@ class Player: #classe qui cree le joueur
                 self.cote = "b"
                 
             
-            
-
-
-
-
-
-        if pyxel.btnp(pyxel.KEY_U) : #pour le debug
+            if pyxel.btnp(pyxel.KEY_U) : #pour le debug
   
-            self.game_instance.changer_arme_principale()
+                self.game_instance.changer_arme_principale()
 
 
 
@@ -750,7 +738,7 @@ class Player: #classe qui cree le joueur
         esquive = 1
         if self.esquive < 60:
             if chance < self.esquive: #si le joueur arrive a esquiver
-                esquive = 0
+                esquive = 0#esquive = 0 si player arrive à  et 1 si arrive pas
         elif self.esquive >=60:
             if chance <= 60:
                 esquive = 0
@@ -758,6 +746,9 @@ class Player: #classe qui cree le joueur
             self.vie -= (1-self.defense) *nb_degats * esquive
         elif self.defense >=70:
             self.vie -= 0.30 *nb_degats * esquive
+            
+        
+        
         if self.vie <0:
             self.vie =0
         if self.is_alive():
@@ -765,6 +756,9 @@ class Player: #classe qui cree le joueur
         else:
             self.liste_explosions.append(Explosion(self.x,self.y,150))
             
+            
+        if esquive == 1:#si on arrive pas à esquiver l'attaque
+            self.last_damage = 0
 
 
         
@@ -791,6 +785,8 @@ class Player: #classe qui cree le joueur
 
         self.boutons() #verifie appui de boutons
         self.i+=1
+        self.last_damage, self.last_shot = self.last_damage + 1, self.last_shot + 1
+        self.regen()#gère l'ajout de vie si inactivité de la part du joueur
 
 
     def draw(self):
