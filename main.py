@@ -4,9 +4,9 @@ import random
 
 
 def collisions(instance1:object, instance2:object):
-    """Appelle les differentes fonctions qui vérifient les collisions
+    """Appelle les différentes fonctions qui vérifient les collisions
     renvoie True si l'instance 1 est dans l'instance 2
-    prend en parametre deux instances"""
+    prend en paramètre deux instances"""
 
     # position x des deux instances
     x1 = instance1.x
@@ -24,11 +24,11 @@ def collisions(instance1:object, instance2:object):
         return True
 
 
-class Game: #classe qui cree le jeu et qui possede la boucle de jeu
+class Game: #classe qui cree le jeu et qui possède la boucle de jeu
     """classe principale gérant l'ensemble du jeu"""
     def __init__(self,width:int,height:int,nom_jeu:str):
-        self.width = width#largeur ecran
-        self.height = height#hauteur ecran
+        self.width = width#largeur écran
+        self.height = height#hauteur écran
         self.nom = nom_jeu #nom du jeu en str
         self.pos_cible = [0,0]#position vers laquelle les mobs se dirigent
         self.chute = True
@@ -125,7 +125,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
         self.temps_vague = self.temps_vague_initiale#on reprend la valeur par défaut
         
         #menu
-        self.etape_stat = 0 #après chauqe fin de vague 0 -> choix des stat 1-> reprendre la partie
+        self.etape_stat = 0 #après chaque fin de vague 0 → choix des stat 1→ reprendre la partie
         self.arme_principale = 0
         self.num_vague =0
         self.nb_kill = 0
@@ -447,7 +447,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
                 
         elif self.etape_stat ==1:
             
-            opt= ["vie : "+str(self.player.vie_max), "degats / attaques : "+str(self.player.attaque),"defense : "+str(self.player.defense), "vitesse : "+str(self.player.vitesse),
+            opt= ["vie : "+str(self.player.vie_max), "dégâts / attaques : "+str(self.player.attaque),"defense : "+str(self.player.defense), "vitesse : "+str(self.player.vitesse),
                   "ennemis tues : "+str(self.nb_kill),"balles rates : "+str(self.nb_balles_rates)]
             for i in range(len(opt)):
                 pyxel.text(0, 0+8*i, opt[i], 12)
@@ -460,7 +460,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             if choix_option == 0:
                 self.player.vie = self.player.vie_max
                 self.changer_menu("Playing")
-                self.creer_nouv_vague()
+                self.creer_nouvelle_vague()
                 self.choix = []
             
             elif choix_option == 1:
@@ -577,7 +577,7 @@ class Game: #classe qui cree le jeu et qui possede la boucle de jeu
             return random.randint(0, len(liste_option)-1)
     
         
-    def creer_nouv_vague(self):
+    def creer_nouvelle_vague(self):
         self.player.x = pyxel.width//2 -2 #faire spawn le perso au milieu de l'écran
         self.player.y = pyxel.height//2 -2
         self.liste_balles = []
@@ -608,7 +608,7 @@ class Player: #classe qui cree le joueur
         self.cote = "g"#va a gauche possible g d h b
         self.liste_explosions = []
         self.taille = 8
-        self.i =0# variable qui permet de compter chaque iteration de la fonction update et permet d'enlever dépendance a pyxel.frame_count, se met à jour quand le player est update donc quand le jeu est en train de tourner (evite les bugs avec les pauses)
+        self.i =0# variable qui permet de compter chaque iteration de la fonction update et permet d'enlever dépendance a pyxel.frame_count, se met à jour quand le player est update donc quand le jeu est en train de tourner (évite les bugs avec les pauses)
         
         self.autoshoot = True
         
@@ -664,7 +664,7 @@ class Player: #classe qui cree le joueur
                 if self.x < 500:#eviter de sortir de l'écran
                     self.x = self.x + self.vitesse
 
-            if pyxel.btn(pyxel.KEY_Q):#aller a gauche
+            if pyxel.btn(pyxel.KEY_Q):#aller à gauche
                 if self.x > 0:
                     self.x = self.x - self.vitesse
                     
@@ -673,7 +673,7 @@ class Player: #classe qui cree le joueur
                 if self.y <500: #eviter de sortir de l'écran
                     self.y = self.y + self.vitesse
             if pyxel.btn(pyxel.KEY_Z): #monter
-                if (self.y > 0) : 
+                if self.y > 0:
                     self.y = self.y - self.vitesse
                     
             if self.autoshoot:
@@ -858,7 +858,7 @@ class Armes:
         """ 
         nom: nom de l'arme
         vitesse: vitesse des balles
-        Frequence : + c'est bas plus les balles sont rapprochées
+        Fréquence : + c'est bas plus les balles sont rapprochées
         """
 
         self.nom = nom
@@ -918,13 +918,12 @@ class Bullets:
         elif self.direction == "h":
             self.y -=self.vitesse
 
-        if ((self.x<0 or self.x > 550) or (self.y<0 or self.y > 550)):
+        if (self.x < 0 or self.x > 550) or (self.y < 0 or self.y > 550):
             self.is_alive = False
             self.game_instance.nb_balles_rates +=1
             
 
     def draw(self):
-        #pyxel.rect(self.x,self.y, 2,2,9)
         #Cette fonction permettra d'avoir différents types de munitions en fonction de l'arme
         arme = self.type_arme
         if arme == 0 or 2: # 0 correspond au Pistolet et 2 à la Mitrailleuse   
@@ -1004,7 +1003,7 @@ class Mob:
             return False
     
     def degat(self,nb_degats:int):
-        """Fais descendre les Points de vie du mob en fonction du nombre de dégât reçu"""
+        """Fais descendre les Points de vie du mob en fonction du nombre de dégâts reçu"""
         self.vie -= nb_degats
             
     
@@ -1044,7 +1043,7 @@ class Mob:
         if self.player.is_alive():
             
 
-            # On calcule quel sprite utiliser (0 ou 1) et on divise par 10 pour changer de sprite toutes les 10 frames (vitesse de l'animation)
+            # On calcule quel sprite utiliser (0 ou 1) et on divise par 10 pour changer de sprite toutes les 10 frames (vitesse de l'animation).
             animation_frame = (self.frame_count // 10) % 2 
         
             # Calcul de l'offset X sur la planche de sprites
@@ -1086,7 +1085,7 @@ class Mob:
                     elif self.cote_Mob == "h":
                         pyxel.blt(self.x, self.y, 0, 48 + u_offset, 136, 8, 8, colkey=2)
             
-            if self.vie <= 25 and self.vie > 12.5: #rend le mob orange 
+            if 25 >= self.vie > 12.5: #rend le mob orange
                 if self.type_mob == 1:
 
                     if self.cote_Mob == "b": 
@@ -1119,7 +1118,7 @@ class Mob:
                     elif self.cote_Mob == "h":  
                         pyxel.blt(self.x, self.y, 0, 48 + u_offset, 128, 8, 8, colkey=2)
             
-            if self.vie <= 37.5 and self.vie > 25: # rend le mob jaune
+            if 37.5 >= self.vie > 25: # rend le mob jaune
                 if self.type_mob == 1:
 
                     if self.cote_Mob == "b": 
@@ -1196,7 +1195,7 @@ class Mob:
 class Explosion:
     def __init__(self ,x:int,y:int,taille_max:int= 5):
         self.taille_max = taille_max
-        self.x = x+2#pour que l'explosion ait pour centre a peu près le centre du player (vu que le player fait 5 par 5)
+        self.x = x+2#pour que l'explosion ait pour centre à peu près le centre du player (vu que le player fait 5 par 5).
         self.y = y+2
         self.etape = 0
         self.alive = True
@@ -1211,7 +1210,7 @@ class Explosion:
 
     def is_alive(self):
         """Renvoie True si l'explosion est encore en vie 
-        -> doit encore être visible"""
+        → doit encore être visible"""
         if self.etape == self.taille_max:
             self.alive = False
         return self.alive
