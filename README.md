@@ -21,7 +21,8 @@ Pour vous permettre de survivre le plus longtemps possible, vous pourrez, après
     pip install -r requirements.txt
 ## Demo
 
-Insert gif or link to demo
+<img src="https://github.com/quentinpags/POO_Project1/blob/main/screenshots/capture_jeu1.png" width="460">
+<img src="https://github.com/quentinpags/POO_Project1/blob/main/screenshots/capture_jeu2.png" width="460">
 
 
 ## Contributors
