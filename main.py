@@ -48,6 +48,7 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
         pyxel.init(self.width, self.height, title= "Potato et Le Royaume Infesté",fps=self.fps) #initialisation du jeu
         pyxel.load("res.pyxres")#chargement des ressources
         
+        pyxel.playm(0, loop=True)
         
         #Etape d'amélioration en 2 étapes : 0 : choix stat à gagner 1 : affichage des stats de la game
         self.etape_stat = 0 #après chaque fin de vague 0 → choix des stat 1 → reprendre la partie
@@ -144,6 +145,7 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
         if self.menu_actuel == "Playing":#menu de combat contre les mobs
             if pyxel.btnp(pyxel.KEY_P):#menu pause
                 self.position_curseur =0
+                
                 if not self.pause:
                     self.pause =True
                 else:
@@ -688,16 +690,12 @@ class Player: #classe qui cree le joueur
                     self.y = self.y - self.vitesse
                     
             if self.autoshoot:
-                if self.game_instance.liste_armes[self.game_instance.arme_principale].peut_tirer():
-                    self.game_instance.liste_armes[self.game_instance.arme_principale].creer_balle()
-                    self.last_shot = 0
+                self.tir()
                     
             elif not self.autoshoot:
             
                 if pyxel.btn(pyxel.KEY_SPACE):
-                    if self.game_instance.liste_armes[self.game_instance.arme_principale].peut_tirer():
-                        self.game_instance.liste_armes[self.game_instance.arme_principale].creer_balle()
-                        self.last_shot = 0
+                    self.tir()
             
             
                 
@@ -726,7 +724,11 @@ class Player: #classe qui cree le joueur
                 self.game_instance.changer_arme_principale()
 
 
-
+    def tir(self):
+        if self.game_instance.liste_armes[self.game_instance.arme_principale].peut_tirer():
+            pyxel.play(0, 4)
+            self.game_instance.liste_armes[self.game_instance.arme_principale].creer_balle()
+            self.last_shot = 0
             
      
         
