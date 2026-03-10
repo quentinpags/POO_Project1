@@ -1,0 +1,97 @@
+Nom de code: POTATO
+
+Dépendances: librairie pyxel et python installé
+
+Inspiration du jeu Brotato :
+https://store.steampowered.com/app/1942280/Brotato/
+
+Les membres du projet:
+Quentin Pagès, Hugo Pagès, Felix Margail, Gaetan Vabre
+
+
+----------------------------------------------
+
+
+Description de la mission :
+
+Bienvenue dans notre jeu, Potato et Le Royaume Infesté.
+L’objectif du jeu est simple, vous incarnez un personnage qui devra survivre à des vagues d'ennemis de plus en plus puissantes.
+Afin de vous aider à résister à un maximum de vagues dans lesquelles les ennemis auront de plus  en plus de vie et feront de plus en de dégâts, des améliorations seront disponibles à chaque fin de vague(en plus de la possibilité de pouvoir changer de skin).
+
+
+Durant une vague les monstres réapparaissent jusqu'à ce que le timer de la vague soit écoulé
+ou que le joueur perde en ayant perdu toute sa vie, le but du joueur étant de tuer le plus d'ennemis possible afin d'avoir le plus de ressources possible pour améliorer son personnage.
+
+
+----------------------------------------------
+
+
+Commandes utilisables:
+- ZQSD, touche directionnelles pour se déplacer
+2 manières d’attaquer:
+- Barre espace pour attaquer (visée de l’attaque grâce aux flèches directionnelles) si le mode auto-shoot est désactivé
+- Si l’auto-shoot est activé aucune action autre que la visée n’est nécessaire
+- Changer de type d’arme avec la touche U
+
+
+Mécaniques :
+Régénération passive (lorsque le personnage ne tire pas et ne prend pas de dégâts)
+Changement de Skin
+Plusieurs Menus dont un menu Pause
+
+
+
+----------------------------------------------
+
+
+
+Récapitulatif du déroulement d'une vague:
+
+    • Début de la vague
+    • Combat pour la survie(gain de ressources)
+    • Fin de vague(remise de la vie à 100%)
+
+    • Amélioration des statistiques(1 statistique gagné par vague)
+    • Ouverture de la boutique toutes les 5 vagues(non réalisé pour un soucis de facilité)
+    • recommencer une vague pour voir jusqu'à laquelle vous pouvez aller
+
+
+----------------------------------------------
+
+
+Les Objectifs dans ce jeu sont:
+    • ajouter des Easters Eggs
+    • avoir des mobs(qui attaquent et bougent)
+    • utiliser une arme qui marche
+    • avoir au moins un skin pour chaque entités
+    • avoir un système d'attaque fluide/ ajout d'une visée personnalisée
+    • une aide dans le jeu afin d'expliquer le rôle de chaque touches
+    • un système de vague
+    • ajouter une boutique
+
+
+----------------------------------------------
+
+
+Fragmentation du projet en plusieurs parties :
+Gaetan:
+-Création des textures : ennemis, player,sol,balles,pv
+-Choix des bonus en fin de vague
+
+
+Felix:
+-Créations des sons
+-Création des vagues (ennemis arrivent de + en + puissant)
+-mise en place déplacement de la camera
+
+
+Hugo:
+-Création ennemis
+-Création menus
+-Créer arrière plan
+
+Quentin:
+-Création système mobs suivent le joueur en retard comme des zombies
+-Création animation de dégât, mort
+-Création collisions
+-Création armes, balles
