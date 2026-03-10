@@ -51,7 +51,7 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
         
         #Etape d'amélioration en 2 étapes : 0 : choix stat à gagner 1 : affichage des stats de la game
         self.etape_stat = 0 #après chaque fin de vague 0 → choix des stat 1 → reprendre la partie
-        self.position_curseur = 0#position du curseur qui permet de choisir quelle option on choisit dans les menus
+        self.position_curseur = 0 #position du curseur qui permet de choisir quelle option on choisit dans les menus
         self.player = Player("JOUEUR1",self)#initialisation joueur
         
         #Creation de liste qui garderont les valeurs de leurs classes respectives
@@ -143,6 +143,7 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
         
         if self.menu_actuel == "Playing":#menu de combat contre les mobs
             if pyxel.btnp(pyxel.KEY_P):#menu pause
+                self.position_curseur =0
                 if not self.pause:
                     self.pause =True
                 else:
@@ -326,6 +327,8 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
                 webbrowser.open_new("https://www.youtube.com/watch?v=xvFZjo5PgG0")
                 pyxel.quit()#on quitte le jeu
                 
+            
+                
     def draw_menu_pause(self):
         """dessine le menu Pause lors de l'appui sur la touche P"""
         pyxel.cls(0)
@@ -348,6 +351,8 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
             elif option_choisie ==1:
                 webbrowser.open_new("https://www.youtube.com/watch?v=xvFZjo5PgG0")
                 pyxel.quit()
+                
+            self.position_curseur = 0
         
     
                
@@ -357,10 +362,13 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
         
         pyxel.cls(0)
         if not self.choix:
+            self.position_curseur = 0
             
             for i in range(1,4):
                 choix= random.random()
                 self.choix.append(choix)
+                
+            
         
         
         if self.etape_stat ==0:
@@ -416,6 +424,7 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
             choix_option = self.choix_option(self.choix)
             
             if choix_option is not None:
+                self.position_curseur = 0
                 if choix_option == 0:
                     self.choix_stat(self.choix[0])
                     
@@ -528,6 +537,8 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
             elif option_choisie ==1:
                 webbrowser.open_new("https://www.youtube.com/watch?v=xvFZjo5PgG0")
                 pyxel.quit()
+                
+            self.position_curseur = 0
 
     def affichage_curseur(self, x, y, col):
         pyxel.text(x, y, "<X>", col)
