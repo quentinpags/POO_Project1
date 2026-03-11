@@ -828,8 +828,8 @@ class Player: #classe qui cree le joueur
         y = self.y
         for explosion in self.liste_explosions:
             if explosion.is_alive():
-                explosion.x =x+2
-                explosion.y = y+2
+                explosion.x =x+4
+                explosion.y = y+4
                 explosion.draw()
 
 
@@ -1208,7 +1208,7 @@ class Mob:
 class Explosion:
     def __init__(self ,x:int,y:int,taille_max:int= 5):
         self.taille_max = taille_max
-        self.x = x+2#pour que l'explosion ait pour centre à peu près le centre du player (vu que le player fait 5 par 5).
+        self.x = x+2
         self.y = y+2
         self.etape = 0
         self.alive = True
