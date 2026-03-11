@@ -828,8 +828,8 @@ class Player: #classe qui cree le joueur
         y = self.y
         for explosion in self.liste_explosions:
             if explosion.is_alive():
-                explosion.x =x+2
-                explosion.y = y+2
+                explosion.x =x+4
+                explosion.y = y+4
                 explosion.draw()
 
 
