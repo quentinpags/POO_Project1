@@ -1,0 +1,41 @@
+POTATO ET LE ROYAUME INFESTE 
+
+Pages Hugo
+Pages Quentin
+Vabre Gaëtan
+Margail Félix
+
+
+On a décidé, dans le cadre d’un jeu infini, de faire un jeu s’inspirant grandement du jeu « BROTATO ». C’est à dire un jeu « survival », où on doit survivre à des vagues d’ennemis, où au fil des vagues les ennemis deviennent de plus en plus fort et où entre chaque vague le joueur à le choix entre plusieurs. 
+
+Au fil de ce projets nous avons atteints plusieurs objectif nous rapprochant du projet initial :
+>>> Un personnage jouable capable de se déplacer, tirer et avec plusieurs statistique(telles que la force, la vie et l’esquive etc.)
+>>> Avoir des ennemis qui se déplacent vers le joueur ( ils possèdent eux aussi des statistiques telles que la vie et la force)
+>>> L‘ajout de collisions joueurs/ennemis et balles/ennemis permettant de pouvoir éliminer les ennemis  et de perdre en tant que joueur
+>>> L’implémentation de 3 menus, celui d’accueil présent avant de commencer une partie, celui de choix d’amélioration nous donnant le choix entre 3 améliorations aléatoires, celui de mort nous proposant soit de rejouer soit de quitter 
+>>> La création et l’implémentation en jeu de textures pour le joueurs, les tirs, les ennemis, les icônes d’améliorations et le décors
+>>> La création du map dans laquelle on peut se déplacer librement tant qu’on n’essaye pas d’aller dans l’eau
+>>>  La création d’un effet visuel lorsque l’on prend des dégâts et lors de la mort
+
+Ce projet peut être séparés en X étapes distinctes 
+    1. Le choix de la nature du projet, donc du choix de à quoi devez ressembler le projet, les objectifs et la répartition des tâches
+    2. Le développement de toutes les fonctionnalités essentiels pour jouer ( création des classes et des méthodes basiques )
+    3. Ajout de code permettant au jeux de se rapprocher de nos attendus ( système de vague , arrière plan mouvant, menu d’accueil et de mort, textures etc.)
+    4. Ajout de bonus non prévu lors de la première étape ( Choix de bonus entre vagues, sons, finissions dans lisibilité du code etc.)
+
+Pour la réalisation nous avons répartie les taches de cette façon :
+>>>Hugo : -Création ennemis
+	       -Création menus
+	       - Débogage progressif
+>>>Quentin :-Création animation de dégât, mort
+	          -Création collisions
+	          -Création armes, balles	          
+>>>Gaëtan : -Création et importation des textures dans le jeu 
+	         -Apparence de l'écran permettant de sélectionner un boost 
+	         -système de vague
+>>>Félix : -Déplacement de la caméra
+	      - Déplacements du joueur
+	      - Ajout de sons
+	      -Cahier des charges
+
+Mais de nombreuses choses (celles qui se sont pas présente dans cette répartition) ont été travailler en groupe, il est donc compliqué de les attribué à une personne.
