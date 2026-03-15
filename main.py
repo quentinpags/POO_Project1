@@ -239,11 +239,11 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
             if self.debug:
                 self.player.draw_hitbox()
     
-            for mob in self.liste_mob:
+            for mob in self.liste_mob:#affiche les ennemis à l'écran
                     if self.debug:
                         mob.draw_hitbox()
                     mob.draw()
-            for balle in self.liste_balles:
+            for balle in self.liste_balles:#affiche les balles a l'écran
                 balle.draw()
 
             self.player.draw()
@@ -253,7 +253,7 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
 
             pyxel.text(self.width-15, 5, str(self.temps_vague), 7)#affiche le temps restant avant la fin de la vague
             pyxel.text(self.width//2, 5,str(self.num_vague), 7)#affiche num de vague
-        
+
         if self.menu_actuel == "Start":
             self.draw_menu_start()
         
@@ -750,7 +750,7 @@ class Player: #classe qui cree le joueur
             
             pyxel.blt(self.x, self.y, 0, self.ensemble_skin_actuel[self.cote][0], self.ensemble_skin_actuel[self.cote][1], self.ensemble_skin_actuel[self.cote][2], self.ensemble_skin_actuel[self.cote][3], colkey=2)
 
-        self.draw_health()
+
 
     def draw_hitbox(self):
         """Permet de dessiner la hitbox du joueur
@@ -920,7 +920,7 @@ class Mob:
         """renvoie True si le mob est mort"""
         if self.vie > 0:
             return True
-        elif self.vie <= 0:
+        else:
             return False
         
     def peut_bouger(self):
