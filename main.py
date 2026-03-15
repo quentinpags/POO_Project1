@@ -235,7 +235,9 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
             
             #On dessine la tilemap
             pyxel.bltm(0,0,0, self.cam_x, self.cam_y, 1000, 1000)
-            
+            if self.player.is_alive():
+                self.player.draw_health()
+
             if self.debug:
                 self.player.draw_hitbox()
     
@@ -734,8 +736,7 @@ class Player: #classe qui cree le joueur
         if self.is_alive():
             
             # pyxel.rect(self.x,self.y,5,5,6) debug player
-            self.draw_health()
-            
+
             # if self.cote == "b": #le player tire vers le bas 
             #     pyxel.blt(self.x, self.y, 0, 8, 48, 8, 8, colkey=2)
 
