@@ -23,7 +23,6 @@ def collisions(instance1:object, instance2:object):
     if (x1 <= x2 <= x1+taille1 or x1<= x2+taille2  <= x1+taille1) and (y1 <= y2 <= y1+taille1 or y1<= y2+taille2  <= y1+taille1) :
         return True
 
-
 class Game: #classe qui cree le jeu et qui possède la boucle de jeu
     """classe principale gérant l'ensemble du jeu"""
     def __init__(self,width:int,height:int,nom_jeu:str):
@@ -87,10 +86,7 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
         #Postion de la camera
         self.cam_x = 0
         self.cam_y = 0    
-    
-    
-    
-    
+     
     def afficher_aide(self):
         """affiche une aide sur les touches pouvant être utilisées"""
         pyxel.text(16, self.height - self.height//4, "Mouvement : ZQSD", 8)
@@ -134,11 +130,6 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
         self.nb_kill = 0
         self.nb_balles_rates =0
 
-
-    
-            
-        
-
     def update(self):     
         """Met à jour le jeu"""
         
@@ -163,7 +154,6 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
             pyxel.mouse(True)
 
      
-
     def update_playing(self):
         """Fonction qui lorsque le mode de jeu est playing met le jeu à jour"""
                 
@@ -215,12 +205,8 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
                     if not mob.is_alive():
                         self.liste_mob.remove(mob)
                 
-                
-
-                            
-                #implémentation de la fin de la vague
-                
-                
+                              
+                #implémentation de la fin de la vague                
                 if self.temps_vague <= 0:
                     print("fin de la vague")
                     self.changer_menu("Amelioration")
@@ -314,9 +300,7 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
             pyxel.text(pyxel.width//2 -18, pyxel.height//3 +9*i, option[i], 9)
         
         self.afficher_aide()
-        
-        
-        
+                
         option_choisie = self.choix_option(option)
         if option_choisie is not None:
             if option_choisie ==0:
@@ -328,9 +312,7 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
             elif option_choisie ==2:
                 webbrowser.open_new("https://www.youtube.com/watch?v=xvFZjo5PgG0")
                 pyxel.quit()#on quitte le jeu
-                
-            
-                
+                              
     def draw_menu_pause(self):
         """dessine le menu Pause lors de l'appui sur la touche P"""
         pyxel.cls(0)
@@ -342,9 +324,7 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
             pyxel.text(pyxel.width//2 -15, pyxel.height//3 +9*i, option[i], 9)
         
         self.afficher_aide()
-        
-        
-        
+                
         option_choisie = self.choix_option(option)
         if option_choisie is not None:
             if option_choisie ==0:
@@ -355,9 +335,7 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
                 pyxel.quit()
                 
             self.position_curseur = 0
-        
-    
-               
+                      
     def draw_menu_stat(self):
         """dessine le menu après une vague dans lequel on peut choisir une statistique
         entre 3 et/ou l'on peut changer son skin ou voir ses statistiques"""
@@ -369,10 +347,7 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
             for i in range(1,4):
                 choix= random.random()
                 self.choix.append(choix)
-                
-            
-        
-        
+           
         if self.etape_stat ==0:
             for i in range(1,4):
                 
@@ -420,9 +395,7 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
                         pyxel.rect(self.width//4-90 +45*i, self.height//2, 18, 18, 9)
                         pyxel.text(self.width//4-90 +45*i, self.height//2, "Vie +",2)
                     #vie_max
-                                   
-                 
-         
+                                            
             choix_option = self.choix_option(self.choix)
             
             if choix_option is not None:
@@ -439,12 +412,8 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
                     self.choix_stat(self.choix[2])
                     
                 self.etape_stat = 1
-                
-                
+                                
             self.affichage_curseur(self.width//4-20 +47*self.position_curseur, self.height - 20, 7)
-
-
-
             message = "CHOISISSEZ VOTRE BOOST"# Affiche le titre du choix de stat
 
             # (Largeur écran / 2) - (Longueur du texte * 4 / 2) 
@@ -488,10 +457,7 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
             self.affichage_curseur(self.width//8 +3, self.height//2+30+self.position_curseur*8, 9)
             for j in range(len(option)):
                 pyxel.text(self.width//8 +25, self.height//2+30+8*j, option[j], 9)
-                
-                
-            
-            
+                           
     def choix_stat(self, nb):
         """ajoute des points de stat en fonction de l'aptitude choisie dans la fonction choix_option"""
         
@@ -511,8 +477,7 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
         # else:
         #     self.player.ajouter_statistique("esquive", 1)#degats
         #     print("ajout d'esquive")
-            
-            
+                       
     def draw_menu_fin(self):
         """Fonction qui affiche le jeu lorsque le mode de jeu est fin"""
         
@@ -520,13 +485,10 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
         pyxel.text(pyxel.width//2 -18, pyxel.height//3 +9, "Game Over", 0)
         option = {0:"Try Again",
                   1:"Sortie"}
-        
-        
+               
         for i in range(len(option)):#crée l'affichage du menu
             pyxel.text(pyxel.width//2 -18, pyxel.height//3 +30 +10*i, option[i], 8)
-        
-        
-        
+                
         #COPIE DE draw_menu_start:
         option_choisie = self.choix_option(option)
         self.affichage_curseur(pyxel.width//2 -32, pyxel.height//3 +30 +10*self.position_curseur, 0)#affiche le curseur lors du choix
@@ -588,8 +550,7 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
         
         elif pyxel.btn(pyxel.KEY_A):#pour choisir aléatoirement un menu
             return random.randint(0, len(liste_option)-1)
-    
-        
+           
     def creer_nouvelle_vague(self):
         self.player.x = pyxel.width//2 -2 #faire spawn le perso au milieu de l'écran
         self.player.y = pyxel.height//2 -2
@@ -599,10 +560,7 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
         self.changer_menu("Playing")
         self.temps_vague = int(self.temps_vague_initiale* ((self.num_vague+1) *self.liste_difficulte[int(self.difficulte_choisie)]))#cycle de vague/amelioration voir ligne44
         self.etape_stat = 0
-        
-        
-
-        
+                
 class Player: #classe qui cree le joueur
     def __init__(self,nom:str,game_instance:object):
         """In: nom -> le nom du joueur"""
@@ -628,6 +586,8 @@ class Player: #classe qui cree le joueur
         self.last_damage = 0
         self.last_shot = 0
         
+        self.explosion_mort_done = False  # pour éviter les explosions multiples à la mort
+        
         
         self.skin1 = {"b":[8, 48, 8, 8], "h":[0, 48, 8, 8],"g":[8, 56, 8, 8],"d":[8, 56, -8, 8]}#définition des coordonnées de chaque côté du skin
         self.skin2 = {"b":[72, 64, 8, 8], "h":[64, 64, 8, 8],"g":[72, 72, 8, 8],"d":[72, 72, -8, 8]}
@@ -635,11 +595,7 @@ class Player: #classe qui cree le joueur
         self.ensemble_skin_actuel = self.skin1 #montre quel skin est utilisé actuellement
         
         # self.tir_possible = True#permet de fluidifier le tir
-        
-        
-    
-        
-    
+           
     def regen(self):
         """redonne de la vie au player """
         if self.vie < self.vie_max:
@@ -647,10 +603,7 @@ class Player: #classe qui cree le joueur
                 self.vie += 3
         else:
             self.vie = self.vie_max
-            
-            
-
-                
+                           
     def ajouter_statistique(self, type_statistique, montant):
         """ajoute le type de statistique au joueur"""
 
@@ -664,11 +617,10 @@ class Player: #classe qui cree le joueur
         
         elif type_statistique == "regeneration":
             self.regeneration += montant 
+        
         elif type_statistique == "defense":
             self.defense += montant
-     
-        
-    
+                
     def boutons(self):
         """Fonction qui permet de gérer la fonction des touches"""
 
@@ -692,22 +644,16 @@ class Player: #classe qui cree le joueur
             if self.autoshoot:
                 self.tir()
                     
-            elif not self.autoshoot:
-            
+            elif not self.autoshoot:           
                 if pyxel.btn(pyxel.KEY_SPACE):
                     self.tir()
-            
-            
-                
-                    
+                        
             if pyxel.btnr(pyxel.KEY_M):
                 if self.autoshoot:
                     self.autoshoot = False
                 elif not self.autoshoot:
                     self.autoshoot = True
-                
-
-            
+                            
             #visee avec les touches de directions:
             if pyxel.btn(pyxel.KEY_RIGHT):
                 self.cote = "d"
@@ -717,21 +663,17 @@ class Player: #classe qui cree le joueur
                 self.cote = "h"
             if pyxel.btn(pyxel.KEY_DOWN):
                 self.cote = "b"
-                
-            
+                           
             if pyxel.btnp(pyxel.KEY_U) : #pour le debug
   
                 self.game_instance.changer_arme_principale()
-
 
     def tir(self):
         if self.game_instance.liste_armes[self.game_instance.arme_principale].peut_tirer():
             pyxel.play(0, 4)
             self.game_instance.liste_armes[self.game_instance.arme_principale].creer_balle()
             self.last_shot = 0
-            
-     
-        
+                   
     def degats(self,nb_degats:int=1):
         """
         Fonction qui prend en paramètre le nb de dégâts à enlever au joueur
@@ -739,36 +681,31 @@ class Player: #classe qui cree le joueur
         """
         chance = random.randint(0,100)
         esquive = 1
+
         if self.esquive < 60:
             if chance < self.esquive: #si le joueur arrive à esquiver
                 esquive = 0#esquive = 0 si player arrive à et 1 si arrive pas
         elif self.esquive >=60:
             if chance <= 60:
                 esquive = 0
-        if self.defense <70:
-            self.vie -= (1-self.defense) *nb_degats * esquive
-        elif self.defense >=70:
-            self.vie -= 0.30 *nb_degats * esquive
-            
         
+        if self.defense <70:
+            self.vie -= (1-self.defense) *nb_degats * esquive #Calcul des dégâts en fonction de la défense et de l'esquive
+        elif self.defense >=70:
+            self.vie -= 0.30 *nb_degats * esquive 
         
         if self.vie <0:
             self.vie =0
+        
+            
         if self.is_alive():
             self.liste_explosions.append(Explosion(self.x,self.y))
-        else:
+        elif not self.explosion_mort_done:  # explosion de mort une seule fois
             self.liste_explosions.append(Explosion(self.x,self.y,150))
-            
-            
+            self.explosion_mort_done = True
+                       
         if esquive == 1:#si on n'arrive pas à esquiver l'attaque
             self.last_damage = 0
-
-
-        
-            
-
-        
-
 
     def is_alive(self):
         """
@@ -790,7 +727,6 @@ class Player: #classe qui cree le joueur
         self.i+=1
         self.last_damage, self.last_shot = self.last_damage + 1, self.last_shot + 1
         self.regen()#gère l'ajout de vie si inactivité de la part du joueur
-
 
     def draw(self):
         """Permet de dessiner le joueur"""
@@ -820,8 +756,7 @@ class Player: #classe qui cree le joueur
         """Permet de dessiner la hitbox du joueur
         Pour le DEBUG"""
         pyxel.rect(self.x-1,self.y-1,7,7,9) #7= taille player + 2 pour que l'on voie un peu le rectangle
-
-    
+   
     def draw_explosions(self):
         """Dessine les explosions du joueur"""
         x = self.x
@@ -832,7 +767,6 @@ class Player: #classe qui cree le joueur
                 explosion.y = y+4
                 explosion.draw()
 
-
     def draw_health(self):
         """affiche la barre de vie à gauche"""
         
@@ -841,31 +775,19 @@ class Player: #classe qui cree le joueur
         height = 6   
         length = 31
         col = 3
-        
-        
-        
+               
         if self.vie_max //2 > self.vie:
             col = 4
         elif self.vie_max //3 > self.vie:
             col = 5
-        
-        
+               
         if self.vie >=1:
             pyxel.rect(1+self.game_instance.cam_x, 1+self.game_instance.cam_y, length*(self.vie/self.vie_max), height, col)
             pyxel.rect(1+length*(self.vie/self.vie_max)+ self.game_instance.cam_x, 1+self.game_instance.cam_y, length - length*(self.vie/self.vie_max), height, 0)
-            
-        
-        
-            
-        
-         
-            
-            
-            
-            
-            
+                 
         pyxel.rectb(0+self.game_instance.cam_x, 0+self.game_instance.cam_y, 32, 8, 6)#contour de la barre de vie
         # pyxel.rectb(0, 0, 3.2*(i+1), 8, 2)
+
 class Armes:
     def __init__(self,nom:str,degats:int,vitesse:int, game_instance:object,player_instance:object,frequence:int):
         """ 
@@ -892,7 +814,6 @@ class Armes:
         else:
             return False
         
-
     def creer_balle(self):
         self.game_instance.liste_balles.append(Bullets(self.player_instance.x,
                                                         self.player_instance.y,
@@ -935,7 +856,6 @@ class Bullets:
             self.is_alive = False
             self.game_instance.nb_balles_rates +=1
             
-
     def draw(self):
         #Cette fonction permettra d'avoir différents types de munitions en fonction de l'arme
         arme = self.type_arme
@@ -995,9 +915,7 @@ class Mob:
         self.cooldown_state = 3
         self.cooldown_max = random.randint(3,7)
         self.player = player
-    
-
-       
+           
     def is_alive(self):
         """renvoie True si le mob est mort"""
         if self.vie > 0:
@@ -1051,11 +969,9 @@ class Mob:
         elif player_x-5 >= mob_x:
             self.x += self.vitesse
         
-
     def draw(self):
         if self.player.is_alive():
             
-
             # On calcule quel sprite utiliser (0 ou 1) et on divise par 10 pour changer de sprite toutes les 10 frames (vitesse de l'animation).
             animation_frame = (self.frame_count // 10) % 2 
         
@@ -1197,13 +1113,9 @@ class Mob:
                     elif self.cote_Mob == "h":  
                         pyxel.blt(self.x, self.y, 0, 32 + u_offset, 128, 8, 8, colkey=2)
 
-        
-
-
     def draw_hitbox(self):
             """Dessine hitbox Mob"""
             pyxel.rect(self.x-1,self.y-1,7,7,9) #7= taille mob + 2 pour que l'on voie un peu le rectangle
-    
     
 class Explosion:
     def __init__(self ,x:int,y:int,taille_max:int= 5):
@@ -1212,12 +1124,9 @@ class Explosion:
         self.y = y+2
         self.etape = 0
         self.alive = True
-        
-    
+            
     def draw(self):
-        """Dessine les explosions"""
-        
-        
+        """Dessine les explosions"""       
         self.etape += 1
         pyxel.circ(self.x,self.y,self.etape,9)
 
@@ -1228,6 +1137,4 @@ class Explosion:
             self.alive = False
         return self.alive
         
-
 jeu = Game(128,128,"JEU")#lance le jeu
-
