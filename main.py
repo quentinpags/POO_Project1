@@ -735,20 +735,6 @@ class Player: #classe qui cree le joueur
         self.draw_explosions()
         if self.is_alive():
             
-            # pyxel.rect(self.x,self.y,5,5,6) debug player
-
-            # if self.cote == "b": #le player tire vers le bas 
-            #     pyxel.blt(self.x, self.y, 0, 8, 48, 8, 8, colkey=2)
-
-            # elif self.cote == "h": #le player tire vers le haut 
-            #     pyxel.blt(self.x, self.y, 0, 0, 48, 8, 8,colkey=2)
-
-            # elif self.cote == "g":  #le player tire vers la gauche 
-            #     pyxel.blt(self.x, self.y, 0, 8, 56, 8, 8,colkey=2)
-
-            # elif self.cote == "d":  #le player tire vers la droite 
-            #     pyxel.blt(self.x, self.y, 0, 0, 56, 8, 8,colkey=2)
-            
             pyxel.blt(self.x, self.y, 0, self.ensemble_skin_actuel[self.cote][0], self.ensemble_skin_actuel[self.cote][1], self.ensemble_skin_actuel[self.cote][2], self.ensemble_skin_actuel[self.cote][3], colkey=2)
 
 
