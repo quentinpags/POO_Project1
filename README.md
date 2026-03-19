@@ -38,7 +38,7 @@ Version d'essai avec un bug de la version [web](https://www.pyxelstudio.net/6tjf
 
 (appuyer dans le sens du bug pour pouvoir re-controller le personnage)
 
-## Contributors
+## Contributeurs
 
 [Quentin Pagès](https://github.com/quentinpags), [Hugo Pagès](https://github.com/Humgo11), [Felix Margail](https://github.com/El-Zephyr), [Gaetan Vabre](https://github.com/vabregaetan-svg)
 ## Credits
