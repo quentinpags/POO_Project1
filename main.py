@@ -63,8 +63,7 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
                               Armes("Mitraillette",2,2,self,self.player,7)]
 
         self.arme_principale = 0#arme utilisée à un temps t
-        self.counter = self.fps*3 #decompte avant fin du jeu pour que l'explosion marche bien 30 est le nb de frame par seconde
-        
+
         
         self.liste_difficulte = [1.3, 1.5 ,2]#liste des difficultés possibles
         #facile difficile et infernale
@@ -118,7 +117,6 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
                             Armes("Sniper",50,5,self,self.player,20),
                               Armes("Mitraillette",2,2,self,self.player,7)]
         
-        self.counter = self.fps*3 #decompte avant fin du jeu pour que l'explosion marche bien 30 est le nb de frame par seconde
         self.temps_vague = self.temps_vague_initiale#on reprend la valeur par défaut
         
         #menu
@@ -215,7 +213,6 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
         
         else:
             
-            self.counter-=1 
             if len(self.player.liste_explosions) !=0 or (len(self.player.liste_explosions) ==1 and self.player.liste_explosions[0].taille_max == self.player.liste_explosions[0].etape-1):
                 
                     self.player.update()
@@ -223,7 +220,7 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
                 
             
             
-            if  self.counter <=0 or (len(self.player.liste_explosions) ==1 and self.player.liste_explosions[0].taille_max == self.player.liste_explosions[0].etape+1):
+            if  len(self.player.liste_explosions) == 0:
                 self.changer_menu("GameOver")
     
     def draw(self):
