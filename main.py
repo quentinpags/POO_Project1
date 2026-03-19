@@ -225,7 +225,7 @@ class Game: #classe qui cree le jeu et qui possède la boucle de jeu
     
     def draw(self):
         """permet d'afficher tous les éléments du jeu"""
-        if self.menu_actuel =="Playing" and self.pause== False:
+        if not self.player.explosion_mort_done and (self.menu_actuel =="Playing" and self.pause== False):
             #On règle la camera
             pyxel.camera(self.cam_x, self.cam_y)
             pyxel.cls(0)
