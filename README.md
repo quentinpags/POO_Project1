@@ -23,7 +23,7 @@ Pour vous permettre de survivre le plus longtemps possible, vous pourrez, après
 
 <img src="https://github.com/quentinpags/POO_Project1/blob/main/screenshots/capture_jeu1.png" width="460">
 <img src="https://github.com/quentinpags/POO_Project1/blob/main/screenshots/capture_jeu2.png" width="460">
-Version d'essai avec un bug de la version web de Pyxel sur l'appui des touches directionnelles [ici](www.pyxelstudio.net/6tjf9anc)
+Version d'essai avec un bug de la version web de Pyxel sur l'appui des touches directionnelles [ici](https://www.pyxelstudio.net/6tjf9anc)
 (appuyer dans le sens du bug pour pouvoir re-controller le personnage)
 
 ## Contributors
